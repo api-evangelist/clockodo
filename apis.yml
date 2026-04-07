@@ -3,8 +3,8 @@ url: >-
   https://raw.githubusercontent.com/api-evangelist/clockodo/refs/heads/main/apis.yml
 name: Clockodo
 tags:
-  - Time Tracking
   - Project Management
+  - Time Tracking
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 access: 3rd-Party
@@ -20,8 +20,8 @@ apis:
   - aid: clockodo:clockodo
     name: Clockodo API
     tags:
-      - Time Tracking
       - Project Management
+      - Time Tracking
     humanURL: https://www.clockodo.com/en/
     properties:
       - url: https://www.clockodo.com/en/
