@@ -1,53 +1,58 @@
 # Clockodo (clockodo)
-Clockodo is a time tracking and project management software designed to help businesses efficiently track and manage their employees' work hours. With Clockodo, users can easily track billable hours, assign specific projects and tasks to employees, and generate detailed reports on project progress and employee productivity. The software also features a user-friendly interface that makes it easy for employees to clock in and out, input their work hours, and track their progress on various projects. Clockodo helps businesses streamline their time tracking processes, improve project efficiency, and ultimately increase productivity and profitability.
+Clockodo is a German-built, cloud-based time-tracking and project-management application used by service firms, agencies, and freelancers. In addition to its web and mobile apps, Clockodo exposes a REST API at my.clockodo.com that mirrors the objects in the UI: time entries, customers, projects, services, users, absences, holiday quotas, lump-sum services, and a real-time stop-clock.
 
 **URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/clockodo/refs/heads/main/apis.yml)
 
 ## Scope
 
-- **Type:** Index 
-- **Position:** Consumer 
-- **Access:** 3rd-Party 
+- **Type:** Index
+- **Position:** Consumer
+- **Access:** 3rd-Party
 
-## Tags:
+## Tags
 
- - Time Tracking, Project Management
+- Absence Management, Billing, Project Management, Stop Clock, Time Tracking, Timesheets
 
 ## Timestamps
 
-- **Created:** 2025-02-17 
-- **Modified:** 2025-02-27 
+- **Created:** 2025-02-17
+- **Modified:** 2026-04-27
 
 ## APIs
 
-### Clockodo
-Clockodo: We are Partners in Time 
+### Clockodo API
+The Clockodo API is a REST interface at my.clockodo.com that lets developers automate time tracking and project management. v2 endpoints under `/api/v2` cover entries, customers, projects, services, users, lump-sum services, and the stop-clock; legacy endpoints under `/api` cover absences and holiday quotas. Calls authenticate with `X-ClockodoApiUser` plus `X-ClockodoApiKey` (or HTTP Basic with the same credentials) and identify the calling app via `X-Clockodo-External-Application`; responses are JSON.
 
-**Human URL:** [ https://www.clockodo.com/en/]( https://www.clockodo.com/en/)
+**Human URL:** [https://www.clockodo.com/en/api/](https://www.clockodo.com/en/api/)
 
+**Base URL:** https://my.clockodo.com/api
 
-#### Tags:
+#### Tags
 
- - API
+- Absence Management, Billing, Project Management, Stop Clock, Time Tracking
 
 #### Properties
 
-- [Documentation]( https://www.clockodo.com/en/)
+- [Documentation](https://www.clockodo.com/en/api/)
+- [Authentication](https://www.clockodo.com/en/api/authentication/)
+- [OpenAPI](openapi/clockodo-openapi.yml)
 
 ## Common Properties
 
-- [Pricing](https://www.clockodo.com/en/pricing/)
-- [About](https://www.clockodo.com/en/about-us/)
-- [Contact](https://www.clockodo.com/en/contact/)
-- [Applications](https://www.clockodo.com/en/apps/)
+- [Website](https://www.clockodo.com/en/)
+- [Documentation](https://www.clockodo.com/en/api/)
 - [Blog](https://www.clockodo.com/en/blog/)
-- [RoadMap](https://www.clockodo.com/en/roadmap/)
-- [TermsOfService](https://www.clockodo.com/en/terms-and-conditions/)
-- [PrivacyPolicy](https://www.clockodo.com/en/data-privacy/)
+- [Pricing](https://www.clockodo.com/en/pricing/)
+- [Terms of Service](https://www.clockodo.com/en/terms-and-conditions/)
+- [Privacy Policy](https://www.clockodo.com/en/data-privacy/)
+- [OpenAPI](openapi/clockodo-openapi.yml)
+- [JSON Schema](json-schema/clockodo-entry-schema.json)
+- [JSON-LD Context](json-ld/clockodo-context.jsonld)
+- [Spectral Ruleset](rules/clockodo-rules.yml)
+- [Naftiko Capabilities](capabilities/clockodo-capabilities.yml)
 
 ## Maintainers
 
 **FN:** Kin Lane
 
-**Email:** info@apievangelist.com
-
+**Email:** kin@apievangelist.com

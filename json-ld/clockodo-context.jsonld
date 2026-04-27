@@ -1,0 +1,57 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "clockodo": "https://my.clockodo.com/schemas/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "Entry": {
+      "@id": "clockodo:Entry",
+      "@type": "schema:Action"
+    },
+    "Customer": {
+      "@id": "clockodo:Customer",
+      "@type": "schema:Organization"
+    },
+    "Project": {
+      "@id": "clockodo:Project",
+      "@type": "schema:Project"
+    },
+    "Service": {
+      "@id": "clockodo:Service",
+      "@type": "schema:Service"
+    },
+    "User": {
+      "@id": "clockodo:User",
+      "@type": "schema:Person"
+    },
+    "Absence": {
+      "@id": "clockodo:Absence",
+      "@type": "schema:Event"
+    },
+
+    "id": "@id",
+    "name": "schema:name",
+    "email": "schema:email",
+    "time_since": {
+      "@id": "schema:startTime",
+      "@type": "xsd:dateTime"
+    },
+    "time_until": {
+      "@id": "schema:endTime",
+      "@type": "xsd:dateTime"
+    },
+    "duration": {
+      "@id": "schema:duration",
+      "@type": "xsd:duration"
+    },
+    "billable": {
+      "@id": "clockodo:billable",
+      "@type": "xsd:boolean"
+    },
+    "users_id": "clockodo:userId",
+    "customers_id": "clockodo:customerId",
+    "projects_id": "clockodo:projectId",
+    "services_id": "clockodo:serviceId"
+  }
+}

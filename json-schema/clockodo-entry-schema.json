@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://my.clockodo.com/schemas/entry.json",
+  "title": "Clockodo Time Entry",
+  "description": "Schema for a Clockodo time-tracking entry. An entry records time spent by a user on a customer/project/service combination, optionally with billable status, hourly rate, and free-text description. Entries underpin reporting, invoicing, and project-budget tracking in Clockodo.",
+  "type": "object",
+  "required": ["customers_id", "services_id", "users_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Unique identifier of the entry."
+    },
+    "users_id": {
+      "type": "integer",
+      "description": "ID of the user who recorded the entry."
+    },
+    "customers_id": {
+      "type": "integer",
+      "description": "ID of the customer associated with the entry."
+    },
+    "projects_id": {
+      "type": ["integer", "null"],
+      "description": "ID of the project the entry is booked against."
+    },
+    "services_id": {
+      "type": "integer",
+      "description": "ID of the service performed."
+    },
+    "time_since": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start time of the entry."
+    },
+    "time_until": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "End time of the entry. Null when the entry is still being timed by the stop-clock."
+    },
+    "duration": {
+      "type": ["integer", "null"],
+      "description": "Duration of the entry in seconds."
+    },
+    "billable": {
+      "type": "integer",
+      "description": "0 = not billable, 1 = billable, 2 = already billed.",
+      "enum": [0, 1, 2]
+    },
+    "hourly_rate": {
+      "type": ["number", "null"],
+      "description": "Effective hourly rate (in account currency)."
+    },
+    "text": {
+      "type": ["string", "null"],
+      "description": "Free-text description of the work performed."
+    },
+    "lumpsum": {
+      "type": ["number", "null"],
+      "description": "Lump-sum amount when the entry is billed as a flat fee instead of by time."
+    }
+  },
+  "additionalProperties": true
+}

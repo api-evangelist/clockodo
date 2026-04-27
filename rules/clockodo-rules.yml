@@ -1,0 +1,43 @@
+extends:
+  - spectral:oas
+rules:
+  clockodo-info-contact:
+    description: API info MUST contain a contact email or URL.
+    severity: warn
+    given: $.info
+    then:
+      field: contact
+      function: truthy
+  clockodo-https-only:
+    description: All Clockodo API servers MUST use HTTPS.
+    severity: error
+    given: $.servers[*].url
+    then:
+      function: pattern
+      functionOptions:
+        match: '^https://'
+  clockodo-operation-id:
+    description: Operations MUST have an operationId.
+    severity: error
+    given: $.paths[*][get,post,put,delete,patch]
+    then:
+      field: operationId
+      function: truthy
+  clockodo-tag-required:
+    description: Operations MUST be tagged for resource grouping (Entries, Customers, Projects, Services, Users, Absences, LumpSumServices, HolidaysQuota, Clock).
+    severity: warn
+    given: $.paths[*][get,post,put,delete,patch].tags
+    then:
+      function: truthy
+  clockodo-auth-required:
+    description: API MUST define API-key and/or basic-auth security since Clockodo authenticates with X-ClockodoApiUser/X-ClockodoApiKey headers or HTTP Basic.
+    severity: error
+    given: $.components.securitySchemes
+    then:
+      function: truthy
+  clockodo-server-url:
+    description: API MUST declare at least one server URL pointing at my.clockodo.com.
+    severity: error
+    given: $.servers
+    then:
+      function: truthy
