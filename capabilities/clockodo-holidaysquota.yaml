@@ -1,0 +1,107 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Clockodo API — HolidaysQuota
+  description: 'Clockodo API — HolidaysQuota. 2 operations. Lead operation: List holiday quotas. Self-contained Naftiko capability
+    covering one Clockodo business surface.'
+  tags:
+  - Clockodo
+  - HolidaysQuota
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CLOCKODO_API_KEY: CLOCKODO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: clockodo-holidaysquota
+    baseUri: https://my.clockodo.com/api
+    description: Clockodo API — HolidaysQuota business capability. Self-contained, no shared references.
+    resources:
+    - name: holidaysquota
+      path: /holidaysquota
+      operations:
+      - name: listholidayquotas
+        method: GET
+        description: List holiday quotas
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createholidayquota
+        method: POST
+        description: Create holiday quota
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: X-ClockodoApiKey
+      value: '{{env.CLOCKODO_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: clockodo-holidaysquota-rest
+    port: 8080
+    description: REST adapter for Clockodo API — HolidaysQuota. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/holidaysquota
+      name: holidaysquota
+      description: REST surface for holidaysquota.
+      operations:
+      - method: GET
+        name: listholidayquotas
+        description: List holiday quotas
+        call: clockodo-holidaysquota.listholidayquotas
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createholidayquota
+        description: Create holiday quota
+        call: clockodo-holidaysquota.createholidayquota
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: clockodo-holidaysquota-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Clockodo API — HolidaysQuota. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: list-holiday-quotas
+      description: List holiday quotas
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: clockodo-holidaysquota.listholidayquotas
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-holiday-quota
+      description: Create holiday quota
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: clockodo-holidaysquota.createholidayquota
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

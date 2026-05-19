@@ -1,0 +1,107 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Clockodo API — Services
+  description: 'Clockodo API — Services. 2 operations. Lead operation: List services. Self-contained Naftiko capability covering
+    one Clockodo business surface.'
+  tags:
+  - Clockodo
+  - Services
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CLOCKODO_API_KEY: CLOCKODO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: clockodo-services
+    baseUri: https://my.clockodo.com/api
+    description: Clockodo API — Services business capability. Self-contained, no shared references.
+    resources:
+    - name: v2-services
+      path: /v2/services
+      operations:
+      - name: listservices
+        method: GET
+        description: List services
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createservice
+        method: POST
+        description: Create a service
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: X-ClockodoApiKey
+      value: '{{env.CLOCKODO_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: clockodo-services-rest
+    port: 8080
+    description: REST adapter for Clockodo API — Services. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v2/services
+      name: v2-services
+      description: REST surface for v2-services.
+      operations:
+      - method: GET
+        name: listservices
+        description: List services
+        call: clockodo-services.listservices
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createservice
+        description: Create a service
+        call: clockodo-services.createservice
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: clockodo-services-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Clockodo API — Services. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-services
+      description: List services
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: clockodo-services.listservices
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-service
+      description: Create a service
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: clockodo-services.createservice
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

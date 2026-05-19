@@ -1,0 +1,199 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Clockodo API — Absences
+  description: 'Clockodo API — Absences. 5 operations. Lead operation: List absences. Self-contained Naftiko capability covering
+    one Clockodo business surface.'
+  tags:
+  - Clockodo
+  - Absences
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CLOCKODO_API_KEY: CLOCKODO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: clockodo-absences
+    baseUri: https://my.clockodo.com/api
+    description: Clockodo API — Absences business capability. Self-contained, no shared references.
+    resources:
+    - name: absences
+      path: /absences
+      operations:
+      - name: listabsences
+        method: GET
+        description: List absences
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createabsence
+        method: POST
+        description: Create an absence
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: absences-id
+      path: /absences/{id}
+      operations:
+      - name: getabsence
+        method: GET
+        description: Get an absence
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updateabsence
+        method: PUT
+        description: Update an absence
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deleteabsence
+        method: DELETE
+        description: Delete an absence
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: X-ClockodoApiKey
+      value: '{{env.CLOCKODO_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: clockodo-absences-rest
+    port: 8080
+    description: REST adapter for Clockodo API — Absences. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/absences
+      name: absences
+      description: REST surface for absences.
+      operations:
+      - method: GET
+        name: listabsences
+        description: List absences
+        call: clockodo-absences.listabsences
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createabsence
+        description: Create an absence
+        call: clockodo-absences.createabsence
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/absences/{id}
+      name: absences-id
+      description: REST surface for absences-id.
+      operations:
+      - method: GET
+        name: getabsence
+        description: Get an absence
+        call: clockodo-absences.getabsence
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: updateabsence
+        description: Update an absence
+        call: clockodo-absences.updateabsence
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteabsence
+        description: Delete an absence
+        call: clockodo-absences.deleteabsence
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: clockodo-absences-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Clockodo API — Absences. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-absences
+      description: List absences
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: clockodo-absences.listabsences
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-absence
+      description: Create an absence
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: clockodo-absences.createabsence
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-absence
+      description: Get an absence
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: clockodo-absences.getabsence
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-absence
+      description: Update an absence
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: clockodo-absences.updateabsence
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-absence
+      description: Delete an absence
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: clockodo-absences.deleteabsence
+      outputParameters:
+      - type: object
+        mapping: $.

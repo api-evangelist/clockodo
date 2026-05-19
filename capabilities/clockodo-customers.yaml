@@ -1,0 +1,199 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Clockodo API — Customers
+  description: 'Clockodo API — Customers. 5 operations. Lead operation: List customers. Self-contained Naftiko capability
+    covering one Clockodo business surface.'
+  tags:
+  - Clockodo
+  - Customers
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    CLOCKODO_API_KEY: CLOCKODO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: clockodo-customers
+    baseUri: https://my.clockodo.com/api
+    description: Clockodo API — Customers business capability. Self-contained, no shared references.
+    resources:
+    - name: v2-customers
+      path: /v2/customers
+      operations:
+      - name: listcustomers
+        method: GET
+        description: List customers
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createcustomer
+        method: POST
+        description: Create a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v2-customers-id
+      path: /v2/customers/{id}
+      operations:
+      - name: getcustomer
+        method: GET
+        description: Get a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatecustomer
+        method: PUT
+        description: Update a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deletecustomer
+        method: DELETE
+        description: Delete a customer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: X-ClockodoApiKey
+      value: '{{env.CLOCKODO_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: clockodo-customers-rest
+    port: 8080
+    description: REST adapter for Clockodo API — Customers. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v2/customers
+      name: v2-customers
+      description: REST surface for v2-customers.
+      operations:
+      - method: GET
+        name: listcustomers
+        description: List customers
+        call: clockodo-customers.listcustomers
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createcustomer
+        description: Create a customer
+        call: clockodo-customers.createcustomer
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/customers/{id}
+      name: v2-customers-id
+      description: REST surface for v2-customers-id.
+      operations:
+      - method: GET
+        name: getcustomer
+        description: Get a customer
+        call: clockodo-customers.getcustomer
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: updatecustomer
+        description: Update a customer
+        call: clockodo-customers.updatecustomer
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletecustomer
+        description: Delete a customer
+        call: clockodo-customers.deletecustomer
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: clockodo-customers-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Clockodo API — Customers. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-customers
+      description: List customers
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: clockodo-customers.listcustomers
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-customer
+      description: Create a customer
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: clockodo-customers.createcustomer
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-customer
+      description: Get a customer
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: clockodo-customers.getcustomer
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-customer
+      description: Update a customer
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: clockodo-customers.updatecustomer
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-customer
+      description: Delete a customer
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: clockodo-customers.deletecustomer
+      outputParameters:
+      - type: object
+        mapping: $.
