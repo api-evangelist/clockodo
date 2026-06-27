@@ -3,19 +3,12 @@
   "feeds": [
     {
       "source": "https://www.clockodo.com/en/blog/",
-      "feed_url": "https://www.clockodo.com/en/blog/",
-      "title": "",
-      "saved": 0,
-      "method": "none"
-    },
-    {
-      "source": "https://www.clockodo.com/en/api/",
-      "feed_url": "https://www.clockodo.com/en/api/",
-      "title": "",
-      "saved": 0,
-      "method": "none"
+      "feed_url": "",
+      "saved": 1,
+      "method": "agent-scrape"
     }
   ],
-  "post_count": 1,
-  "fetched": "2026-06-14T20:42:17Z"
+  "post_count": 2,
+  "fetched": "2026-06-27T12:32:37Z",
+  "agent_pulled": "2026-06-27"
 }
