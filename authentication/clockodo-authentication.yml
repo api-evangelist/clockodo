@@ -1,0 +1,25 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/clockodo-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: clockodoApiKey
+  type: apiKey
+  in: header
+  parameter: X-ClockodoApiKey
+  description: Per-user API key. Must be paired with the X-ClockodoApiUser header carrying the
+    user's email address.
+  sources:
+  - openapi/clockodo-openapi.yml
+- name: basicAuth
+  type: http
+  scheme: basic
+  description: HTTP Basic auth using the user's email as the username and the API key as the
+    password.
+  sources:
+  - openapi/clockodo-openapi.yml

@@ -49,6 +49,10 @@ apis:
       X-ClockodoApiUser plus X-ClockodoApiKey (or HTTP Basic with the same credentials) and identify the calling app via
       X-Clockodo-External-Application; responses are JSON.
 common:
+  - type: DomainSecurity
+    url: security/clockodo-domain-security.yml
+  - type: Authentication
+    url: authentication/clockodo-authentication.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/clockodo
   - type: Website
