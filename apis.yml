@@ -49,6 +49,8 @@ apis:
       X-ClockodoApiUser plus X-ClockodoApiKey (or HTTP Basic with the same credentials) and identify the calling app via
       X-Clockodo-External-Application; responses are JSON.
 common:
+  - type: AgenticAccess
+    url: agentic-access/clockodo-agentic-access.yml
   - type: DomainSecurity
     url: security/clockodo-domain-security.yml
   - type: Authentication
