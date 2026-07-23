@@ -1,0 +1,55 @@
+openapi: 3.1.0
+info:
+  title: Clockodo Absences Services API
+  version: '2'
+  description: Clockodo is a cloud-based time-tracking and project-management application for businesses. The Clockodo REST API exposes the same objects available in the web UI and lets developers automate time capture, manage customers and projects, control the stop-clock, record absences, and run reporting integrations. Authentication uses a per-user email plus a per-user API key sent either as the X-ClockodoApiUser/X-ClockodoApiKey header pair or via HTTP Basic auth, and every request must additionally identify the calling application with the X-Clockodo-External-Application header.
+  contact:
+    name: Clockodo Support
+    url: https://www.clockodo.com/en/contact/
+  license:
+    name: Clockodo Terms and Conditions
+    url: https://www.clockodo.com/en/terms-and-conditions/
+servers:
+- url: https://my.clockodo.com/api
+  description: Clockodo Production API
+security:
+- clockodoApiKey: []
+- basicAuth: []
+tags:
+- name: Services
+  description: Service catalog used for entries.
+paths:
+  /v2/services:
+    get:
+      operationId: listServices
+      summary: List services
+      tags:
+      - Services
+      responses:
+        '200':
+          description: Services.
+    post:
+      operationId: createService
+      summary: Create a service
+      tags:
+      - Services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Created service.
+components:
+  securitySchemes:
+    clockodoApiKey:
+      type: apiKey
+      in: header
+      name: X-ClockodoApiKey
+      description: Per-user API key. Must be paired with the X-ClockodoApiUser header carrying the user's email address.
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth using the user's email as the username and the API key as the password.
