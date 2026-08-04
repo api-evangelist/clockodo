@@ -1,0 +1,386 @@
+openapi: 3.1.0
+info:
+  title: Clockodo API
+  version: '2'
+  description: >-
+    Clockodo is a cloud-based time-tracking and project-management
+    application for businesses. The Clockodo REST API exposes the same
+    objects available in the web UI and lets developers automate time
+    capture, manage customers and projects, control the stop-clock,
+    record absences, and run reporting integrations. Authentication uses
+    a per-user email plus a per-user API key sent either as the
+    X-ClockodoApiUser/X-ClockodoApiKey header pair or via HTTP Basic
+    auth, and every request must additionally identify the calling
+    application with the X-Clockodo-External-Application header.
+  contact:
+    name: Clockodo Support
+    url: https://www.clockodo.com/en/contact/
+  license:
+    name: Clockodo Terms and Conditions
+    url: https://www.clockodo.com/en/terms-and-conditions/
+servers:
+  - url: https://my.clockodo.com/api
+    description: Clockodo Production API
+security:
+  - clockodoApiKey: []
+  - basicAuth: []
+tags:
+  - name: Entries
+    description: Time-tracking entries.
+  - name: Customers
+    description: Customer records.
+  - name: Projects
+    description: Projects under customers.
+  - name: Services
+    description: Service catalog used for entries.
+  - name: Users
+    description: Co-workers/users in the account.
+  - name: Absences
+    description: Absence records (vacation, sickness, etc.).
+  - name: LumpSumServices
+    description: Lump-sum services for fixed-price billing.
+  - name: HolidaysQuota
+    description: Per-user holiday quotas.
+  - name: Clock
+    description: Real-time stop-clock control.
+paths:
+  /v2/entries:
+    get:
+      operationId: listEntries
+      summary: List time entries
+      description: Returns time-tracking entries filtered by date range, user, customer, project, or service.
+      tags: [Entries]
+      parameters:
+        - name: time_since
+          in: query
+          schema: {type: string, format: date-time}
+        - name: time_until
+          in: query
+          schema: {type: string, format: date-time}
+        - name: filter[users_id]
+          in: query
+          schema: {type: integer}
+        - name: filter[customers_id]
+          in: query
+          schema: {type: integer}
+        - name: filter[projects_id]
+          in: query
+          schema: {type: integer}
+      responses:
+        '200':
+          description: List of entries.
+    post:
+      operationId: createEntry
+      summary: Create a time entry
+      description: Creates a new time-tracking entry.
+      tags: [Entries]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '201':
+          description: Created entry.
+  /v2/entries/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: {type: integer}
+    get:
+      operationId: getEntry
+      summary: Get a time entry
+      tags: [Entries]
+      responses:
+        '200': {description: Single entry.}
+    put:
+      operationId: updateEntry
+      summary: Update a time entry
+      tags: [Entries]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '200': {description: Updated entry.}
+    delete:
+      operationId: deleteEntry
+      summary: Delete a time entry
+      tags: [Entries]
+      responses:
+        '204': {description: Entry deleted.}
+  /v2/customers:
+    get:
+      operationId: listCustomers
+      summary: List customers
+      tags: [Customers]
+      responses:
+        '200': {description: Customers.}
+    post:
+      operationId: createCustomer
+      summary: Create a customer
+      tags: [Customers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '201': {description: Created customer.}
+  /v2/customers/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: {type: integer}
+    get:
+      operationId: getCustomer
+      summary: Get a customer
+      tags: [Customers]
+      responses:
+        '200': {description: Customer.}
+    put:
+      operationId: updateCustomer
+      summary: Update a customer
+      tags: [Customers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '200': {description: Updated customer.}
+    delete:
+      operationId: deleteCustomer
+      summary: Delete a customer
+      tags: [Customers]
+      responses:
+        '204': {description: Customer deleted.}
+  /v2/projects:
+    get:
+      operationId: listProjects
+      summary: List projects
+      tags: [Projects]
+      responses:
+        '200': {description: Projects.}
+    post:
+      operationId: createProject
+      summary: Create a project
+      tags: [Projects]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '201': {description: Created project.}
+  /v2/projects/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: {type: integer}
+    get:
+      operationId: getProject
+      summary: Get a project
+      tags: [Projects]
+      responses:
+        '200': {description: Project.}
+    put:
+      operationId: updateProject
+      summary: Update a project
+      tags: [Projects]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '200': {description: Updated project.}
+    delete:
+      operationId: deleteProject
+      summary: Delete a project
+      tags: [Projects]
+      responses:
+        '204': {description: Project deleted.}
+  /v2/services:
+    get:
+      operationId: listServices
+      summary: List services
+      tags: [Services]
+      responses:
+        '200': {description: Services.}
+    post:
+      operationId: createService
+      summary: Create a service
+      tags: [Services]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '201': {description: Created service.}
+  /v2/users:
+    get:
+      operationId: listUsers
+      summary: List users
+      tags: [Users]
+      responses:
+        '200': {description: Users.}
+    post:
+      operationId: createUser
+      summary: Create a user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '201': {description: Created user.}
+  /v2/users/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: {type: integer}
+    get:
+      operationId: getUser
+      summary: Get a user
+      tags: [Users]
+      responses:
+        '200': {description: User.}
+    put:
+      operationId: updateUser
+      summary: Update a user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '200': {description: Updated user.}
+    delete:
+      operationId: deleteUser
+      summary: Delete a user
+      tags: [Users]
+      responses:
+        '204': {description: User deleted.}
+  /absences:
+    get:
+      operationId: listAbsences
+      summary: List absences
+      tags: [Absences]
+      responses:
+        '200': {description: Absences.}
+    post:
+      operationId: createAbsence
+      summary: Create an absence
+      tags: [Absences]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '201': {description: Created absence.}
+  /absences/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: {type: integer}
+    get:
+      operationId: getAbsence
+      summary: Get an absence
+      tags: [Absences]
+      responses:
+        '200': {description: Absence.}
+    put:
+      operationId: updateAbsence
+      summary: Update an absence
+      tags: [Absences]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '200': {description: Updated absence.}
+    delete:
+      operationId: deleteAbsence
+      summary: Delete an absence
+      tags: [Absences]
+      responses:
+        '204': {description: Absence deleted.}
+  /v2/lumpsumservices:
+    get:
+      operationId: listLumpSumServices
+      summary: List lump-sum services
+      tags: [LumpSumServices]
+      responses:
+        '200': {description: Lump-sum services.}
+    post:
+      operationId: createLumpSumService
+      summary: Create a lump-sum service
+      tags: [LumpSumServices]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '201': {description: Created lump-sum service.}
+  /holidaysquota:
+    get:
+      operationId: listHolidayQuotas
+      summary: List holiday quotas
+      tags: [HolidaysQuota]
+      responses:
+        '200': {description: Holiday quotas.}
+    post:
+      operationId: createHolidayQuota
+      summary: Create holiday quota
+      tags: [HolidaysQuota]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '201': {description: Created holiday quota.}
+  /v2/clock:
+    get:
+      operationId: getClock
+      summary: Get current stop-clock state
+      tags: [Clock]
+      responses:
+        '200': {description: Current running clock.}
+    post:
+      operationId: startClock
+      summary: Start the stop-clock
+      tags: [Clock]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object}
+      responses:
+        '201': {description: Clock started.}
+components:
+  securitySchemes:
+    clockodoApiKey:
+      type: apiKey
+      in: header
+      name: X-ClockodoApiKey
+      description: >-
+        Per-user API key. Must be paired with the X-ClockodoApiUser header
+        carrying the user's email address.
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth using the user's email as the username and the API key as the password.

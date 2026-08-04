@@ -1,0 +1,30 @@
+{
+  "provider": "clockodo",
+  "sources": [
+    "clockodo-absences-api-openapi.yml",
+    "clockodo-clock-api-openapi.yml",
+    "clockodo-customers-api-openapi.yml",
+    "clockodo-entries-api-openapi.yml",
+    "clockodo-holidaysquota-api-openapi.yml",
+    "clockodo-lumpsumservices-api-openapi.yml",
+    "clockodo-projects-api-openapi.yml",
+    "clockodo-services-api-openapi.yml",
+    "clockodo-users-api-openapi.yml"
+  ],
+  "outputs": [
+    "clockodo-absences-api-openapi.yml",
+    "clockodo-clock-api-openapi.yml",
+    "clockodo-customers-api-openapi.yml",
+    "clockodo-entries-api-openapi.yml",
+    "clockodo-holidaysquota-api-openapi.yml",
+    "clockodo-lumpsumservices-api-openapi.yml",
+    "clockodo-projects-api-openapi.yml",
+    "clockodo-services-api-openapi.yml",
+    "clockodo-users-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
