@@ -185,7 +185,7 @@ common:
   - type: PrivacyPolicy
     url: https://www.clockodo.com/en/data-privacy/
   - type: OpenAPI
-    url: openapi/clockodo-openapi.yml
+    url: openapi/_original/clockodo-openapi.yml
   - type: JSONSchema
     url: json-schema/clockodo-entry-schema.json
   - type: JSONLDContext
