@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Clockodo Absences Services API",
+    "version": "2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ClockodoApiKey",
+      "value": "{{X-ClockodoApiKey}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Services",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List services",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://my.clockodo.com/api/v2/services"
+          },
+          "docs": "List services"
+        },
+        {
+          "info": {
+            "name": "Create a service",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://my.clockodo.com/api/v2/services",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a service"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

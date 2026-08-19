@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Clockodo Absences Clock API",
+    "version": "2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ClockodoApiKey",
+      "value": "{{X-ClockodoApiKey}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Clock",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get current stop-clock state",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://my.clockodo.com/api/v2/clock"
+          },
+          "docs": "Get current stop-clock state"
+        },
+        {
+          "info": {
+            "name": "Start the stop-clock",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://my.clockodo.com/api/v2/clock",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Start the stop-clock"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Clockodo Absences LumpSumServices API",
+    "version": "2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ClockodoApiKey",
+      "value": "{{X-ClockodoApiKey}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "LumpSumServices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List lump-sum services",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://my.clockodo.com/api/v2/lumpsumservices"
+          },
+          "docs": "List lump-sum services"
+        },
+        {
+          "info": {
+            "name": "Create a lump-sum service",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://my.clockodo.com/api/v2/lumpsumservices",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a lump-sum service"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

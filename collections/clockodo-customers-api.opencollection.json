@@ -1,0 +1,110 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Clockodo Absences Customers API",
+    "version": "2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ClockodoApiKey",
+      "value": "{{X-ClockodoApiKey}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://my.clockodo.com/api/v2/customers"
+          },
+          "docs": "List customers"
+        },
+        {
+          "info": {
+            "name": "Create a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://my.clockodo.com/api/v2/customers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a customer"
+        },
+        {
+          "info": {
+            "name": "Get a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://my.clockodo.com/api/v2/customers/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get a customer"
+        },
+        {
+          "info": {
+            "name": "Update a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://my.clockodo.com/api/v2/customers/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a customer"
+        },
+        {
+          "info": {
+            "name": "Delete a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://my.clockodo.com/api/v2/customers/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a customer"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

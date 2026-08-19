@@ -1,0 +1,110 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Clockodo Absences API",
+    "version": "2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ClockodoApiKey",
+      "value": "{{X-ClockodoApiKey}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Absences",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List absences",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://my.clockodo.com/api/absences"
+          },
+          "docs": "List absences"
+        },
+        {
+          "info": {
+            "name": "Create an absence",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://my.clockodo.com/api/absences",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an absence"
+        },
+        {
+          "info": {
+            "name": "Get an absence",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://my.clockodo.com/api/absences/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get an absence"
+        },
+        {
+          "info": {
+            "name": "Update an absence",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://my.clockodo.com/api/absences/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an absence"
+        },
+        {
+          "info": {
+            "name": "Delete an absence",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://my.clockodo.com/api/absences/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete an absence"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

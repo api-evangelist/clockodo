@@ -1,0 +1,206 @@
+{
+  "item": [
+    {
+      "id": "395d701b-a90b-45e9-9420-62468ba7f5a2",
+      "name": "Clock",
+      "description": {
+        "content": "Real-time stop-clock control.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d556b798-a103-4e5c-a048-b30e3013fd47",
+          "name": "Get current stop-clock state",
+          "request": {
+            "name": "Get current stop-clock state",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "clock"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d93f203c-e272-4afe-ba8a-901838bdc75e",
+              "name": "Current running clock.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "clock"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ClockodoApiKey",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "32ed6d1d-5fbd-4ca2-b57f-a88325419809",
+          "name": "Start the stop-clock",
+          "request": {
+            "name": "Start the stop-clock",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "clock"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "37ab3ca9-08d3-435e-baf3-ea6df4eca369",
+              "name": "Clock started.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "clock"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ClockodoApiKey",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://my.clockodo.com/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-ClockodoApiKey"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "dd254a88-e136-409e-be6e-913f760a9c1d",
+    "name": "Clockodo Absences Clock API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Clockodo is a cloud-based time-tracking and project-management application for businesses. The Clockodo REST API exposes the same objects available in the web UI and lets developers automate time capture, manage customers and projects, control the stop-clock, record absences, and run reporting integrations. Authentication uses a per-user email plus a per-user API key sent either as the X-ClockodoApiUser/X-ClockodoApiKey header pair or via HTTP Basic auth, and every request must additionally identify the calling application with the X-Clockodo-External-Application header.\n\nContact Support:\n Name: Clockodo Support",
+      "type": "text/plain"
+    }
+  }
+}

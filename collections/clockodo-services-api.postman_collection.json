@@ -1,0 +1,206 @@
+{
+  "item": [
+    {
+      "id": "8ba98a48-86d8-4d19-83fc-a329eed81027",
+      "name": "Services",
+      "description": {
+        "content": "Service catalog used for entries.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2d53b94f-ef1c-473d-9a3b-ebb2bcab4280",
+          "name": "List services",
+          "request": {
+            "name": "List services",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "services"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6835c739-880f-4feb-9d34-a51b73367e02",
+              "name": "Services.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "services"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ClockodoApiKey",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6c96c73d-dd91-4cd6-8f4b-f2c0e76df577",
+          "name": "Create a service",
+          "request": {
+            "name": "Create a service",
+            "description": {},
+            "url": {
+              "path": [
+                "v2",
+                "services"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f6223bf4-0a74-4c8d-9a97-0bd438dd7c87",
+              "name": "Created service.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "services"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-ClockodoApiKey",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://my.clockodo.com/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-ClockodoApiKey"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "809af7e6-e2a7-4072-8bcf-3dfab1c5b5de",
+    "name": "Clockodo Absences Services API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Clockodo is a cloud-based time-tracking and project-management application for businesses. The Clockodo REST API exposes the same objects available in the web UI and lets developers automate time capture, manage customers and projects, control the stop-clock, record absences, and run reporting integrations. Authentication uses a per-user email plus a per-user API key sent either as the X-ClockodoApiUser/X-ClockodoApiKey header pair or via HTTP Basic auth, and every request must additionally identify the calling application with the X-Clockodo-External-Application header.\n\nContact Support:\n Name: Clockodo Support",
+      "type": "text/plain"
+    }
+  }
+}

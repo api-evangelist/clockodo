@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Clockodo Absences HolidaysQuota API",
+    "version": "2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-ClockodoApiKey",
+      "value": "{{X-ClockodoApiKey}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "HolidaysQuota",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List holiday quotas",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://my.clockodo.com/api/holidaysquota"
+          },
+          "docs": "List holiday quotas"
+        },
+        {
+          "info": {
+            "name": "Create holiday quota",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://my.clockodo.com/api/holidaysquota",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create holiday quota"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
