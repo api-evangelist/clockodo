@@ -26,6 +26,13 @@ tags:
   - Absence Management
   - Billing
   - Project Management
+  - Stopclock
+  - Time Tracking
+  - Timesheets
+tags_raw:
+  - Absence Management
+  - Billing
+  - Project Management
   - Stop Clock
   - Time Tracking
   - Timesheets
@@ -127,6 +134,8 @@ apis:
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
+  - Project
+  tags_raw:
   - Projects
   properties:
   - type: OpenAPI
@@ -155,6 +164,8 @@ apis:
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
