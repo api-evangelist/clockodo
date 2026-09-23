@@ -1,15 +1,7 @@
 {
   "provider": "clockodo",
   "sources": [
-    "clockodo-absences-api-openapi.yml",
-    "clockodo-clock-api-openapi.yml",
-    "clockodo-customers-api-openapi.yml",
-    "clockodo-entries-api-openapi.yml",
-    "clockodo-holidaysquota-api-openapi.yml",
-    "clockodo-lumpsumservices-api-openapi.yml",
-    "clockodo-projects-api-openapi.yml",
-    "clockodo-services-api-openapi.yml",
-    "clockodo-users-api-openapi.yml"
+    "_original/clockodo-openapi.yml"
   ],
   "outputs": [
     "clockodo-absences-api-openapi.yml",
@@ -25,6 +17,20 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "clockodo-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "clockodo-absences-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "clockodo-clock-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "clockodo-customers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "clockodo-entries-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "clockodo-holidaysquota-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "clockodo-lumpsumservices-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "clockodo-projects-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "clockodo-services-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "clockodo-users-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
