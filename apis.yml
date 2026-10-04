@@ -188,6 +188,9 @@ apis:
   - type: Authentication
     url: https://www.clockodo.com/en/api/authentication/
 common:
+  - type: CapabilityMap
+    url: capabilities/clockodo-capability-edges.yml
+    name: Clockodo Business Capability Map
   - type: AgenticAccess
     url: agentic-access/clockodo-agentic-access.yml
   - type: DomainSecurity
