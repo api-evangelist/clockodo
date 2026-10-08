@@ -188,6 +188,12 @@ apis:
   - type: Authentication
     url: https://www.clockodo.com/en/api/authentication/
 common:
+  - type: Plans
+    url: plans/clockodo-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/clockodo-rate-limits.yml
+  - type: FinOps
+    url: finops/clockodo-finops.yml
   - type: CapabilityMap
     url: capabilities/clockodo-capability-edges.yml
     name: Clockodo Business Capability Map
