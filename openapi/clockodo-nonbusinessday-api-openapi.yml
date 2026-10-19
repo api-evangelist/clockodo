@@ -1,0 +1,940 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Nonbusiness Day API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: NonbusinessDay
+  description: Query and manage nonbusiness days
+paths:
+  /v2/nonbusinessDays:
+    get:
+      tags:
+      - NonbusinessDay
+      operationId: getNonbusinessDaysV2
+      parameters:
+      - name: nonbusiness_group_id
+        in: query
+        required: false
+        schema:
+          oneOf:
+          - type: array
+            items:
+              type: integer
+              minimum: 1
+            maxItems: 500
+          - type: integer
+            minimum: 1
+          - type: string
+            format: csv-string
+            x-csv-element-schema:
+              type: integer
+              minimum: 1
+      - name: year
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 2037
+          minimum: 2000
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NonbusinessDayV2'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get nonbusiness days V2
+      x-summary-source: derived
+    post:
+      tags:
+      - NonbusinessDay
+      operationId: createNonbusinessDayV2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - nonbusiness_group_id
+              - type
+              - name
+              properties:
+                nonbusiness_group_id:
+                  description: 'Default: Company default nonbusiness group'
+                  type: integer
+                  minimum: 1
+                type:
+                  $ref: '#/components/schemas/NonbusinessDayType'
+                name:
+                  type: string
+                  maxLength: 100
+                half_day:
+                  type: boolean
+                surcharge_special:
+                  type: boolean
+                special_id:
+                  type: integer
+                  minimum: 1
+                day:
+                  type: integer
+                  maximum: 31
+                  minimum: 1
+                month:
+                  type: integer
+                  maximum: 12
+                  minimum: 1
+                year:
+                  type: integer
+                  maximum: 2037
+                  minimum: 2000
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NonbusinessDayV2'
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiNonbusinessDaysV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Create nonbusiness day V2
+      x-summary-source: derived
+  /v2/nonbusinessDays/{id}:
+    get:
+      tags:
+      - NonbusinessDay
+      operationId: getNonbusinessDayByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      - name: year
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 2037
+          minimum: 2000
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NonbusinessDayV2'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get nonbusiness day by id V2
+      x-summary-source: derived
+    put:
+      tags:
+      - NonbusinessDay
+      operationId: updateNonbusinessDayByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                type:
+                  $ref: '#/components/schemas/NonbusinessDayType'
+                name:
+                  type: string
+                  maxLength: 100
+                half_day:
+                  type: boolean
+                surcharge_special:
+                  type: boolean
+                special_id:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                day:
+                  type:
+                  - integer
+                  - 'null'
+                  maximum: 31
+                  minimum: 1
+                month:
+                  type:
+                  - integer
+                  - 'null'
+                  maximum: 12
+                  minimum: 1
+                year:
+                  type:
+                  - integer
+                  - 'null'
+                  maximum: 2037
+                  minimum: 2000
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NonbusinessDayV2'
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiNonbusinessDaysV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Update nonbusiness day by id V2
+      x-summary-source: derived
+    delete:
+      tags:
+      - NonbusinessDay
+      operationId: deleteNonbusinessDayByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - success
+                properties:
+                  success:
+                    title: Success
+                    type: boolean
+                    examples:
+                    - true
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiNonbusinessDaysV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Delete nonbusiness day by id V2
+      x-summary-source: derived
+components:
+  schemas:
+    NonbusinessDayType:
+      title: Nonbusiness day type
+      description: 'Possible values:
+
+        - `SPECIAL`: Special
+
+        - `DISTINCT_ONCE`: DistinctOnce
+
+        - `DISTINCT_RECURRING`: DistinctRecurring'
+      type: string
+      enum:
+      - SPECIAL
+      - DISTINCT_ONCE
+      - DISTINCT_RECURRING
+      x-enumNames:
+      - Special
+      - DistinctOnce
+      - DistinctRecurring
+    Fields:
+      title: Fields error details
+      description: The names of invalid input fields
+      required:
+      - fields
+      properties:
+        fields:
+          title: Fields
+          description: One or more invalid fields
+          type: array
+          items:
+            type: string
+          examples:
+          - - type
+            - status
+      type: object
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    ResourceNotFoundError:
+      title: Resource not found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceNotFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The requested resource could not be found.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ResourceConflictFoundError:
+      title: Resource conflict found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceConflictFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - There is already a service with this name.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    ApiNonbusinessDaysV2Errors:
+      title: Api nonbusiness days v2 errors
+      required:
+      - error
+      properties:
+        error:
+          title: Errors
+          type: object
+          anyOf:
+          - $ref: '#/components/schemas/ResourceConflictFoundError'
+          - $ref: '#/components/schemas/ResourceNotFoundError'
+          - $ref: '#/components/schemas/InvalidDateError'
+          - $ref: '#/components/schemas/InvalidCombinationError'
+      type: object
+    NonbusinessDayV2:
+      required:
+      - id
+      - nonbusiness_group_id
+      - type
+      - name
+      - half_day
+      - surcharge_special
+      - evaluated_date
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples:
+          - 10
+        nonbusiness_group_id:
+          type: integer
+          format: int64
+          examples:
+          - 504
+        type:
+          $ref: '#/components/schemas/NonbusinessDayType'
+        name:
+          type: string
+          examples:
+          - Tag der deutschen Einheit
+        half_day:
+          type: boolean
+          examples:
+          - true
+        surcharge_special:
+          type: boolean
+          examples:
+          - true
+        special_id:
+          type: integer
+          format: int64
+          examples:
+          - 64
+        evaluated_date:
+          title: Evaluated date for the requested year
+          description: 'Default: CurrentYear'
+          type: string
+          format: date
+          examples:
+          - '2021-10-03'
+        day:
+          title: Day of the nonbusiness day
+          description: only for types DISTINCT_ONCE and DISTINCT_RECURRING
+          type: integer
+          format: int64
+          examples:
+          - 3
+        month:
+          title: Month of the nonbusiness day
+          description: only for types DISTINCT_ONCE and DISTINCT_RECURRING
+          type: integer
+          format: int64
+          examples:
+          - 10
+        year:
+          title: Year of the nonbusiness day
+          description: only for type DISTINCT_ONCE
+          type: integer
+          format: int64
+          examples:
+          - 2021
+      type: object
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    InvalidDateError:
+      title: Invalid date error
+      properties:
+        type:
+          type: string
+          enum:
+          - InvalidDate
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The given value is not an actual date.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ResourceEnum:
+      title: Resource enum
+      description: 'Possible values:
+
+        - `absences`: Absences
+
+        - `access_groups`: AccessGroups
+
+        - `company`: Company
+
+        - `company_state`: CompanyState
+
+        - `customers`: Customers
+
+        - `entries`: Entries
+
+        - `favorite`: Favorite
+
+        - `holidays_carry`: HolidaysCarry
+
+        - `holidays_quota`: HolidaysQuota
+
+        - `lumpsum_services`: LumpSumServices
+
+        - `nonbusiness_days`: NonBusinessDays
+
+        - `nonbusiness_groups`: NonBusinessGroups
+
+        - `overtime_carrys`: OvertimeCarrys
+
+        - `project_reports`: ProjectReports
+
+        - `project_reports_meta_data`: ProjectReportsMetaData
+
+        - `projects`: Projects
+
+        - `rates`: Rates
+
+        - `reports`: Reports
+
+        - `report_templates`: ReportTemplates
+
+        - `services`: Services
+
+        - `subprojects`: Subprojects
+
+        - `surcharge_models`: SurchargeModels
+
+        - `users`: Users
+
+        - `customers_projects_access`: CustomersProjectsAccess
+
+        - `targethours`: TargetHours
+
+        - `team`: Teams
+
+        - `work_time_break_rules`: WorkTimeBreakRules
+
+        - `work_time_regulations`: WorkTimeRegulations'
+      type: string
+      enum:
+      - absences
+      - access_groups
+      - company
+      - company_state
+      - customers
+      - entries
+      - favorite
+      - holidays_carry
+      - holidays_quota
+      - lumpsum_services
+      - nonbusiness_days
+      - nonbusiness_groups
+      - overtime_carrys
+      - project_reports
+      - project_reports_meta_data
+      - projects
+      - rates
+      - reports
+      - report_templates
+      - services
+      - subprojects
+      - surcharge_models
+      - users
+      - customers_projects_access
+      - targethours
+      - team
+      - work_time_break_rules
+      - work_time_regulations
+      x-enumNames:
+      - Absences
+      - AccessGroups
+      - Company
+      - CompanyState
+      - Customers
+      - Entries
+      - Favorite
+      - HolidaysCarry
+      - HolidaysQuota
+      - LumpSumServices
+      - NonBusinessDays
+      - NonBusinessGroups
+      - OvertimeCarrys
+      - ProjectReports
+      - ProjectReportsMetaData
+      - Projects
+      - Rates
+      - Reports
+      - ReportTemplates
+      - Services
+      - Subprojects
+      - SurchargeModels
+      - Users
+      - CustomersProjectsAccess
+      - TargetHours
+      - Teams
+      - WorkTimeBreakRules
+      - WorkTimeRegulations
+    InvalidCombinationError:
+      title: Invalid combination error
+      properties:
+        type:
+          type: string
+          enum:
+          - InvalidCombination
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The combination of the provided data is invalid.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Fields'
+      type: object
+      x-error-category: BadRequest
+    Resource:
+      required:
+      - resources
+      properties:
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceEnum'
+        count:
+          type: array
+          items:
+            type: integer
+      type: object
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

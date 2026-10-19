@@ -1,0 +1,681 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Project Report API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: ProjectReport
+  description: Query projects
+paths:
+  /v3/projects/reports:
+    get:
+      tags:
+      - ProjectReport
+      operationId: getProjectsReportsV3
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        style: deepObject
+        explode: true
+        schema:
+          properties:
+            active:
+              type: boolean
+            budget_source:
+              oneOf:
+              - type: array
+                items:
+                  $ref: '#/components/schemas/BudgetSource'
+              - $ref: '#/components/schemas/BudgetSource'
+              - type: string
+                format: csv-string
+                x-csv-element-schema:
+                  $ref: '#/components/schemas/BudgetSource'
+            fulltext:
+              type: string
+          type: object
+      - name: items_per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          maximum: 250
+          minimum: 1
+          examples:
+          - 100
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          examples:
+          - 1
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiProjectsReportsV3_SortForIndex'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - paging
+                - data
+                properties:
+                  paging:
+                    required:
+                    - items_per_page
+                    - current_page
+                    - count_pages
+                    - count_items
+                    properties:
+                      items_per_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1000
+                      current_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_pages:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_items:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 4
+                    type: object
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectReportsV3'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get projects reports V3
+      x-summary-source: derived
+  /v4/projects/reports:
+    get:
+      tags:
+      - ProjectReport
+      operationId: getProjectsReportsV4
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        style: deepObject
+        explode: true
+        schema:
+          properties:
+            active:
+              type: boolean
+            budget_source:
+              oneOf:
+              - type: array
+                items:
+                  $ref: '#/components/schemas/BudgetSource'
+              - $ref: '#/components/schemas/BudgetSource'
+              - type: string
+                format: csv-string
+                x-csv-element-schema:
+                  $ref: '#/components/schemas/BudgetSource'
+            fulltext:
+              type: string
+          type: object
+      - name: items_per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          maximum: 5000
+          minimum: 1
+          examples:
+          - 100
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          examples:
+          - 1
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiProjectsReportsV4_SortForIndex'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - paging
+                - data
+                properties:
+                  paging:
+                    required:
+                    - items_per_page
+                    - current_page
+                    - count_pages
+                    - count_items
+                    properties:
+                      items_per_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1000
+                      current_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_pages:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_items:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 4
+                    type: object
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectsReportReportItemV4'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get projects reports V4
+      x-summary-source: derived
+components:
+  schemas:
+    ApiProjectsReportsV3_SortForIndex:
+      title: Sort for index
+      description: 'Possible values:
+
+        - `customers_name`: CustomersNameAsc
+
+        - `-customers_name`: CustomersNameDesc
+
+        - `projects_name`: ProjectsNameAsc
+
+        - `-projects_name`: ProjectsNameDesc'
+      type: string
+      enum:
+      - customers_name
+      - -customers_name
+      - projects_name
+      - -projects_name
+      x-enumNames:
+      - CustomersNameAsc
+      - CustomersNameDesc
+      - ProjectsNameAsc
+      - ProjectsNameDesc
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    ApiProjectsReportsV4_SortForIndex:
+      title: Sort for index
+      description: 'Possible values:
+
+        - `customers_name`: CustomersNameAsc
+
+        - `-customers_name`: CustomersNameDesc
+
+        - `projects_name`: ProjectsNameAsc
+
+        - `-projects_name`: ProjectsNameDesc
+
+        - `subprojects_name`: SubprojectsNameAsc
+
+        - `-subprojects_name`: SubprojectsNameDesc'
+      type: string
+      enum:
+      - customers_name
+      - -customers_name
+      - projects_name
+      - -projects_name
+      - subprojects_name
+      - -subprojects_name
+      x-enumNames:
+      - CustomersNameAsc
+      - CustomersNameDesc
+      - ProjectsNameAsc
+      - ProjectsNameDesc
+      - SubprojectsNameAsc
+      - SubprojectsNameDesc
+    ProjectReportsV3:
+      required:
+      - customers_id
+      - customers_name
+      - customers_number
+      - projects_id
+      - projects_name
+      - projects_number
+      properties:
+        customers_id:
+          type: integer
+          format: int64
+          examples:
+          - 10
+        customers_name:
+          type: string
+          maxLength: 100
+          examples:
+          - Hotel Bergblick
+        customers_number:
+          description: Freely selectable number for the customer
+          type:
+          - string
+          - 'null'
+          maxLength: 50
+          examples:
+          - 10
+        projects_id:
+          type: integer
+          format: int64
+          examples:
+          - 10
+        projects_name:
+          type: string
+          maxLength: 100
+          examples:
+          - Werbekampagne
+        projects_number:
+          description: Freely selectable number for the project
+          type:
+          - string
+          - 'null'
+          maxLength: 50
+          examples:
+          - 10
+      type: object
+    ProjectsReportRetainerSubprojectReportItemV4:
+      required:
+      - customers_id
+      - customers_name
+      - customers_number
+      - projects_id
+      - projects_name
+      - projects_number
+      - subprojects_id
+      - subprojects_name
+      - subprojects_number
+      properties:
+        customers_id:
+          type: integer
+          format: int64
+        customers_name:
+          type: string
+        customers_number:
+          type:
+          - string
+          - 'null'
+        projects_id:
+          type: integer
+          format: int64
+        projects_name:
+          type: string
+        projects_number:
+          type:
+          - string
+          - 'null'
+        subprojects_id:
+          type: integer
+          format: int64
+        subprojects_name:
+          type: string
+        subprojects_number:
+          type:
+          - string
+          - 'null'
+      type: object
+    BudgetSource:
+      title: Budget source
+      description: 'Possible values:
+
+        - `0`: NoBudget
+
+        - `1`: EnterBudget
+
+        - `2`: GetBudgetThroughSubprojects
+
+        - `3`: Interval'
+      type: integer
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      x-enumNames:
+      - NoBudget
+      - EnterBudget
+      - GetBudgetThroughSubprojects
+      - Interval
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    ProjectsReportProjectReportItemV4:
+      required:
+      - customers_id
+      - customers_name
+      - customers_number
+      - projects_id
+      - projects_name
+      - projects_number
+      properties:
+        customers_id:
+          type: integer
+          format: int64
+        customers_name:
+          type: string
+        customers_number:
+          type:
+          - string
+          - 'null'
+        projects_id:
+          type: integer
+          format: int64
+        projects_name:
+          type: string
+        projects_number:
+          type:
+          - string
+          - 'null'
+      type: object
+    ProjectsReportReportItemV4:
+      oneOf:
+      - $ref: '#/components/schemas/ProjectsReportProjectReportItemV4'
+      - $ref: '#/components/schemas/ProjectsReportRetainerSubprojectReportItemV4'
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

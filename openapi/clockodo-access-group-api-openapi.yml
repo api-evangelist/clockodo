@@ -1,0 +1,860 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Access Group API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: Access Group
+  description: Manage access groups names and assigned users
+paths:
+  /v2/accessGroups:
+    get:
+      tags:
+      - Access Group
+      operationId: getAccessGroupsV2
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AccessGroupV2'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get access groups V2
+      x-summary-source: derived
+    post:
+      tags:
+      - Access Group
+      operationId: createAccessGroupV2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                users_ids:
+                  description: IDs of the access group members
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                  maxItems: 500
+                  minItems: 0
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AccessGroupV2'
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiAccessGroupsV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Create access group V2
+      x-summary-source: derived
+  /v2/accessGroups/{id}:
+    get:
+      tags:
+      - Access Group
+      operationId: getAccessGroupByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AccessGroupV2'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get access group by id V2
+      x-summary-source: derived
+    put:
+      tags:
+      - Access Group
+      operationId: updateAccessGroupByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                users_ids:
+                  description: IDs of the access group members
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                  maxItems: 500
+                  minItems: 0
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AccessGroupV2'
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiAccessGroupsV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Update access group by id V2
+      x-summary-source: derived
+    delete:
+      tags:
+      - Access Group
+      operationId: deleteAccessGroupByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - success
+                properties:
+                  success:
+                    title: Success
+                    type: boolean
+                    examples:
+                    - true
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiAccessGroupsV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Delete access group by id V2
+      x-summary-source: derived
+components:
+  schemas:
+    UsersExceedAccessGroupLimitError:
+      title: Users exceed access group limit error
+      properties:
+        type:
+          type: string
+          enum:
+          - UsersExceedAccessGroupLimit
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Users are exceeding the access group limit.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/UsersExceedAccessGroupLimit'
+      type: object
+      x-error-category: Forbidden
+    ApiAccessGroupsV2Errors:
+      title: Api access groups v2 errors
+      required:
+      - error
+      properties:
+        error:
+          title: Errors
+          type: object
+          anyOf:
+          - $ref: '#/components/schemas/MissingManageUsersAccessError'
+          - $ref: '#/components/schemas/ResourceConflictFoundError'
+          - $ref: '#/components/schemas/RelationsPreventDeletionError'
+          - $ref: '#/components/schemas/ResourcesNotFoundError'
+          - $ref: '#/components/schemas/UsersExceedAccessGroupLimitError'
+      type: object
+    ResourceConflictFoundError:
+      title: Resource conflict found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceConflictFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - There is already a service with this name.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    AccessGroupV2:
+      required:
+      - id
+      - name
+      - company_default
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples:
+          - 10
+        name:
+          type: string
+          maxLength: 100
+          examples:
+          - Marketing
+        users_ids:
+          description: IDs of the access group members
+          type: array
+          items:
+            type: integer
+            format: int64
+          examples:
+          - - 1
+        has_elevated_access:
+          description: The access group contains elevated access. `null` in case of disabled project times module.
+          type:
+          - boolean
+          - 'null'
+        has_master_data_access:
+          description: The access group contains master data access (customers, projects, services). `null` in case of disabled project times module.
+          type:
+          - boolean
+          - 'null'
+        company_default:
+          description: The access group is one of the company default access groups.
+          type: boolean
+      type: object
+    UsersExceedAccessGroupLimit:
+      title: Users exceeding access group limit error details
+      required:
+      - limit
+      - users_ids
+      properties:
+        limit:
+          description: The limit of access groups per user
+          type: integer
+          format: int64
+          examples:
+          - 30
+        users_ids:
+          description: One or more ids of users exceeding the access group limit
+          type: array
+          items:
+            type: integer
+          examples:
+          - - 99999
+      type: object
+    ResourcesNotFoundError:
+      title: Resources not found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourcesNotFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The requested resources could not be found.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/ResourcesNotFound'
+      type: object
+      x-error-category: BadRequest
+    RelationsPreventDeletionError:
+      title: Relations prevent deletion error
+      properties:
+        type:
+          type: string
+          enum:
+          - RelationsPreventDeletion
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Resource can not be deleted, there are existing relations. Please delete the related resources first.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: Forbidden
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    MissingManageUsersAccessError:
+      title: Missing manage users access error
+      properties:
+        type:
+          type: string
+          enum:
+          - MissingManageUsersAccess
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You are not allowed to edit or delete access groups with elevated access.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ResourceEnum:
+      title: Resource enum
+      description: 'Possible values:
+
+        - `absences`: Absences
+
+        - `access_groups`: AccessGroups
+
+        - `company`: Company
+
+        - `company_state`: CompanyState
+
+        - `customers`: Customers
+
+        - `entries`: Entries
+
+        - `favorite`: Favorite
+
+        - `holidays_carry`: HolidaysCarry
+
+        - `holidays_quota`: HolidaysQuota
+
+        - `lumpsum_services`: LumpSumServices
+
+        - `nonbusiness_days`: NonBusinessDays
+
+        - `nonbusiness_groups`: NonBusinessGroups
+
+        - `overtime_carrys`: OvertimeCarrys
+
+        - `project_reports`: ProjectReports
+
+        - `project_reports_meta_data`: ProjectReportsMetaData
+
+        - `projects`: Projects
+
+        - `rates`: Rates
+
+        - `reports`: Reports
+
+        - `report_templates`: ReportTemplates
+
+        - `services`: Services
+
+        - `subprojects`: Subprojects
+
+        - `surcharge_models`: SurchargeModels
+
+        - `users`: Users
+
+        - `customers_projects_access`: CustomersProjectsAccess
+
+        - `targethours`: TargetHours
+
+        - `team`: Teams
+
+        - `work_time_break_rules`: WorkTimeBreakRules
+
+        - `work_time_regulations`: WorkTimeRegulations'
+      type: string
+      enum:
+      - absences
+      - access_groups
+      - company
+      - company_state
+      - customers
+      - entries
+      - favorite
+      - holidays_carry
+      - holidays_quota
+      - lumpsum_services
+      - nonbusiness_days
+      - nonbusiness_groups
+      - overtime_carrys
+      - project_reports
+      - project_reports_meta_data
+      - projects
+      - rates
+      - reports
+      - report_templates
+      - services
+      - subprojects
+      - surcharge_models
+      - users
+      - customers_projects_access
+      - targethours
+      - team
+      - work_time_break_rules
+      - work_time_regulations
+      x-enumNames:
+      - Absences
+      - AccessGroups
+      - Company
+      - CompanyState
+      - Customers
+      - Entries
+      - Favorite
+      - HolidaysCarry
+      - HolidaysQuota
+      - LumpSumServices
+      - NonBusinessDays
+      - NonBusinessGroups
+      - OvertimeCarrys
+      - ProjectReports
+      - ProjectReportsMetaData
+      - Projects
+      - Rates
+      - Reports
+      - ReportTemplates
+      - Services
+      - Subprojects
+      - SurchargeModels
+      - Users
+      - CustomersProjectsAccess
+      - TargetHours
+      - Teams
+      - WorkTimeBreakRules
+      - WorkTimeRegulations
+    Resource:
+      required:
+      - resources
+      properties:
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceEnum'
+        count:
+          type: array
+          items:
+            type: integer
+      type: object
+    ResourcesNotFound:
+      title: Resources not found error details
+      required:
+      - not_found_ids
+      properties:
+        not_found_ids:
+          title: Not found resources
+          description: One or more ids of missing resources
+          type: array
+          items:
+            type: integer
+          examples:
+          - - 99999
+      type: object
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

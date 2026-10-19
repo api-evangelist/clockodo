@@ -1,0 +1,3945 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation User API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: User
+  description: Manage co-workers
+paths:
+  /v2/users/{id}/access/customers-projects:
+    get:
+      tags:
+      - User
+      operationId: getUserAccessCustomersProjectsByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer_projects_access_v2'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get user access customers projects by id V2
+      x-summary-source: derived
+  /v2/users/{id}/access/services:
+    get:
+      tags:
+      - User
+      operationId: getUserAccessServicesByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/services_access_v2'
+      deprecated: false
+      summary: Get user access services by id V2
+      x-summary-source: derived
+  /v3/users:
+    get:
+      tags:
+      - User
+      operationId: getUsersV3
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        style: deepObject
+        explode: true
+        schema:
+          properties:
+            active:
+              type: boolean
+            fulltext:
+              type: string
+            teams_id:
+              oneOf:
+              - type: array
+                items:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 0
+                maxItems: 500
+              - type:
+                - integer
+                - 'null'
+                minimum: 0
+              - type: string
+                format: csv-string
+                x-csv-element-schema:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 0
+          type: object
+      - name: items_per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          maximum: 1000
+          minimum: 1
+          examples:
+          - 100
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          examples:
+          - 1
+      - name: scope
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/UserScope'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          oneOf:
+          - type: array
+            items:
+              $ref: '#/components/schemas/ApiUsersV3_SortForIndex'
+          - $ref: '#/components/schemas/ApiUsersV3_SortForIndex'
+          - type: string
+            format: csv-string
+            x-csv-element-schema:
+              $ref: '#/components/schemas/ApiUsersV3_SortForIndex'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - paging
+                - data
+                properties:
+                  paging:
+                    required:
+                    - items_per_page
+                    - current_page
+                    - count_pages
+                    - count_items
+                    properties:
+                      items_per_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1000
+                      current_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_pages:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_items:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 4
+                    type: object
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserV3'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get users V3
+      x-summary-source: derived
+    post:
+      tags:
+      - User
+      operationId: createUserV3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - email
+              - name
+              - role
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 90
+                name:
+                  type: string
+                  maxLength: 100
+                role:
+                  $ref: '#/components/schemas/Role'
+                active:
+                  type: boolean
+                boss:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                number:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+                language:
+                  $ref: '#/components/schemas/Language'
+                teams_id:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                timeformat_12h:
+                  description: Use 12h time format?
+                  type: boolean
+                timezone:
+                  $ref: '#/components/schemas/ConvertibleTimezone'
+                wage_type:
+                  $ref: '#/components/schemas/WageType'
+                weekstart_monday:
+                  description: Start week on Monday?
+                  type: boolean
+                show_favorites:
+                  type: boolean
+                mail_to_user:
+                  description: 'Sent mail to the new co-worker? (default: false)'
+                  type: boolean
+                start_date:
+                  type:
+                  - string
+                  - 'null'
+                  format: date
+                  examples:
+                  - '2023-02-28'
+                budget_notifications:
+                  type: boolean
+                  x-requires_module: budget_notifications
+                edit_lock:
+                  description: The date after the co-worker is not allowed to edit his entries anymore. Ignored if `edit_lock_period` is given as well. Can only be set by administrators or workers with elevated access `manage_users_access`.
+                  type:
+                  - string
+                  - 'null'
+                  format: date
+                  examples:
+                  - '2023-02-28'
+                edit_lock_dyn:
+                  oneOf:
+                  - $ref: '#/components/schemas/EditLockDay'
+                    description: Dynamic edit lock for this co-worker. Can only be set by administrators or workers with elevated access `manage_users_access`.
+                  - type: 'null'
+                  description: Dynamic edit lock for this co-worker. Can only be set by administrators or workers with elevated access `manage_users_access`.
+                edit_lock_sync:
+                  description: Can future changes to the company-wide edit lock overwrite the edit lock for this co-worker? Can only be set by administrators or workers with elevated access `manage_users_access`.
+                  type: boolean
+                work_time_edit_lock_days:
+                  oneOf:
+                  - $ref: '#/components/schemas/WorkTimeEditLockDay'
+                    description: Relative work time editing lock in days for the co-worker. Can only be set by administrators or workers with elevated access `manage_users_access`.
+                  - type: 'null'
+                  description: Relative work time editing lock in days for the co-worker. Can only be set by administrators or workers with elevated access `manage_users_access`.
+                default_holidays_count:
+                  description: Uses the company's default holiday count
+                  type: boolean
+                default_target_hours:
+                  description: Uses the company's default target hours
+                  type: boolean
+                work_time_regulations_id:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                default_work_time_regulation:
+                  description: Uses the company's default work time regulation
+                  type: boolean
+                exempt_from_flextime:
+                  description: Is exempt from flextime violation evaluation
+                  type: boolean
+                absence_managers_id:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                  maxItems: 500
+                  minItems: 0
+                access_groups_ids:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                  maxItems: 30
+                  minItems: 0
+                bill_service_id:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserV3'
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiUsersV3Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Create user V3
+      x-summary-source: derived
+  /v3/users/{id}:
+    get:
+      tags:
+      - User
+      operationId: getUserByIdV3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      - name: scope
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/UserScope'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserV3'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get user by id V3
+      x-summary-source: derived
+    put:
+      tags:
+      - User
+      operationId: updateUserByIdV3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 90
+                name:
+                  type: string
+                  maxLength: 100
+                role:
+                  $ref: '#/components/schemas/Role'
+                active:
+                  type: boolean
+                boss:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                number:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+                language:
+                  $ref: '#/components/schemas/Language'
+                teams_id:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                timeformat_12h:
+                  description: Use 12h time format?
+                  type: boolean
+                timezone:
+                  $ref: '#/components/schemas/ConvertibleTimezone'
+                  description: Can only be changed for the company creator during the trial phase.
+                wage_type:
+                  $ref: '#/components/schemas/WageType'
+                weekstart_monday:
+                  description: Start week on Monday?
+                  type: boolean
+                show_favorites:
+                  type: boolean
+                edit_lock:
+                  description: The date after the co-worker is not allowed to edit his entries anymore. Ignored if `edit_lock_period` is given as well. Can only be managed by administrators or workers with elevated access `manage_users_access`.
+                  type:
+                  - string
+                  - 'null'
+                  format: date
+                  examples:
+                  - '2023-02-28'
+                edit_lock_dyn:
+                  oneOf:
+                  - $ref: '#/components/schemas/EditLockDay'
+                    description: Dynamic edit lock for this co-worker. Can only be managed by administrators or workers with elevated access `manage_users_access`.
+                  - type: 'null'
+                  description: Dynamic edit lock for this co-worker. Can only be managed by administrators or workers with elevated access `manage_users_access`.
+                edit_lock_sync:
+                  description: Can future changes to the company-wide edit lock overwrite the edit lock for this co-worker? Can only be managed by administrators or workers with elevated access `manage_users_access`.
+                  type: boolean
+                work_time_edit_lock_days:
+                  oneOf:
+                  - $ref: '#/components/schemas/WorkTimeEditLockDay'
+                    description: Relative work time editing lock in days for the co-worker. Can only be managed by administrators or workers with elevated access `manage_users_access`.
+                  - type: 'null'
+                  description: Relative work time editing lock in days for the co-worker. Can only be managed by administrators or workers with elevated access `manage_users_access`.
+                mail_to_user:
+                  type: boolean
+                start_date:
+                  type: string
+                  format: date
+                  examples:
+                  - '2023-02-28'
+                exit_date:
+                  description: The exit date in format YYYY-MM-DD. Must be today or later. Setting this value automatically ends the co-worker's target hours at the exit date. Pass `null` to clear the exit date.
+                  type:
+                  - string
+                  - 'null'
+                  format: date
+                  examples:
+                  - '2035-12-31'
+                budget_notifications:
+                  type: boolean
+                  x-requires_module: budget_notifications
+                default_holidays_count:
+                  description: Uses the company's default holiday count
+                  type: boolean
+                default_target_hours:
+                  description: Uses the company's default target hours
+                  type: boolean
+                work_time_regulations_id:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                default_work_time_regulation:
+                  description: Uses the company's default work time regulation
+                  type: boolean
+                exempt_from_flextime:
+                  description: Is exempt from flextime violation evaluation
+                  type: boolean
+                absence_managers_id:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                  maxItems: 500
+                  minItems: 0
+                access_groups_ids:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                  maxItems: 30
+                  minItems: 0
+                bill_service_id:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserV3'
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiUsersV3Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Update user by id V3
+      x-summary-source: derived
+    delete:
+      tags:
+      - User
+      operationId: deleteUserByIdV3
+      parameters:
+      - name: dry_run
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: force
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - success
+                properties:
+                  success:
+                    title: Success
+                    type: boolean
+                    examples:
+                    - true
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiUsersV3Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Delete user by id V3
+      x-summary-source: derived
+  /v4/users/me:
+    get:
+      tags:
+      - User
+      operationId: getUsersMeV4
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserV3'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get users me V4
+      x-summary-source: derived
+components:
+  schemas:
+    MissingManageUsersAccessForAssigningAccessGroup:
+      title: You're missing manage users access
+      required:
+      - access_groups_ids
+      properties:
+        access_groups_ids:
+          description: The access groups with elevated access
+          type: array
+          items:
+            type: integer
+            format: int64
+      type: object
+    BossCannotBeArchivedError:
+      title: Boss cannot be archived error
+      properties:
+        type:
+          type: string
+          enum:
+          - BossCannotBeArchived
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Users who are bosses or team leaders cannot be archived.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/BlockingTeamsAndUsers'
+      type: object
+      x-error-category: Forbidden
+    ForbiddenError:
+      title: Forbidden error
+      properties:
+        type:
+          type: string
+          enum:
+          - Forbidden
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Access denied.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ResourceConflictFoundError:
+      title: Resource conflict found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceConflictFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - There is already a service with this name.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    MailCannotBeChangedError:
+      title: Mail cannot be changed error
+      properties:
+        type:
+          type: string
+          enum:
+          - MailCannotBeChanged
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Changing the e-mail address of co-workers is disabled in Clockodo. Please use your towio account for this instead. The data will be synchronized.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/MailCannotBeChangedErrorDetails'
+      type: object
+      x-error-category: Forbidden
+    MissingManageUsersAccessForRemovingAccessGroup:
+      title: You're missing manage users access
+      required:
+      - access_groups_ids
+      properties:
+        access_groups_ids:
+          description: The access groups with elevated access
+          type: array
+          items:
+            type: integer
+            format: int64
+      type: object
+    Language:
+      title: Language
+      description: 'Possible values:
+
+        - `en`: English
+
+        - `fr`: French
+
+        - `de`: German'
+      type: string
+      enum:
+      - en
+      - fr
+      - de
+      x-enumNames:
+      - English
+      - French
+      - German
+    AllowedValues:
+      required:
+      - allowed_values
+      properties:
+        allowed_values:
+          type: array
+          items: {}
+      type: object
+    general_access_v2:
+      description: General access
+      type: boolean
+    ForbiddenValueError:
+      title: Forbidden value error
+      properties:
+        type:
+          type: string
+          enum:
+          - ForbiddenValue
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - An error occurred, please try again.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/AllowedValues'
+      type: object
+      x-error-category: Forbidden
+    ResourcesInactive:
+      title: Resources inactive error details
+      required:
+      - inactive_ids
+      properties:
+        inactive_ids:
+          title: Inactive resources
+          description: One or more ids of inactive resources
+          type: array
+          items:
+            type: integer
+          examples:
+          - - 99999
+      type: object
+    UserCannotDeleteThemselvesError:
+      title: User cannot delete themselves error
+      properties:
+        type:
+          type: string
+          enum:
+          - UserCannotDeleteThemselves
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - User cannot delete themselves.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    ConvertibleTimezone:
+      title: Convertible timezone
+      description: 'Possible values:
+
+        - `Africa/Abidjan`: AfricaAbidjan
+
+        - `Africa/Accra`: AfricaAccra
+
+        - `Africa/Addis_Ababa`: AfricaAddisAbaba
+
+        - `Africa/Algiers`: AfricaAlgiers
+
+        - `Africa/Asmara`: AfricaAsmara
+
+        - `Africa/Bamako`: AfricaBamako
+
+        - `Africa/Bangui`: AfricaBangui
+
+        - `Africa/Banjul`: AfricaBanjul
+
+        - `Africa/Bissau`: AfricaBissau
+
+        - `Africa/Blantyre`: AfricaBlantyre
+
+        - `Africa/Brazzaville`: AfricaBrazzaville
+
+        - `Africa/Bujumbura`: AfricaBujumbura
+
+        - `Africa/Cairo`: AfricaCairo
+
+        - `Africa/Casablanca`: AfricaCasablanca
+
+        - `Africa/Ceuta`: AfricaCeuta
+
+        - `Africa/Conakry`: AfricaConakry
+
+        - `Africa/Dakar`: AfricaDakar
+
+        - `Africa/Dar_es_Salaam`: AfricaDarEsSalaam
+
+        - `Africa/Djibouti`: AfricaDjibouti
+
+        - `Africa/Douala`: AfricaDouala
+
+        - `Africa/El_Aaiun`: AfricaElAaiun
+
+        - `Africa/Freetown`: AfricaFreetown
+
+        - `Africa/Gaborone`: AfricaGaborone
+
+        - `Africa/Harare`: AfricaHarare
+
+        - `Africa/Johannesburg`: AfricaJohannesburg
+
+        - `Africa/Juba`: AfricaJuba
+
+        - `Africa/Kampala`: AfricaKampala
+
+        - `Africa/Khartoum`: AfricaKhartoum
+
+        - `Africa/Kigali`: AfricaKigali
+
+        - `Africa/Kinshasa`: AfricaKinshasa
+
+        - `Africa/Lagos`: AfricaLagos
+
+        - `Africa/Libreville`: AfricaLibreville
+
+        - `Africa/Lome`: AfricaLome
+
+        - `Africa/Luanda`: AfricaLuanda
+
+        - `Africa/Lubumbashi`: AfricaLubumbashi
+
+        - `Africa/Lusaka`: AfricaLusaka
+
+        - `Africa/Malabo`: AfricaMalabo
+
+        - `Africa/Maputo`: AfricaMaputo
+
+        - `Africa/Maseru`: AfricaMaseru
+
+        - `Africa/Mbabane`: AfricaMbabane
+
+        - `Africa/Mogadishu`: AfricaMogadishu
+
+        - `Africa/Monrovia`: AfricaMonrovia
+
+        - `Africa/Nairobi`: AfricaNairobi
+
+        - `Africa/Ndjamena`: AfricaNdjamena
+
+        - `Africa/Niamey`: AfricaNiamey
+
+        - `Africa/Nouakchott`: AfricaNouakchott
+
+        - `Africa/Ouagadougou`: AfricaOuagadougou
+
+        - `Africa/Porto-Novo`: AfricaPortoNovo
+
+        - `Africa/Tripoli`: AfricaTripoli
+
+        - `Africa/Tunis`: AfricaTunis
+
+        - `Africa/Windhoek`: AfricaWindhoek
+
+        - `America/Adak`: AmericaAdak
+
+        - `America/Anchorage`: AmericaAnchorage
+
+        - `America/Anguilla`: AmericaAnguilla
+
+        - `America/Antigua`: AmericaAntigua
+
+        - `America/Araguaina`: AmericaAraguaina
+
+        - `America/Argentina/Buenos_Aires`: AmericaArgentinaBuenosAires
+
+        - `America/Argentina/Catamarca`: AmericaArgentinaCatamarca
+
+        - `America/Argentina/Cordoba`: AmericaArgentinaCordoba
+
+        - `America/Argentina/Jujuy`: AmericaArgentinaJujuy
+
+        - `America/Argentina/La_Rioja`: AmericaArgentinaLaRioja
+
+        - `America/Argentina/Mendoza`: AmericaArgentinaMendoza
+
+        - `America/Argentina/Rio_Gallegos`: AmericaArgentinaRioGallegos
+
+        - `America/Argentina/Salta`: AmericaArgentinaSalta
+
+        - `America/Argentina/San_Juan`: AmericaArgentinaSanJuan
+
+        - `America/Argentina/San_Luis`: AmericaArgentinaSanLuis
+
+        - `America/Argentina/Tucuman`: AmericaArgentinaTucuman
+
+        - `America/Argentina/Ushuaia`: AmericaArgentinaUshuaia
+
+        - `America/Aruba`: AmericaAruba
+
+        - `America/Asuncion`: AmericaAsuncion
+
+        - `America/Atikokan`: AmericaAtikokan
+
+        - `America/Bahia`: AmericaBahia
+
+        - `America/Bahia_Banderas`: AmericaBahiaBanderas
+
+        - `America/Barbados`: AmericaBarbados
+
+        - `America/Belem`: AmericaBelem
+
+        - `America/Belize`: AmericaBelize
+
+        - `America/Blanc-Sablon`: AmericaBlancSablon
+
+        - `America/Boa_Vista`: AmericaBoaVista
+
+        - `America/Bogota`: AmericaBogota
+
+        - `America/Boise`: AmericaBoise
+
+        - `America/Cambridge_Bay`: AmericaCambridgeBay
+
+        - `America/Campo_Grande`: AmericaCampoGrande
+
+        - `America/Cancun`: AmericaCancun
+
+        - `America/Caracas`: AmericaCaracas
+
+        - `America/Cayenne`: AmericaCayenne
+
+        - `America/Cayman`: AmericaCayman
+
+        - `America/Chicago`: AmericaChicago
+
+        - `America/Chihuahua`: AmericaChihuahua
+
+        - `America/Ciudad_Juarez`: AmericaCiudadJuarez
+
+        - `America/Costa_Rica`: AmericaCostaRica
+
+        - `America/Creston`: AmericaCreston
+
+        - `America/Cuiaba`: AmericaCuiaba
+
+        - `America/Curacao`: AmericaCuracao
+
+        - `America/Danmarkshavn`: AmericaDanmarkshavn
+
+        - `America/Dawson`: AmericaDawson
+
+        - `America/Dawson_Creek`: AmericaDawsonCreek
+
+        - `America/Denver`: AmericaDenver
+
+        - `America/Detroit`: AmericaDetroit
+
+        - `America/Dominica`: AmericaDominica
+
+        - `America/Edmonton`: AmericaEdmonton
+
+        - `America/Eirunepe`: AmericaEirunepe
+
+        - `America/El_Salvador`: AmericaElSalvador
+
+        - `America/Fort_Nelson`: AmericaFortNelson
+
+        - `America/Fortaleza`: AmericaFortaleza
+
+        - `America/Glace_Bay`: AmericaGlaceBay
+
+        - `America/Goose_Bay`: AmericaGooseBay
+
+        - `America/Grand_Turk`: AmericaGrandTurk
+
+        - `America/Grenada`: AmericaGrenada
+
+        - `America/Guadeloupe`: AmericaGuadeloupe
+
+        - `America/Guatemala`: AmericaGuatemala
+
+        - `America/Guayaquil`: AmericaGuayaquil
+
+        - `America/Guyana`: AmericaGuyana
+
+        - `America/Halifax`: AmericaHalifax
+
+        - `America/Havana`: AmericaHavana
+
+        - `America/Hermosillo`: AmericaHermosillo
+
+        - `America/Indiana/Indianapolis`: AmericaIndianaIndianapolis
+
+        - `America/Indiana/Knox`: AmericaIndianaKnox
+
+        - `America/Indiana/Marengo`: AmericaIndianaMarengo
+
+        - `America/Indiana/Petersburg`: AmericaIndianaPetersburg
+
+        - `America/Indiana/Tell_City`: AmericaIndianaTellCity
+
+        - `America/Indiana/Vevay`: AmericaIndianaVevay
+
+        - `America/Indiana/Vincennes`: AmericaIndianaVincennes
+
+        - `America/Indiana/Winamac`: AmericaIndianaWinamac
+
+        - `America/Inuvik`: AmericaInuvik
+
+        - `America/Iqaluit`: AmericaIqaluit
+
+        - `America/Jamaica`: AmericaJamaica
+
+        - `America/Juneau`: AmericaJuneau
+
+        - `America/Kentucky/Louisville`: AmericaKentuckyLouisville
+
+        - `America/Kentucky/Monticello`: AmericaKentuckyMonticello
+
+        - `America/Kralendijk`: AmericaKralendijk
+
+        - `America/La_Paz`: AmericaLaPaz
+
+        - `America/Lima`: AmericaLima
+
+        - `America/Los_Angeles`: AmericaLosAngeles
+
+        - `America/Lower_Princes`: AmericaLowerPrinces
+
+        - `America/Maceio`: AmericaMaceio
+
+        - `America/Managua`: AmericaManagua
+
+        - `America/Manaus`: AmericaManaus
+
+        - `America/Marigot`: AmericaMarigot
+
+        - `America/Martinique`: AmericaMartinique
+
+        - `America/Matamoros`: AmericaMatamoros
+
+        - `America/Mazatlan`: AmericaMazatlan
+
+        - `America/Menominee`: AmericaMenominee
+
+        - `America/Merida`: AmericaMerida
+
+        - `America/Mexico_City`: AmericaMexicoCity
+
+        - `America/Miquelon`: AmericaMiquelon
+
+        - `America/Moncton`: AmericaMoncton
+
+        - `America/Monterrey`: AmericaMonterrey
+
+        - `America/Montevideo`: AmericaMontevideo
+
+        - `America/Montserrat`: AmericaMontserrat
+
+        - `America/Nassau`: AmericaNassau
+
+        - `America/New_York`: AmericaNewYork
+
+        - `America/Nome`: AmericaNome
+
+        - `America/Noronha`: AmericaNoronha
+
+        - `America/North_Dakota/Beulah`: AmericaNorthDakotaBeulah
+
+        - `America/North_Dakota/Center`: AmericaNorthDakotaCenter
+
+        - `America/North_Dakota/New_Salem`: AmericaNorthDakotaNewSalem
+
+        - `America/Ojinaga`: AmericaOjinaga
+
+        - `America/Panama`: AmericaPanama
+
+        - `America/Paramaribo`: AmericaParamaribo
+
+        - `America/Phoenix`: AmericaPhoenix
+
+        - `America/Port-au-Prince`: AmericaPortAuPrince
+
+        - `America/Port_of_Spain`: AmericaPortOfSpain
+
+        - `America/Porto_Velho`: AmericaPortoVelho
+
+        - `America/Puerto_Rico`: AmericaPuertoRico
+
+        - `America/Punta_Arenas`: AmericaPuntaArenas
+
+        - `America/Rankin_Inlet`: AmericaRankinInlet
+
+        - `America/Recife`: AmericaRecife
+
+        - `America/Regina`: AmericaRegina
+
+        - `America/Resolute`: AmericaResolute
+
+        - `America/Rio_Branco`: AmericaRioBranco
+
+        - `America/Santarem`: AmericaSantarem
+
+        - `America/Santiago`: AmericaSantiago
+
+        - `America/Santo_Domingo`: AmericaSantoDomingo
+
+        - `America/Sao_Paulo`: AmericaSaoPaulo
+
+        - `America/Scoresbysund`: AmericaScoresbysund
+
+        - `America/Sitka`: AmericaSitka
+
+        - `America/St_Barthelemy`: AmericaStBarthelemy
+
+        - `America/St_Johns`: AmericaStJohns
+
+        - `America/St_Kitts`: AmericaStKitts
+
+        - `America/St_Lucia`: AmericaStLucia
+
+        - `America/St_Thomas`: AmericaStThomas
+
+        - `America/St_Vincent`: AmericaStVincent
+
+        - `America/Swift_Current`: AmericaSwiftCurrent
+
+        - `America/Tegucigalpa`: AmericaTegucigalpa
+
+        - `America/Thule`: AmericaThule
+
+        - `America/Tijuana`: AmericaTijuana
+
+        - `America/Toronto`: AmericaToronto
+
+        - `America/Tortola`: AmericaTortola
+
+        - `America/Vancouver`: AmericaVancouver
+
+        - `America/Whitehorse`: AmericaWhitehorse
+
+        - `America/Winnipeg`: AmericaWinnipeg
+
+        - `America/Yakutat`: AmericaYakutat
+
+        - `Antarctica/Davis`: AntarcticaDavis
+
+        - `Antarctica/DumontDUrville`: AntarcticaDumontDUrville
+
+        - `Antarctica/Macquarie`: AntarcticaMacquarie
+
+        - `Antarctica/Mawson`: AntarcticaMawson
+
+        - `Antarctica/McMurdo`: AntarcticaMcMurdo
+
+        - `Antarctica/Palmer`: AntarcticaPalmer
+
+        - `Antarctica/Rothera`: AntarcticaRothera
+
+        - `Antarctica/Syowa`: AntarcticaSyowa
+
+        - `Arctic/Longyearbyen`: ArcticLongyearbyen
+
+        - `Asia/Aden`: AsiaAden
+
+        - `Asia/Almaty`: AsiaAlmaty
+
+        - `Asia/Amman`: AsiaAmman
+
+        - `Asia/Anadyr`: AsiaAnadyr
+
+        - `Asia/Aqtau`: AsiaAqtau
+
+        - `Asia/Aqtobe`: AsiaAqtobe
+
+        - `Asia/Ashgabat`: AsiaAshgabat
+
+        - `Asia/Atyrau`: AsiaAtyrau
+
+        - `Asia/Baghdad`: AsiaBaghdad
+
+        - `Asia/Bahrain`: AsiaBahrain
+
+        - `Asia/Baku`: AsiaBaku
+
+        - `Asia/Bangkok`: AsiaBangkok
+
+        - `Asia/Barnaul`: AsiaBarnaul
+
+        - `Asia/Beirut`: AsiaBeirut
+
+        - `Asia/Bishkek`: AsiaBishkek
+
+        - `Asia/Brunei`: AsiaBrunei
+
+        - `Asia/Chita`: AsiaChita
+
+        - `Asia/Colombo`: AsiaColombo
+
+        - `Asia/Damascus`: AsiaDamascus
+
+        - `Asia/Dhaka`: AsiaDhaka
+
+        - `Asia/Dili`: AsiaDili
+
+        - `Asia/Dubai`: AsiaDubai
+
+        - `Asia/Dushanbe`: AsiaDushanbe
+
+        - `Asia/Gaza`: AsiaGaza
+
+        - `Asia/Hebron`: AsiaHebron
+
+        - `Asia/Ho_Chi_Minh`: AsiaHoChiMinh
+
+        - `Asia/Hong_Kong`: AsiaHongKong
+
+        - `Asia/Hovd`: AsiaHovd
+
+        - `Asia/Irkutsk`: AsiaIrkutsk
+
+        - `Asia/Jakarta`: AsiaJakarta
+
+        - `Asia/Jayapura`: AsiaJayapura
+
+        - `Asia/Jerusalem`: AsiaJerusalem
+
+        - `Asia/Kabul`: AsiaKabul
+
+        - `Asia/Kamchatka`: AsiaKamchatka
+
+        - `Asia/Karachi`: AsiaKarachi
+
+        - `Asia/Kathmandu`: AsiaKathmandu
+
+        - `Asia/Khandyga`: AsiaKhandyga
+
+        - `Asia/Kolkata`: AsiaKolkata
+
+        - `Asia/Krasnoyarsk`: AsiaKrasnoyarsk
+
+        - `Asia/Kuala_Lumpur`: AsiaKualaLumpur
+
+        - `Asia/Kuching`: AsiaKuching
+
+        - `Asia/Kuwait`: AsiaKuwait
+
+        - `Asia/Macau`: AsiaMacau
+
+        - `Asia/Magadan`: AsiaMagadan
+
+        - `Asia/Makassar`: AsiaMakassar
+
+        - `Asia/Manila`: AsiaManila
+
+        - `Asia/Muscat`: AsiaMuscat
+
+        - `Asia/Nicosia`: AsiaNicosia
+
+        - `Asia/Novokuznetsk`: AsiaNovokuznetsk
+
+        - `Asia/Novosibirsk`: AsiaNovosibirsk
+
+        - `Asia/Omsk`: AsiaOmsk
+
+        - `Asia/Oral`: AsiaOral
+
+        - `Asia/Phnom_Penh`: AsiaPhnomPenh
+
+        - `Asia/Pontianak`: AsiaPontianak
+
+        - `Asia/Pyongyang`: AsiaPyongyang
+
+        - `Asia/Qatar`: AsiaQatar
+
+        - `Asia/Qostanay`: AsiaQostanay
+
+        - `Asia/Riyadh`: AsiaRiyadh
+
+        - `Asia/Sakhalin`: AsiaSakhalin
+
+        - `Asia/Samarkand`: AsiaSamarkand
+
+        - `Asia/Seoul`: AsiaSeoul
+
+        - `Asia/Shanghai`: AsiaShanghai
+
+        - `Asia/Singapore`: AsiaSingapore
+
+        - `Asia/Srednekolymsk`: AsiaSrednekolymsk
+
+        - `Asia/Taipei`: AsiaTaipei
+
+        - `Asia/Tashkent`: AsiaTashkent
+
+        - `Asia/Tbilisi`: AsiaTbilisi
+
+        - `Asia/Tehran`: AsiaTehran
+
+        - `Asia/Thimphu`: AsiaThimphu
+
+        - `Asia/Tokyo`: AsiaTokyo
+
+        - `Asia/Tomsk`: AsiaTomsk
+
+        - `Asia/Ulaanbaatar`: AsiaUlaanbaatar
+
+        - `Asia/Urumqi`: AsiaUrumqi
+
+        - `Asia/Ust-Nera`: AsiaUstNera
+
+        - `Asia/Vientiane`: AsiaVientiane
+
+        - `Asia/Vladivostok`: AsiaVladivostok
+
+        - `Asia/Yakutsk`: AsiaYakutsk
+
+        - `Asia/Yangon`: AsiaYangon
+
+        - `Asia/Yekaterinburg`: AsiaYekaterinburg
+
+        - `Asia/Yerevan`: AsiaYerevan
+
+        - `Atlantic/Azores`: AtlanticAzores
+
+        - `Atlantic/Bermuda`: AtlanticBermuda
+
+        - `Atlantic/Canary`: AtlanticCanary
+
+        - `Atlantic/Cape_Verde`: AtlanticCapeVerde
+
+        - `Atlantic/Faroe`: AtlanticFaroe
+
+        - `Atlantic/Madeira`: AtlanticMadeira
+
+        - `Atlantic/Reykjavik`: AtlanticReykjavik
+
+        - `Atlantic/South_Georgia`: AtlanticSouthGeorgia
+
+        - `Atlantic/St_Helena`: AtlanticStHelena
+
+        - `Atlantic/Stanley`: AtlanticStanley
+
+        - `Australia/Adelaide`: AustraliaAdelaide
+
+        - `Australia/Brisbane`: AustraliaBrisbane
+
+        - `Australia/Broken_Hill`: AustraliaBrokenHill
+
+        - `Australia/Darwin`: AustraliaDarwin
+
+        - `Australia/Eucla`: AustraliaEucla
+
+        - `Australia/Hobart`: AustraliaHobart
+
+        - `Australia/Lindeman`: AustraliaLindeman
+
+        - `Australia/Lord_Howe`: AustraliaLordHowe
+
+        - `Australia/Melbourne`: AustraliaMelbourne
+
+        - `Australia/Perth`: AustraliaPerth
+
+        - `Australia/Sydney`: AustraliaSydney
+
+        - `Europe/Amsterdam`: EuropeAmsterdam
+
+        - `Europe/Andorra`: EuropeAndorra
+
+        - `Europe/Astrakhan`: EuropeAstrakhan
+
+        - `Europe/Athens`: EuropeAthens
+
+        - `Europe/Belgrade`: EuropeBelgrade
+
+        - `Europe/Berlin`: EuropeBerlin
+
+        - `Europe/Bratislava`: EuropeBratislava
+
+        - `Europe/Brussels`: EuropeBrussels
+
+        - `Europe/Bucharest`: EuropeBucharest
+
+        - `Europe/Budapest`: EuropeBudapest
+
+        - `Europe/Busingen`: EuropeBusingen
+
+        - `Europe/Chisinau`: EuropeChisinau
+
+        - `Europe/Copenhagen`: EuropeCopenhagen
+
+        - `Europe/Dublin`: EuropeDublin
+
+        - `Europe/Gibraltar`: EuropeGibraltar
+
+        - `Europe/Guernsey`: EuropeGuernsey
+
+        - `Europe/Helsinki`: EuropeHelsinki
+
+        - `Europe/Isle_of_Man`: EuropeIsleOfMan
+
+        - `Europe/Istanbul`: EuropeIstanbul
+
+        - `Europe/Jersey`: EuropeJersey
+
+        - `Europe/Kaliningrad`: EuropeKaliningrad
+
+        - `Europe/Kirov`: EuropeKirov
+
+        - `Europe/Kyiv`: EuropeKyiv
+
+        - `Europe/Lisbon`: EuropeLisbon
+
+        - `Europe/Ljubljana`: EuropeLjubljana
+
+        - `Europe/London`: EuropeLondon
+
+        - `Europe/Luxembourg`: EuropeLuxembourg
+
+        - `Europe/Madrid`: EuropeMadrid
+
+        - `Europe/Malta`: EuropeMalta
+
+        - `Europe/Mariehamn`: EuropeMariehamn
+
+        - `Europe/Minsk`: EuropeMinsk
+
+        - `Europe/Monaco`: EuropeMonaco
+
+        - `Europe/Moscow`: EuropeMoscow
+
+        - `Europe/Oslo`: EuropeOslo
+
+        - `Europe/Paris`: EuropeParis
+
+        - `Europe/Podgorica`: EuropePodgorica
+
+        - `Europe/Prague`: EuropePrague
+
+        - `Europe/Riga`: EuropeRiga
+
+        - `Europe/Rome`: EuropeRome
+
+        - `Europe/Samara`: EuropeSamara
+
+        - `Europe/San_Marino`: EuropeSanMarino
+
+        - `Europe/Sarajevo`: EuropeSarajevo
+
+        - `Europe/Saratov`: EuropeSaratov
+
+        - `Europe/Simferopol`: EuropeSimferopol
+
+        - `Europe/Skopje`: EuropeSkopje
+
+        - `Europe/Sofia`: EuropeSofia
+
+        - `Europe/Stockholm`: EuropeStockholm
+
+        - `Europe/Tallinn`: EuropeTallinn
+
+        - `Europe/Tirane`: EuropeTirane
+
+        - `Europe/Ulyanovsk`: EuropeUlyanovsk
+
+        - `Europe/Vaduz`: EuropeVaduz
+
+        - `Europe/Vatican`: EuropeVatican
+
+        - `Europe/Vienna`: EuropeVienna
+
+        - `Europe/Vilnius`: EuropeVilnius
+
+        - `Europe/Volgograd`: EuropeVolgograd
+
+        - `Europe/Warsaw`: EuropeWarsaw
+
+        - `Europe/Zagreb`: EuropeZagreb
+
+        - `Europe/Zurich`: EuropeZurich
+
+        - `Indian/Antananarivo`: IndianAntananarivo
+
+        - `Indian/Chagos`: IndianChagos
+
+        - `Indian/Christmas`: IndianChristmas
+
+        - `Indian/Cocos`: IndianCocos
+
+        - `Indian/Comoro`: IndianComoro
+
+        - `Indian/Kerguelen`: IndianKerguelen
+
+        - `Indian/Mahe`: IndianMahe
+
+        - `Indian/Maldives`: IndianMaldives
+
+        - `Indian/Mauritius`: IndianMauritius
+
+        - `Indian/Mayotte`: IndianMayotte
+
+        - `Indian/Reunion`: IndianReunion
+
+        - `Pacific/Apia`: PacificApia
+
+        - `Pacific/Auckland`: PacificAuckland
+
+        - `Pacific/Bougainville`: PacificBougainville
+
+        - `Pacific/Chatham`: PacificChatham
+
+        - `Pacific/Chuuk`: PacificChuuk
+
+        - `Pacific/Easter`: PacificEaster
+
+        - `Pacific/Efate`: PacificEfate
+
+        - `Pacific/Fakaofo`: PacificFakaofo
+
+        - `Pacific/Fiji`: PacificFiji
+
+        - `Pacific/Funafuti`: PacificFunafuti
+
+        - `Pacific/Galapagos`: PacificGalapagos
+
+        - `Pacific/Gambier`: PacificGambier
+
+        - `Pacific/Guadalcanal`: PacificGuadalcanal
+
+        - `Pacific/Guam`: PacificGuam
+
+        - `Pacific/Honolulu`: PacificHonolulu
+
+        - `Pacific/Kiritimati`: PacificKiritimati
+
+        - `Pacific/Kosrae`: PacificKosrae
+
+        - `Pacific/Kwajalein`: PacificKwajalein
+
+        - `Pacific/Majuro`: PacificMajuro
+
+        - `Pacific/Marquesas`: PacificMarquesas
+
+        - `Pacific/Midway`: PacificMidway
+
+        - `Pacific/Nauru`: PacificNauru
+
+        - `Pacific/Niue`: PacificNiue
+
+        - `Pacific/Norfolk`: PacificNorfolk
+
+        - `Pacific/Noumea`: PacificNoumea
+
+        - `Pacific/Pago_Pago`: PacificPagoPago
+
+        - `Pacific/Palau`: PacificPalau
+
+        - `Pacific/Pitcairn`: PacificPitcairn
+
+        - `Pacific/Pohnpei`: PacificPohnpei
+
+        - `Pacific/Port_Moresby`: PacificPortMoresby
+
+        - `Pacific/Rarotonga`: PacificRarotonga
+
+        - `Pacific/Saipan`: PacificSaipan
+
+        - `Pacific/Tahiti`: PacificTahiti
+
+        - `Pacific/Tarawa`: PacificTarawa
+
+        - `Pacific/Tongatapu`: PacificTongatapu
+
+        - `Pacific/Wake`: PacificWake
+
+        - `Pacific/Wallis`: PacificWallis
+
+        - `UTC`: Utc'
+      type: string
+      enum:
+      - Africa/Abidjan
+      - Africa/Accra
+      - Africa/Addis_Ababa
+      - Africa/Algiers
+      - Africa/Asmara
+      - Africa/Bamako
+      - Africa/Bangui
+      - Africa/Banjul
+      - Africa/Bissau
+      - Africa/Blantyre
+      - Africa/Brazzaville
+      - Africa/Bujumbura
+      - Africa/Cairo
+      - Africa/Casablanca
+      - Africa/Ceuta
+      - Africa/Conakry
+      - Africa/Dakar
+      - Africa/Dar_es_Salaam
+      - Africa/Djibouti
+      - Africa/Douala
+      - Africa/El_Aaiun
+      - Africa/Freetown
+      - Africa/Gaborone
+      - Africa/Harare
+      - Africa/Johannesburg
+      - Africa/Juba
+      - Africa/Kampala
+      - Africa/Khartoum
+      - Africa/Kigali
+      - Africa/Kinshasa
+      - Africa/Lagos
+      - Africa/Libreville
+      - Africa/Lome
+      - Africa/Luanda
+      - Africa/Lubumbashi
+      - Africa/Lusaka
+      - Africa/Malabo
+      - Africa/Maputo
+      - Africa/Maseru
+      - Africa/Mbabane
+      - Africa/Mogadishu
+      - Africa/Monrovia
+      - Africa/Nairobi
+      - Africa/Ndjamena
+      - Africa/Niamey
+      - Africa/Nouakchott
+      - Africa/Ouagadougou
+      - Africa/Porto-Novo
+      - Africa/Tripoli
+      - Africa/Tunis
+      - Africa/Windhoek
+      - America/Adak
+      - America/Anchorage
+      - America/Anguilla
+      - America/Antigua
+      - America/Araguaina
+      - America/Argentina/Buenos_Aires
+      - America/Argentina/Catamarca
+      - America/Argentina/Cordoba
+      - America/Argentina/Jujuy
+      - America/Argentina/La_Rioja
+      - America/Argentina/Mendoza
+      - America/Argentina/Rio_Gallegos
+      - America/Argentina/Salta
+      - America/Argentina/San_Juan
+      - America/Argentina/San_Luis
+      - America/Argentina/Tucuman
+      - America/Argentina/Ushuaia
+      - America/Aruba
+      - America/Asuncion
+      - America/Atikokan
+      - America/Bahia
+      - America/Bahia_Banderas
+      - America/Barbados
+      - America/Belem
+      - America/Belize
+      - America/Blanc-Sablon
+      - America/Boa_Vista
+      - America/Bogota
+      - America/Boise
+      - America/Cambridge_Bay
+      - America/Campo_Grande
+      - America/Cancun
+      - America/Caracas
+      - America/Cayenne
+      - America/Cayman
+      - America/Chicago
+      - America/Chihuahua
+      - America/Ciudad_Juarez
+      - America/Costa_Rica
+      - America/Creston
+      - America/Cuiaba
+      - America/Curacao
+      - America/Danmarkshavn
+      - America/Dawson
+      - America/Dawson_Creek
+      - America/Denver
+      - America/Detroit
+      - America/Dominica
+      - America/Edmonton
+      - America/Eirunepe
+      - America/El_Salvador
+      - America/Fort_Nelson
+      - America/Fortaleza
+      - America/Glace_Bay
+      - America/Goose_Bay
+      - America/Grand_Turk
+      - America/Grenada
+      - America/Guadeloupe
+      - America/Guatemala
+      - America/Guayaquil
+      - America/Guyana
+      - America/Halifax
+      - America/Havana
+      - America/Hermosillo
+      - America/Indiana/Indianapolis
+      - America/Indiana/Knox
+      - America/Indiana/Marengo
+      - America/Indiana/Petersburg
+      - America/Indiana/Tell_City
+      - America/Indiana/Vevay
+      - America/Indiana/Vincennes
+      - America/Indiana/Winamac
+      - America/Inuvik
+      - America/Iqaluit
+      - America/Jamaica
+      - America/Juneau
+      - America/Kentucky/Louisville
+      - America/Kentucky/Monticello
+      - America/Kralendijk
+      - America/La_Paz
+      - America/Lima
+      - America/Los_Angeles
+      - America/Lower_Princes
+      - America/Maceio
+      - America/Managua
+      - America/Manaus
+      - America/Marigot
+      - America/Martinique
+      - America/Matamoros
+      - America/Mazatlan
+      - America/Menominee
+      - America/Merida
+      - America/Mexico_City
+      - America/Miquelon
+      - America/Moncton
+      - America/Monterrey
+      - America/Montevideo
+      - America/Montserrat
+      - America/Nassau
+      - America/New_York
+      - America/Nome
+      - America/Noronha
+      - America/North_Dakota/Beulah
+      - America/North_Dakota/Center
+      - America/North_Dakota/New_Salem
+      - America/Ojinaga
+      - America/Panama
+      - America/Paramaribo
+      - America/Phoenix
+      - America/Port-au-Prince
+      - America/Port_of_Spain
+      - America/Porto_Velho
+      - America/Puerto_Rico
+      - America/Punta_Arenas
+      - America/Rankin_Inlet
+      - America/Recife
+      - America/Regina
+      - America/Resolute
+      - America/Rio_Branco
+      - America/Santarem
+      - America/Santiago
+      - America/Santo_Domingo
+      - America/Sao_Paulo
+      - America/Scoresbysund
+      - America/Sitka
+      - America/St_Barthelemy
+      - America/St_Johns
+      - America/St_Kitts
+      - America/St_Lucia
+      - America/St_Thomas
+      - America/St_Vincent
+      - America/Swift_Current
+      - America/Tegucigalpa
+      - America/Thule
+      - America/Tijuana
+      - America/Toronto
+      - America/Tortola
+      - America/Vancouver
+      - America/Whitehorse
+      - America/Winnipeg
+      - America/Yakutat
+      - Antarctica/Davis
+      - Antarctica/DumontDUrville
+      - Antarctica/Macquarie
+      - Antarctica/Mawson
+      - Antarctica/McMurdo
+      - Antarctica/Palmer
+      - Antarctica/Rothera
+      - Antarctica/Syowa
+      - Arctic/Longyearbyen
+      - Asia/Aden
+      - Asia/Almaty
+      - Asia/Amman
+      - Asia/Anadyr
+      - Asia/Aqtau
+      - Asia/Aqtobe
+      - Asia/Ashgabat
+      - Asia/Atyrau
+      - Asia/Baghdad
+      - Asia/Bahrain
+      - Asia/Baku
+      - Asia/Bangkok
+      - Asia/Barnaul
+      - Asia/Beirut
+      - Asia/Bishkek
+      - Asia/Brunei
+      - Asia/Chita
+      - Asia/Colombo
+      - Asia/Damascus
+      - Asia/Dhaka
+      - Asia/Dili
+      - Asia/Dubai
+      - Asia/Dushanbe
+      - Asia/Gaza
+      - Asia/Hebron
+      - Asia/Ho_Chi_Minh
+      - Asia/Hong_Kong
+      - Asia/Hovd
+      - Asia/Irkutsk
+      - Asia/Jakarta
+      - Asia/Jayapura
+      - Asia/Jerusalem
+      - Asia/Kabul
+      - Asia/Kamchatka
+      - Asia/Karachi
+      - Asia/Kathmandu
+      - Asia/Khandyga
+      - Asia/Kolkata
+      - Asia/Krasnoyarsk
+      - Asia/Kuala_Lumpur
+      - Asia/Kuching
+      - Asia/Kuwait
+      - Asia/Macau
+      - Asia/Magadan
+      - Asia/Makassar
+      - Asia/Manila
+      - Asia/Muscat
+      - Asia/Nicosia
+      - Asia/Novokuznetsk
+      - Asia/Novosibirsk
+      - Asia/Omsk
+      - Asia/Oral
+      - Asia/Phnom_Penh
+      - Asia/Pontianak
+      - Asia/Pyongyang
+      - Asia/Qatar
+      - Asia/Qostanay
+      - Asia/Riyadh
+      - Asia/Sakhalin
+      - Asia/Samarkand
+      - Asia/Seoul
+      - Asia/Shanghai
+      - Asia/Singapore
+      - Asia/Srednekolymsk
+      - Asia/Taipei
+      - Asia/Tashkent
+      - Asia/Tbilisi
+      - Asia/Tehran
+      - Asia/Thimphu
+      - Asia/Tokyo
+      - Asia/Tomsk
+      - Asia/Ulaanbaatar
+      - Asia/Urumqi
+      - Asia/Ust-Nera
+      - Asia/Vientiane
+      - Asia/Vladivostok
+      - Asia/Yakutsk
+      - Asia/Yangon
+      - Asia/Yekaterinburg
+      - Asia/Yerevan
+      - Atlantic/Azores
+      - Atlantic/Bermuda
+      - Atlantic/Canary
+      - Atlantic/Cape_Verde
+      - Atlantic/Faroe
+      - Atlantic/Madeira
+      - Atlantic/Reykjavik
+      - Atlantic/South_Georgia
+      - Atlantic/St_Helena
+      - Atlantic/Stanley
+      - Australia/Adelaide
+      - Australia/Brisbane
+      - Australia/Broken_Hill
+      - Australia/Darwin
+      - Australia/Eucla
+      - Australia/Hobart
+      - Australia/Lindeman
+      - Australia/Lord_Howe
+      - Australia/Melbourne
+      - Australia/Perth
+      - Australia/Sydney
+      - Europe/Amsterdam
+      - Europe/Andorra
+      - Europe/Astrakhan
+      - Europe/Athens
+      - Europe/Belgrade
+      - Europe/Berlin
+      - Europe/Bratislava
+      - Europe/Brussels
+      - Europe/Bucharest
+      - Europe/Budapest
+      - Europe/Busingen
+      - Europe/Chisinau
+      - Europe/Copenhagen
+      - Europe/Dublin
+      - Europe/Gibraltar
+      - Europe/Guernsey
+      - Europe/Helsinki
+      - Europe/Isle_of_Man
+      - Europe/Istanbul
+      - Europe/Jersey
+      - Europe/Kaliningrad
+      - Europe/Kirov
+      - Europe/Kyiv
+      - Europe/Lisbon
+      - Europe/Ljubljana
+      - Europe/London
+      - Europe/Luxembourg
+      - Europe/Madrid
+      - Europe/Malta
+      - Europe/Mariehamn
+      - Europe/Minsk
+      - Europe/Monaco
+      - Europe/Moscow
+      - Europe/Oslo
+      - Europe/Paris
+      - Europe/Podgorica
+      - Europe/Prague
+      - Europe/Riga
+      - Europe/Rome
+      - Europe/Samara
+      - Europe/San_Marino
+      - Europe/Sarajevo
+      - Europe/Saratov
+      - Europe/Simferopol
+      - Europe/Skopje
+      - Europe/Sofia
+      - Europe/Stockholm
+      - Europe/Tallinn
+      - Europe/Tirane
+      - Europe/Ulyanovsk
+      - Europe/Vaduz
+      - Europe/Vatican
+      - Europe/Vienna
+      - Europe/Vilnius
+      - Europe/Volgograd
+      - Europe/Warsaw
+      - Europe/Zagreb
+      - Europe/Zurich
+      - Indian/Antananarivo
+      - Indian/Chagos
+      - Indian/Christmas
+      - Indian/Cocos
+      - Indian/Comoro
+      - Indian/Kerguelen
+      - Indian/Mahe
+      - Indian/Maldives
+      - Indian/Mauritius
+      - Indian/Mayotte
+      - Indian/Reunion
+      - Pacific/Apia
+      - Pacific/Auckland
+      - Pacific/Bougainville
+      - Pacific/Chatham
+      - Pacific/Chuuk
+      - Pacific/Easter
+      - Pacific/Efate
+      - Pacific/Fakaofo
+      - Pacific/Fiji
+      - Pacific/Funafuti
+      - Pacific/Galapagos
+      - Pacific/Gambier
+      - Pacific/Guadalcanal
+      - Pacific/Guam
+      - Pacific/Honolulu
+      - Pacific/Kiritimati
+      - Pacific/Kosrae
+      - Pacific/Kwajalein
+      - Pacific/Majuro
+      - Pacific/Marquesas
+      - Pacific/Midway
+      - Pacific/Nauru
+      - Pacific/Niue
+      - Pacific/Norfolk
+      - Pacific/Noumea
+      - Pacific/Pago_Pago
+      - Pacific/Palau
+      - Pacific/Pitcairn
+      - Pacific/Pohnpei
+      - Pacific/Port_Moresby
+      - Pacific/Rarotonga
+      - Pacific/Saipan
+      - Pacific/Tahiti
+      - Pacific/Tarawa
+      - Pacific/Tongatapu
+      - Pacific/Wake
+      - Pacific/Wallis
+      - UTC
+      x-enumNames:
+      - AfricaAbidjan
+      - AfricaAccra
+      - AfricaAddisAbaba
+      - AfricaAlgiers
+      - AfricaAsmara
+      - AfricaBamako
+      - AfricaBangui
+      - AfricaBanjul
+      - AfricaBissau
+      - AfricaBlantyre
+      - AfricaBrazzaville
+      - AfricaBujumbura
+      - AfricaCairo
+      - AfricaCasablanca
+      - AfricaCeuta
+      - AfricaConakry
+      - AfricaDakar
+      - AfricaDarEsSalaam
+      - AfricaDjibouti
+      - AfricaDouala
+      - AfricaElAaiun
+      - AfricaFreetown
+      - AfricaGaborone
+      - AfricaHarare
+      - AfricaJohannesburg
+      - AfricaJuba
+      - AfricaKampala
+      - AfricaKhartoum
+      - AfricaKigali
+      - AfricaKinshasa
+      - AfricaLagos
+      - AfricaLibreville
+      - AfricaLome
+      - AfricaLuanda
+      - AfricaLubumbashi
+      - AfricaLusaka
+      - AfricaMalabo
+      - AfricaMaputo
+      - AfricaMaseru
+      - AfricaMbabane
+      - AfricaMogadishu
+      - AfricaMonrovia
+      - AfricaNairobi
+      - AfricaNdjamena
+      - AfricaNiamey
+      - AfricaNouakchott
+      - AfricaOuagadougou
+      - AfricaPortoNovo
+      - AfricaTripoli
+      - AfricaTunis
+      - AfricaWindhoek
+      - AmericaAdak
+      - AmericaAnchorage
+      - AmericaAnguilla
+      - AmericaAntigua
+      - AmericaAraguaina
+      - AmericaArgentinaBuenosAires
+      - AmericaArgentinaCatamarca
+      - AmericaArgentinaCordoba
+      - AmericaArgentinaJujuy
+      - AmericaArgentinaLaRioja
+      - AmericaArgentinaMendoza
+      - AmericaArgentinaRioGallegos
+      - AmericaArgentinaSalta
+      - AmericaArgentinaSanJuan
+      - AmericaArgentinaSanLuis
+      - AmericaArgentinaTucuman
+      - AmericaArgentinaUshuaia
+      - AmericaAruba
+      - AmericaAsuncion
+      - AmericaAtikokan
+      - AmericaBahia
+      - AmericaBahiaBanderas
+      - AmericaBarbados
+      - AmericaBelem
+      - AmericaBelize
+      - AmericaBlancSablon
+      - AmericaBoaVista
+      - AmericaBogota
+      - AmericaBoise
+      - AmericaCambridgeBay
+      - AmericaCampoGrande
+      - AmericaCancun
+      - AmericaCaracas
+      - AmericaCayenne
+      - AmericaCayman
+      - AmericaChicago
+      - AmericaChihuahua
+      - AmericaCiudadJuarez
+      - AmericaCostaRica
+      - AmericaCreston
+      - AmericaCuiaba
+      - AmericaCuracao
+      - AmericaDanmarkshavn
+      - AmericaDawson
+      - AmericaDawsonCreek
+      - AmericaDenver
+      - AmericaDetroit
+      - AmericaDominica
+      - AmericaEdmonton
+      - AmericaEirunepe
+      - AmericaElSalvador
+      - AmericaFortNelson
+      - AmericaFortaleza
+      - AmericaGlaceBay
+      - AmericaGooseBay
+      - AmericaGrandTurk
+      - AmericaGrenada
+      - AmericaGuadeloupe
+      - AmericaGuatemala
+      - AmericaGuayaquil
+      - AmericaGuyana
+      - AmericaHalifax
+      - AmericaHavana
+      - AmericaHermosillo
+      - AmericaIndianaIndianapolis
+      - AmericaIndianaKnox
+      - AmericaIndianaMarengo
+      - AmericaIndianaPetersburg
+      - AmericaIndianaTellCity
+      - AmericaIndianaVevay
+      - AmericaIndianaVincennes
+      - AmericaIndianaWinamac
+      - AmericaInuvik
+      - AmericaIqaluit
+      - AmericaJamaica
+      - AmericaJuneau
+      - AmericaKentuckyLouisville
+      - AmericaKentuckyMonticello
+      - AmericaKralendijk
+      - AmericaLaPaz
+      - AmericaLima
+      - AmericaLosAngeles
+      - AmericaLowerPrinces
+      - AmericaMaceio
+      - AmericaManagua
+      - AmericaManaus
+      - AmericaMarigot
+      - AmericaMartinique
+      - AmericaMatamoros
+      - AmericaMazatlan
+      - AmericaMenominee
+      - AmericaMerida
+      - AmericaMexicoCity
+      - AmericaMiquelon
+      - AmericaMoncton
+      - AmericaMonterrey
+      - AmericaMontevideo
+      - AmericaMontserrat
+      - AmericaNassau
+      - AmericaNewYork
+      - AmericaNome
+      - AmericaNoronha
+      - AmericaNorthDakotaBeulah
+      - AmericaNorthDakotaCenter
+      - AmericaNorthDakotaNewSalem
+      - AmericaOjinaga
+      - AmericaPanama
+      - AmericaParamaribo
+      - AmericaPhoenix
+      - AmericaPortAuPrince
+      - AmericaPortOfSpain
+      - AmericaPortoVelho
+      - AmericaPuertoRico
+      - AmericaPuntaArenas
+      - AmericaRankinInlet
+      - AmericaRecife
+      - AmericaRegina
+      - AmericaResolute
+      - AmericaRioBranco
+      - AmericaSantarem
+      - AmericaSantiago
+      - AmericaSantoDomingo
+      - AmericaSaoPaulo
+      - AmericaScoresbysund
+      - AmericaSitka
+      - AmericaStBarthelemy
+      - AmericaStJohns
+      - AmericaStKitts
+      - AmericaStLucia
+      - AmericaStThomas
+      - AmericaStVincent
+      - AmericaSwiftCurrent
+      - AmericaTegucigalpa
+      - AmericaThule
+      - AmericaTijuana
+      - AmericaToronto
+      - AmericaTortola
+      - AmericaVancouver
+      - AmericaWhitehorse
+      - AmericaWinnipeg
+      - AmericaYakutat
+      - AntarcticaDavis
+      - AntarcticaDumontDUrville
+      - AntarcticaMacquarie
+      - AntarcticaMawson
+      - AntarcticaMcMurdo
+      - AntarcticaPalmer
+      - AntarcticaRothera
+      - AntarcticaSyowa
+      - ArcticLongyearbyen
+      - AsiaAden
+      - AsiaAlmaty
+      - AsiaAmman
+      - AsiaAnadyr
+      - AsiaAqtau
+      - AsiaAqtobe
+      - AsiaAshgabat
+      - AsiaAtyrau
+      - AsiaBaghdad
+      - AsiaBahrain
+      - AsiaBaku
+      - AsiaBangkok
+      - AsiaBarnaul
+      - AsiaBeirut
+      - AsiaBishkek
+      - AsiaBrunei
+      - AsiaChita
+      - AsiaColombo
+      - AsiaDamascus
+      - AsiaDhaka
+      - AsiaDili
+      - AsiaDubai
+      - AsiaDushanbe
+      - AsiaGaza
+      - AsiaHebron
+      - AsiaHoChiMinh
+      - AsiaHongKong
+      - AsiaHovd
+      - AsiaIrkutsk
+      - AsiaJakarta
+      - AsiaJayapura
+      - AsiaJerusalem
+      - AsiaKabul
+      - AsiaKamchatka
+      - AsiaKarachi
+      - AsiaKathmandu
+      - AsiaKhandyga
+      - AsiaKolkata
+      - AsiaKrasnoyarsk
+      - AsiaKualaLumpur
+      - AsiaKuching
+      - AsiaKuwait
+      - AsiaMacau
+      - AsiaMagadan
+      - AsiaMakassar
+      - AsiaManila
+      - AsiaMuscat
+      - AsiaNicosia
+      - AsiaNovokuznetsk
+      - AsiaNovosibirsk
+      - AsiaOmsk
+      - AsiaOral
+      - AsiaPhnomPenh
+      - AsiaPontianak
+      - AsiaPyongyang
+      - AsiaQatar
+      - AsiaQostanay
+      - AsiaRiyadh
+      - AsiaSakhalin
+      - AsiaSamarkand
+      - AsiaSeoul
+      - AsiaShanghai
+      - AsiaSingapore
+      - AsiaSrednekolymsk
+      - AsiaTaipei
+      - AsiaTashkent
+      - AsiaTbilisi
+      - AsiaTehran
+      - AsiaThimphu
+      - AsiaTokyo
+      - AsiaTomsk
+      - AsiaUlaanbaatar
+      - AsiaUrumqi
+      - AsiaUstNera
+      - AsiaVientiane
+      - AsiaVladivostok
+      - AsiaYakutsk
+      - AsiaYangon
+      - AsiaYekaterinburg
+      - AsiaYerevan
+      - AtlanticAzores
+      - AtlanticBermuda
+      - AtlanticCanary
+      - AtlanticCapeVerde
+      - AtlanticFaroe
+      - AtlanticMadeira
+      - AtlanticReykjavik
+      - AtlanticSouthGeorgia
+      - AtlanticStHelena
+      - AtlanticStanley
+      - AustraliaAdelaide
+      - AustraliaBrisbane
+      - AustraliaBrokenHill
+      - AustraliaDarwin
+      - AustraliaEucla
+      - AustraliaHobart
+      - AustraliaLindeman
+      - AustraliaLordHowe
+      - AustraliaMelbourne
+      - AustraliaPerth
+      - AustraliaSydney
+      - EuropeAmsterdam
+      - EuropeAndorra
+      - EuropeAstrakhan
+      - EuropeAthens
+      - EuropeBelgrade
+      - EuropeBerlin
+      - EuropeBratislava
+      - EuropeBrussels
+      - EuropeBucharest
+      - EuropeBudapest
+      - EuropeBusingen
+      - EuropeChisinau
+      - EuropeCopenhagen
+      - EuropeDublin
+      - EuropeGibraltar
+      - EuropeGuernsey
+      - EuropeHelsinki
+      - EuropeIsleOfMan
+      - EuropeIstanbul
+      - EuropeJersey
+      - EuropeKaliningrad
+      - EuropeKirov
+      - EuropeKyiv
+      - EuropeLisbon
+      - EuropeLjubljana
+      - EuropeLondon
+      - EuropeLuxembourg
+      - EuropeMadrid
+      - EuropeMalta
+      - EuropeMariehamn
+      - EuropeMinsk
+      - EuropeMonaco
+      - EuropeMoscow
+      - EuropeOslo
+      - EuropeParis
+      - EuropePodgorica
+      - EuropePrague
+      - EuropeRiga
+      - EuropeRome
+      - EuropeSamara
+      - EuropeSanMarino
+      - EuropeSarajevo
+      - EuropeSaratov
+      - EuropeSimferopol
+      - EuropeSkopje
+      - EuropeSofia
+      - EuropeStockholm
+      - EuropeTallinn
+      - EuropeTirane
+      - EuropeUlyanovsk
+      - EuropeVaduz
+      - EuropeVatican
+      - EuropeVienna
+      - EuropeVilnius
+      - EuropeVolgograd
+      - EuropeWarsaw
+      - EuropeZagreb
+      - EuropeZurich
+      - IndianAntananarivo
+      - IndianChagos
+      - IndianChristmas
+      - IndianCocos
+      - IndianComoro
+      - IndianKerguelen
+      - IndianMahe
+      - IndianMaldives
+      - IndianMauritius
+      - IndianMayotte
+      - IndianReunion
+      - PacificApia
+      - PacificAuckland
+      - PacificBougainville
+      - PacificChatham
+      - PacificChuuk
+      - PacificEaster
+      - PacificEfate
+      - PacificFakaofo
+      - PacificFiji
+      - PacificFunafuti
+      - PacificGalapagos
+      - PacificGambier
+      - PacificGuadalcanal
+      - PacificGuam
+      - PacificHonolulu
+      - PacificKiritimati
+      - PacificKosrae
+      - PacificKwajalein
+      - PacificMajuro
+      - PacificMarquesas
+      - PacificMidway
+      - PacificNauru
+      - PacificNiue
+      - PacificNorfolk
+      - PacificNoumea
+      - PacificPagoPago
+      - PacificPalau
+      - PacificPitcairn
+      - PacificPohnpei
+      - PacificPortMoresby
+      - PacificRarotonga
+      - PacificSaipan
+      - PacificTahiti
+      - PacificTarawa
+      - PacificTongatapu
+      - PacificWake
+      - PacificWallis
+      - Utc
+    services_access_v2:
+      required:
+      - add
+      properties:
+        add:
+          oneOf:
+          - $ref: '#/components/schemas/general_access_v2'
+          - description: Access to selected services
+            type: object
+            additionalProperties:
+              description: Key value pairs in the format {service id} => true
+              type: boolean
+              enum:
+              - true
+          examples:
+          - '123': true
+            '456': true
+      type: object
+    ExitDateMustBeLastDayOfMonthForMonthlyTargetHoursError:
+      title: Exit date must be last day of month for monthly target hours error
+      properties:
+        type:
+          type: string
+          enum:
+          - ExitDateMustBeLastDayOfMonthForMonthlyTargetHours
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - With monthly planned hours, the exit date must be the last day of a month.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    EditLockPeriod:
+      title: Edit lock period
+      description: 'Possible values:
+
+        - `current_month`: CurrentMonth'
+      type: string
+      enum:
+      - current_month
+      x-enumNames:
+      - CurrentMonth
+    RelationsPreventDeletionError:
+      title: Relations prevent deletion error
+      properties:
+        type:
+          type: string
+          enum:
+          - RelationsPreventDeletion
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Resource can not be deleted, there are existing relations. Please delete the related resources first.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: Forbidden
+    ResourceEnum:
+      title: Resource enum
+      description: 'Possible values:
+
+        - `absences`: Absences
+
+        - `access_groups`: AccessGroups
+
+        - `company`: Company
+
+        - `company_state`: CompanyState
+
+        - `customers`: Customers
+
+        - `entries`: Entries
+
+        - `favorite`: Favorite
+
+        - `holidays_carry`: HolidaysCarry
+
+        - `holidays_quota`: HolidaysQuota
+
+        - `lumpsum_services`: LumpSumServices
+
+        - `nonbusiness_days`: NonBusinessDays
+
+        - `nonbusiness_groups`: NonBusinessGroups
+
+        - `overtime_carrys`: OvertimeCarrys
+
+        - `project_reports`: ProjectReports
+
+        - `project_reports_meta_data`: ProjectReportsMetaData
+
+        - `projects`: Projects
+
+        - `rates`: Rates
+
+        - `reports`: Reports
+
+        - `report_templates`: ReportTemplates
+
+        - `services`: Services
+
+        - `subprojects`: Subprojects
+
+        - `surcharge_models`: SurchargeModels
+
+        - `users`: Users
+
+        - `customers_projects_access`: CustomersProjectsAccess
+
+        - `targethours`: TargetHours
+
+        - `team`: Teams
+
+        - `work_time_break_rules`: WorkTimeBreakRules
+
+        - `work_time_regulations`: WorkTimeRegulations'
+      type: string
+      enum:
+      - absences
+      - access_groups
+      - company
+      - company_state
+      - customers
+      - entries
+      - favorite
+      - holidays_carry
+      - holidays_quota
+      - lumpsum_services
+      - nonbusiness_days
+      - nonbusiness_groups
+      - overtime_carrys
+      - project_reports
+      - project_reports_meta_data
+      - projects
+      - rates
+      - reports
+      - report_templates
+      - services
+      - subprojects
+      - surcharge_models
+      - users
+      - customers_projects_access
+      - targethours
+      - team
+      - work_time_break_rules
+      - work_time_regulations
+      x-enumNames:
+      - Absences
+      - AccessGroups
+      - Company
+      - CompanyState
+      - Customers
+      - Entries
+      - Favorite
+      - HolidaysCarry
+      - HolidaysQuota
+      - LumpSumServices
+      - NonBusinessDays
+      - NonBusinessGroups
+      - OvertimeCarrys
+      - ProjectReports
+      - ProjectReportsMetaData
+      - Projects
+      - Rates
+      - Reports
+      - ReportTemplates
+      - Services
+      - Subprojects
+      - SurchargeModels
+      - Users
+      - CustomersProjectsAccess
+      - TargetHours
+      - Teams
+      - WorkTimeBreakRules
+      - WorkTimeRegulations
+    Resource:
+      required:
+      - resources
+      properties:
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceEnum'
+        count:
+          type: array
+          items:
+            type: integer
+      type: object
+    customer_projects_access_v2:
+      required:
+      - add
+      - report
+      - edit
+      properties:
+        add:
+          oneOf:
+          - $ref: '#/components/schemas/general_access_v2'
+          - $ref: '#/components/schemas/custom_access_v2'
+          examples:
+          - true
+        report:
+          oneOf:
+          - $ref: '#/components/schemas/general_access_v2'
+          - $ref: '#/components/schemas/custom_access_v2'
+          examples:
+          - '123': true
+            '456': true
+        edit:
+          oneOf:
+          - $ref: '#/components/schemas/general_access_v2'
+          - $ref: '#/components/schemas/custom_access_v2'
+          examples:
+          - '123': true
+            '456':
+              projects:
+                '789': true
+      type: object
+    ResourcesNotFound:
+      title: Resources not found error details
+      required:
+      - not_found_ids
+      properties:
+        not_found_ids:
+          title: Not found resources
+          description: One or more ids of missing resources
+          type: array
+          items:
+            type: integer
+          examples:
+          - - 99999
+      type: object
+    MaxUsersOfPlanTypeReachedError:
+      title: Max users of plan type reached error
+      properties:
+        type:
+          type: string
+          enum:
+          - MaxUsersOfPlanTypeReached
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You have reached the maximum number of co-workers included in your subscription. Please upgrade your plan in the payment section.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    MissingManageUsersAccessForRemovingAccessGroupError:
+      title: Missing manage users access for removing access group error
+      properties:
+        type:
+          type: string
+          enum:
+          - MissingManageUsersAccessForRemovingAccessGroup
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You are not allowed to remove groups with elevated access from users.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/MissingManageUsersAccessForRemovingAccessGroup'
+      type: object
+      x-error-category: Forbidden
+    ExitDateRequiresActiveUserError:
+      title: Exit date requires active user error
+      properties:
+        type:
+          type: string
+          enum:
+          - ExitDateRequiresActiveUser
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - An exit date can only be set for active co-workers.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    Fields:
+      title: Fields error details
+      description: The names of invalid input fields
+      required:
+      - fields
+      properties:
+        fields:
+          title: Fields
+          description: One or more invalid fields
+          type: array
+          items:
+            type: string
+          examples:
+          - - type
+            - status
+      type: object
+    ApiUsersV3Errors:
+      title: Api users v3 errors
+      required:
+      - error
+      properties:
+        error:
+          title: Errors
+          type: object
+          anyOf:
+          - $ref: '#/components/schemas/ResourcesInactiveError'
+          - $ref: '#/components/schemas/ResourcesNotFoundError'
+          - $ref: '#/components/schemas/MissingManageUsersAccessForAssigningAccessGroupError'
+          - $ref: '#/components/schemas/MissingManageUsersAccessForRemovingAccessGroupError'
+          - $ref: '#/components/schemas/UnexpectedValueError'
+          - $ref: '#/components/schemas/ResourceNotFoundError'
+          - $ref: '#/components/schemas/InvalidCombinationError'
+          - $ref: '#/components/schemas/EmailNotAvailableError'
+          - $ref: '#/components/schemas/ExitDateRequiresActiveUserError'
+          - $ref: '#/components/schemas/ExitDateMustBeLastDayOfMonthForMonthlyTargetHoursError'
+          - $ref: '#/components/schemas/ResourceConflictFoundError'
+          - $ref: '#/components/schemas/HasToBeInactiveError'
+          - $ref: '#/components/schemas/MaxUsersOfPlanTypeReachedError'
+          - $ref: '#/components/schemas/MaxUsersReachedError'
+          - $ref: '#/components/schemas/RelationsPreventDeletionError'
+          - $ref: '#/components/schemas/RunningEntriesPreventDeletionError'
+          - $ref: '#/components/schemas/RunningEntriesPreventArchivingError'
+          - $ref: '#/components/schemas/SsoPreventsDeactivationError'
+          - $ref: '#/components/schemas/ForbiddenError'
+          - $ref: '#/components/schemas/BossCannotBeArchivedError'
+          - $ref: '#/components/schemas/UserCannotDeleteThemselvesError'
+          - $ref: '#/components/schemas/OnlyOwnerCanDeleteOwnerError'
+          - $ref: '#/components/schemas/ForbiddenValueError'
+          - $ref: '#/components/schemas/MailCannotBeChangedError'
+      type: object
+    UserScope:
+      title: User scope
+      description: 'Possible values:
+
+        - `manageAbsences`: ManageAbsences
+
+        - `viewAbsences`: ViewAbsences
+
+        - `viewUserReports`: ViewUserReports
+
+        - `viewUserReportsDetailed`: ViewUserReportsDetailed
+
+        - `viewPresences`: ViewPresences'
+      type: string
+      enum:
+      - manageAbsences
+      - viewAbsences
+      - viewUserReports
+      - viewUserReportsDetailed
+      - viewPresences
+      x-enumNames:
+      - ManageAbsences
+      - ViewAbsences
+      - ViewUserReports
+      - ViewUserReportsDetailed
+      - ViewPresences
+    EditLockDay:
+      title: Edit lock day
+      description: 'Possible values:
+
+        - `1`: LockDays1
+
+        - `2`: LockDays2
+
+        - `3`: LockDays3
+
+        - `5`: LockDays5
+
+        - `8`: LockDays8
+
+        - `15`: LockDays15
+
+        - `31`: LockDays31
+
+        - `46`: LockDays46
+
+        - `91`: LockDays91'
+      type: integer
+      enum:
+      - 1
+      - 2
+      - 3
+      - 5
+      - 8
+      - 15
+      - 31
+      - 46
+      - 91
+      x-enumNames:
+      - LockDays1
+      - LockDays2
+      - LockDays3
+      - LockDays5
+      - LockDays8
+      - LockDays15
+      - LockDays31
+      - LockDays46
+      - LockDays91
+    SsoPreventsDeactivationError:
+      title: Sso prevents deactivation error
+      properties:
+        type:
+          type: string
+          enum:
+          - SsoPreventsDeactivation
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - This user account can't be deactivated because it is the main account of an add-on linkup.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    OnlyOwnerCanDeleteOwnerError:
+      title: Only owner can delete owner error
+      properties:
+        type:
+          type: string
+          enum:
+          - OnlyOwnerCanDeleteOwner
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Only administrators can delete administrators.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ResourceNotFoundError:
+      title: Resource not found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceNotFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The requested resource could not be found.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    MaxUsersReachedError:
+      title: Max users reached error
+      properties:
+        type:
+          type: string
+          enum:
+          - MaxUsersReached
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You have reached the maximum number of co-workers included in your subscription. Please update your subscription in the payment section.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ResourcesInactiveError:
+      title: Resources inactive error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourcesInactive
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The requested resources are inactive.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/ResourcesInactive'
+      type: object
+      x-error-category: BadRequest
+    ResourcesNotFoundError:
+      title: Resources not found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourcesNotFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The requested resources could not be found.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/ResourcesNotFound'
+      type: object
+      x-error-category: BadRequest
+    MailCannotBeChangedErrorDetails:
+      required:
+      - reason
+      properties:
+        reason:
+          type: string
+      type: object
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    MissingManageUsersAccessForAssigningAccessGroupError:
+      title: Missing manage users access for assigning access group error
+      properties:
+        type:
+          type: string
+          enum:
+          - MissingManageUsersAccessForAssigningAccessGroup
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You are not allowed to assign groups with elevated access to users.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/MissingManageUsersAccessForAssigningAccessGroup'
+      type: object
+      x-error-category: Forbidden
+    UnexpectedValueError:
+      title: Unexpected value error
+      properties:
+        type:
+          type: string
+          enum:
+          - UnexpectedValue
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - 'Only these values are expected: string'
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/ExpectedValues'
+      type: object
+      x-error-category: BadRequest
+    InvalidCombinationError:
+      title: Invalid combination error
+      properties:
+        type:
+          type: string
+          enum:
+          - InvalidCombination
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The combination of the provided data is invalid.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Fields'
+      type: object
+      x-error-category: BadRequest
+    WageType:
+      title: Wage type
+      description: 'Possible values:
+
+        - `1`: Salary
+
+        - `2`: HourlyWage'
+      type: integer
+      enum:
+      - 1
+      - 2
+      x-enumNames:
+      - Salary
+      - HourlyWage
+    EmailNotAvailableError:
+      title: Email not available error
+      properties:
+        type:
+          type: string
+          enum:
+          - EmailNotAvailable
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Email is not available.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    WorkTimeEditLockDay:
+      title: Work time edit lock day
+      description: 'Possible values:
+
+        - `0`: LockDays0
+
+        - `1`: LockDays1
+
+        - `2`: LockDays2
+
+        - `3`: LockDays3
+
+        - `5`: LockDays5
+
+        - `8`: LockDays8
+
+        - `15`: LockDays15
+
+        - `31`: LockDays31
+
+        - `46`: LockDays46
+
+        - `91`: LockDays91'
+      type: integer
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 5
+      - 8
+      - 15
+      - 31
+      - 46
+      - 91
+      x-enumNames:
+      - LockDays0
+      - LockDays1
+      - LockDays2
+      - LockDays3
+      - LockDays5
+      - LockDays8
+      - LockDays15
+      - LockDays31
+      - LockDays46
+      - LockDays91
+    HasToBeInactiveError:
+      title: Has to be inactive error
+      properties:
+        type:
+          type: string
+          enum:
+          - HasToBeInactive
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The resource must be inactive.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    UserV3:
+      title: User
+      required:
+      - id
+      - name
+      - weekstart_monday
+      - weekend_friday
+      - active
+      - timeformat_12h
+      - language
+      - timezone
+      - teams_id
+      - initials
+      - nonbusiness_groups_id
+      properties:
+        id:
+          title: ID
+          type: integer
+          format: int64
+          examples:
+          - 10
+        name:
+          title: Name
+          type: string
+          maxLength: 100
+        weekstart_monday:
+          title: Start week on Monday?
+          description: If false, the week starts on Sunday
+          type: boolean
+        weekend_friday:
+          title: Is the weekend Friday and Saturday?
+          description: This property no longer has any effect
+          type: boolean
+          deprecated: true
+        active:
+          title: Active
+          type: boolean
+        timeformat_12h:
+          title: Use 12h time format?
+          type: boolean
+        language:
+          title: Language
+          enum:
+          - en
+          - fr
+          - de
+        timezone:
+          title: Time zone
+          description: e.g. `Europe/Berlin`
+          type: string
+        teams_id:
+          title: ID of the team
+          type:
+          - integer
+          - 'null'
+          format: int64
+        initials:
+          title: Initials
+          type: string
+        nonbusiness_groups_id:
+          title: ID of the nonbusiness group
+          description: deprecated; use v2/usersNonbusinessGroups instead
+          type:
+          - integer
+          - 'null'
+          format: int64
+          deprecated: true
+        nonbusinessgroups_id:
+          title: ID of the nonbusiness group
+          description: deprecated; use nonbusiness_groups_id instead
+          type: integer
+          format: int64
+          deprecated: true
+        number:
+          title: Number
+          type:
+          - string
+          - 'null'
+          maxLength: 50
+        work_time_regulations_id:
+          title: ID of the work time regulation
+          description: '`0` if the co-worker has no work time regulation\n`null` if the company default is applicable'
+          type:
+          - integer
+          - 'null'
+          format: int64
+        default_work_time_regulation:
+          title: Default work time regulation
+          description: Uses the company's default work time regulation
+          type: boolean
+        worktime_regulation_id:
+          title: ID of the work time regulation
+          description: deprecated; use work_time_regulations_id instead
+          type:
+          - integer
+          - 'null'
+          format: int64
+          deprecated: true
+        boss:
+          title: ID of the boss
+          type:
+          - integer
+          - 'null'
+          format: int64
+        absence_managers_id:
+          title: Absence managers IDs
+          type: array
+          items:
+            type: integer
+            format: int64
+        access_groups_ids:
+          title: Access groups IDs
+          type: array
+          items:
+            type: integer
+            format: int64
+        email:
+          title: Email address
+          type: string
+          maxLength: 90
+        role:
+          $ref: '#/components/schemas/Role'
+        can_generally_see_absences:
+          title: Can see other co-workers' absences?
+          description: Only editable for co-workers with the role 'worker'
+          type: boolean
+        can_generally_manage_absences:
+          title: Can edit other co-workers' absences?
+          description: Only editable for co-workers with the role 'worker'
+          type: boolean
+        can_add_customers:
+          title: Can add customers
+          description: Only editable for co-workers with the role 'worker'
+          type: boolean
+        default_holidays_count:
+          description: Uses the company's default holiday count
+          type: boolean
+        default_target_hours:
+          title: Default target hours
+          description: Uses the company's default target hours
+          type: boolean
+        future_coworker:
+          title: Is future co-worker?
+          description: The future co-worker cannot log in yet and the license is free until the start date.
+          type: boolean
+          examples:
+          - true
+        start_date:
+          title: Start date
+          type:
+          - string
+          - 'null'
+          format: date
+          examples:
+          - '2024-07-15'
+        exit_date:
+          title: Exit date
+          description: The co-worker is automatically archived when this date is reached. Use the `put` action to set or update this value.
+          type:
+          - string
+          - 'null'
+          format: date
+          examples:
+          - '2026-12-31'
+        wage_type:
+          oneOf:
+          - $ref: '#/components/schemas/WageType'
+          - type: 'null'
+          title: Relevant for DATEV export
+        edit_lock:
+          title: Edit lock
+          description: Defined editing lock for the co-worker. If `edit_lock_period` is set, this is the date calculated from the period for today.
+          type:
+          - string
+          - 'null'
+          format: date
+          examples:
+          - '2024-06-15'
+        edit_lock_dyn:
+          oneOf:
+          - $ref: '#/components/schemas/EditLockDay'
+            description: Relative editing lock in days for the co-worker
+          - type: 'null'
+          title: Dynamic edit lock
+          description: Relative editing lock in days for the co-worker
+        edit_lock_period:
+          oneOf:
+          - $ref: '#/components/schemas/EditLockPeriod'
+            description: Editing lock for the co-worker before the start of the given period
+          - type: 'null'
+          title: Period edit lock
+          description: Editing lock for the co-worker before the start of the given period
+        edit_lock_sync:
+          title: Can changes to the company-wide edit lock overwrite the edit lock for this co-worker?
+          type:
+          - boolean
+          - 'null'
+        work_time_edit_lock_days:
+          oneOf:
+          - $ref: '#/components/schemas/WorkTimeEditLockDay'
+            description: Relative work time editing lock in days for the co-worker
+          - type: 'null'
+          title: Work time edit lock days
+          description: Relative work time editing lock in days for the co-worker
+        budget_notifications:
+          type: boolean
+        creator:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+          examples:
+          - '2024-07-15T10:00:00Z'
+        bill_service_id:
+          description: Only visible for administrators or workers with elevated access `manage_add_ons` and `manage_users_and_teams` and if a billing application with user support is linked up
+          type:
+          - string
+          - 'null'
+          examples:
+          - '1234'
+        support_pin:
+          type: string
+          examples:
+          - '1234'
+        exempt_from_flextime:
+          description: Is exempt from flextime violation evaluation
+          type: boolean
+      type: object
+    Role:
+      title: Role
+      description: 'Possible values:
+
+        - `worker`: Worker
+
+        - `owner`: Administrator'
+      type: string
+      enum:
+      - worker
+      - owner
+      x-enumNames:
+      - Worker
+      - Owner
+    ExpectedValues:
+      title: Expected values error details
+      description: Only certain values are allowed.
+      required:
+      - expected_values
+      properties:
+        expected_values:
+          title: Expected values
+          description: One or more expected values
+          type: array
+          items:
+            type: string
+          examples:
+          - - string
+            - integer
+      type: object
+    custom_access_v2:
+      description: Access only to selected customers
+      type: object
+      additionalProperties:
+        description: Key value pairs in the format {customer id} => true or {customer id} => {} for selected projects
+        oneOf:
+        - description: Access to selected customers
+          type: boolean
+          enum:
+          - true
+        - description: Access to selected projects
+          required:
+          - projects
+          properties:
+            projects:
+              type: object
+              additionalProperties:
+                description: Key value pairs in the format {project id} => true
+                type: boolean
+                enum:
+                - true
+          type: object
+    RunningEntriesPreventArchivingError:
+      title: Running entries prevent archiving error
+      properties:
+        type:
+          type: string
+          enum:
+          - RunningEntriesPreventArchiving
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Resource can not be archived, there are running entries. Please stop those entries first.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    RunningEntriesPreventDeletionError:
+      title: Running entries prevent deletion error
+      properties:
+        type:
+          type: string
+          enum:
+          - RunningEntriesPreventDeletion
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Resource can not be deleted, there are running entries. Please stop and delete those entries first.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    BlockingTeamsAndUsers:
+      title: Blocking teams or users
+      required:
+      - teams
+      - users
+      properties:
+        teams:
+          type: array
+          items:
+            required:
+            - id
+            - name
+            properties:
+              id:
+                type: integer
+                examples:
+                - 1
+              name:
+                type: string
+                examples:
+                - Team 1
+            type: object
+        users:
+          type: array
+          items:
+            required:
+            - id
+            - name
+            - initials
+            - number
+            - teams_id
+            - teams_name
+            properties:
+              id:
+                type: integer
+                examples:
+                - 1
+              name:
+                type: string
+                examples:
+                - User 1
+              initials:
+                type:
+                - string
+                - 'null'
+                examples:
+                - U1
+              number:
+                type:
+                - string
+                - 'null'
+                examples:
+                - '1234'
+              teams_id:
+                type:
+                - integer
+                - 'null'
+                examples:
+                - 1
+              teams_name:
+                type:
+                - string
+                - 'null'
+                examples:
+                - Team A
+            type: object
+      type: object
+    ApiUsersV3_SortForIndex:
+      title: Sort for index
+      description: 'Possible values:
+
+        - `active`: ActiveAsc
+
+        - `-active`: ActiveDesc
+
+        - `id`: IdAsc
+
+        - `-id`: IdDesc
+
+        - `name`: NameAsc
+
+        - `-name`: NameDesc
+
+        - `number`: NumberAsc
+
+        - `-number`: NumberDesc
+
+        - `role`: RoleAsc
+
+        - `-role`: RoleDesc
+
+        - `teams_name`: TeamsNameAsc
+
+        - `-teams_name`: TeamsNameDesc'
+      type: string
+      enum:
+      - active
+      - -active
+      - id
+      - -id
+      - name
+      - -name
+      - number
+      - -number
+      - role
+      - -role
+      - teams_name
+      - -teams_name
+      x-enumNames:
+      - ActiveAsc
+      - ActiveDesc
+      - IdAsc
+      - IdDesc
+      - NameAsc
+      - NameDesc
+      - NumberAsc
+      - NumberDesc
+      - RoleAsc
+      - RoleDesc
+      - TeamsNameAsc
+      - TeamsNameDesc
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

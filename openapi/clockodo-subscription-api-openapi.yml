@@ -1,0 +1,390 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Subscription API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: Subscription
+  description: Get subscription info
+paths:
+  /v2/subscription:
+    get:
+      tags:
+      - Subscription
+      operationId: getSubscriptionV2
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/subscription_v2'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get subscription V2
+      x-summary-source: derived
+components:
+  schemas:
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    subscription_v2:
+      title: Subscription
+      required:
+      - current_until
+      - current
+      - upcoming
+      - cancel_date
+      properties:
+        current_until:
+          title: End of current subscription period
+          type: string
+          format: date
+          examples:
+          - '2024-01-31'
+        current:
+          title: Current subscription settings
+          required:
+          - plan_id
+          - plan_name
+          - number_of_licences
+          - interval
+          properties:
+            plan_id:
+              title: ID of current plan type
+              type: integer
+              examples:
+              - 102
+            plan_name:
+              title: Name of current plan type
+              type: string
+              examples:
+              - Pro
+            number_of_licences:
+              title: Number of currently booked licences
+              type:
+              - integer
+              - 'null'
+              examples:
+              - 5
+            interval:
+              title: Current payment interval
+              type:
+              - string
+              - 'null'
+              examples:
+              - monthly
+          type: object
+        upcoming:
+          title: Upcoming subscription settings
+          required:
+          - plan_id
+          - plan_name
+          - number_of_licences
+          - interval
+          properties:
+            plan_id:
+              title: ID of upcoming plan type
+              type: integer
+              examples:
+              - 102
+            plan_name:
+              title: Name of upcoming plan type
+              type: string
+              examples:
+              - Pro
+            number_of_licences:
+              title: Number of upcoming booked licences
+              type: integer
+              examples:
+              - 5
+            interval:
+              title: Upcoming payment interval
+              type: string
+              examples:
+              - monthly
+          type:
+          - object
+          - 'null'
+        cancel_date:
+          title: Date of cancellation
+          type:
+          - string
+          - 'null'
+          format: date
+          examples:
+          - '2024-01-31'
+      type: object
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

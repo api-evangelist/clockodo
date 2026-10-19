@@ -1,0 +1,3612 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Webhook API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: Webhook
+paths: {}
+webhooks:
+  user_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: user.created'
+      description: This webhook is triggered when a user created event occurs.
+      operationId: webhook_user_created
+      requestBody:
+        description: The webhook payload for the user.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_user_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  user_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: user.updated'
+      description: This webhook is triggered when a user updated event occurs.
+      operationId: webhook_user_updated
+      requestBody:
+        description: The webhook payload for the user.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_user_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  user_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: user.deleted'
+      description: This webhook is triggered when a user deleted event occurs.
+      operationId: webhook_user_deleted
+      requestBody:
+        description: The webhook payload for the user.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_user_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  absence_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: absence.created'
+      description: This webhook is triggered when a absence created event occurs.
+      operationId: webhook_absence_created
+      requestBody:
+        description: The webhook payload for the absence.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_absence_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  absence_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: absence.updated'
+      description: This webhook is triggered when a absence updated event occurs.
+      operationId: webhook_absence_updated
+      requestBody:
+        description: The webhook payload for the absence.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_absence_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  absence_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: absence.deleted'
+      description: This webhook is triggered when a absence deleted event occurs.
+      operationId: webhook_absence_deleted
+      requestBody:
+        description: The webhook payload for the absence.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_absence_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  absence_approved:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: absence.approved'
+      description: This webhook is triggered when a absence approved event occurs.
+      operationId: webhook_absence_approved
+      requestBody:
+        description: The webhook payload for the absence.approved event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_absence_approved'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  customer_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: customer.created'
+      description: This webhook is triggered when a customer created event occurs.
+      operationId: webhook_customer_created
+      requestBody:
+        description: The webhook payload for the customer.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_customer_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  customer_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: customer.updated'
+      description: This webhook is triggered when a customer updated event occurs.
+      operationId: webhook_customer_updated
+      requestBody:
+        description: The webhook payload for the customer.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_customer_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  customer_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: customer.deleted'
+      description: This webhook is triggered when a customer deleted event occurs.
+      operationId: webhook_customer_deleted
+      requestBody:
+        description: The webhook payload for the customer.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_customer_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  project_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: project.created'
+      description: This webhook is triggered when a project created event occurs.
+      operationId: webhook_project_created
+      requestBody:
+        description: The webhook payload for the project.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_project_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  project_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: project.updated'
+      description: This webhook is triggered when a project updated event occurs.
+      operationId: webhook_project_updated
+      requestBody:
+        description: The webhook payload for the project.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_project_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  project_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: project.deleted'
+      description: This webhook is triggered when a project deleted event occurs.
+      operationId: webhook_project_deleted
+      requestBody:
+        description: The webhook payload for the project.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_project_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  project_completed:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: project.completed'
+      description: This webhook is triggered when a project completed event occurs.
+      operationId: webhook_project_completed
+      requestBody:
+        description: The webhook payload for the project.completed event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_project_completed'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  project_budget_notification:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: project.budget_notification'
+      description: 'This webhook is triggered when a project or subproject''s budget usage crosses a defined threshold.
+
+
+        **Triggering Conditions:**
+
+        - The project/subproject must have budget notification thresholds configured (e.g., 50%, 60%, 70%)
+
+        - The current budget usage percentage must exceed a threshold that wasn''t previously exceeded
+
+        - The webhook only fires once per threshold level (prevents duplicate notifications)
+
+        - The company must have a Trial or Enterprise subscription
+
+
+        **Example Scenarios:**
+
+        - Usage increases from 45% to 55% with a 50% threshold → webhook fires for 50%
+
+        - Usage increases from 55% to 60% with only a 50% threshold → webhook does NOT fire (already exceeded)
+
+        - Usage increases from 55% to 80% with thresholds at 50% and 75% → webhook fires for 75%
+
+
+        The `type` field in the payload indicates whether it''s a `projectBudget` or `subprojectBudget` notification.
+
+        The `threshold` field contains the percentage value that was exceeded.'
+      operationId: webhook_project_budget_notification
+      requestBody:
+        description: The webhook payload for the project.budget_notification event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_project_budget_notification'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  subproject_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: subproject.created'
+      description: This webhook is triggered when a subproject created event occurs.
+      operationId: webhook_subproject_created
+      requestBody:
+        description: The webhook payload for the subproject.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_subproject_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  subproject_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: subproject.updated'
+      description: This webhook is triggered when a subproject updated event occurs.
+      operationId: webhook_subproject_updated
+      requestBody:
+        description: The webhook payload for the subproject.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_subproject_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  subproject_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: subproject.deleted'
+      description: This webhook is triggered when a subproject deleted event occurs.
+      operationId: webhook_subproject_deleted
+      requestBody:
+        description: The webhook payload for the subproject.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_subproject_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  service_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: service.created'
+      description: This webhook is triggered when a service created event occurs.
+      operationId: webhook_service_created
+      requestBody:
+        description: The webhook payload for the service.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_service_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  service_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: service.updated'
+      description: This webhook is triggered when a service updated event occurs.
+      operationId: webhook_service_updated
+      requestBody:
+        description: The webhook payload for the service.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_service_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  service_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: service.deleted'
+      description: This webhook is triggered when a service deleted event occurs.
+      operationId: webhook_service_deleted
+      requestBody:
+        description: The webhook payload for the service.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_service_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  team_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: team.created'
+      description: This webhook is triggered when a team created event occurs.
+      operationId: webhook_team_created
+      requestBody:
+        description: The webhook payload for the team.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_team_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  team_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: team.updated'
+      description: This webhook is triggered when a team updated event occurs.
+      operationId: webhook_team_updated
+      requestBody:
+        description: The webhook payload for the team.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_team_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  team_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: team.deleted'
+      description: This webhook is triggered when a team deleted event occurs.
+      operationId: webhook_team_deleted
+      requestBody:
+        description: The webhook payload for the team.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_team_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  lump_sum_service_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: lump_sum_service.created'
+      description: This webhook is triggered when a lump_sum_service created event occurs.
+      operationId: webhook_lump_sum_service_created
+      requestBody:
+        description: The webhook payload for the lump_sum_service.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_lump_sum_service_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  lump_sum_service_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: lump_sum_service.updated'
+      description: This webhook is triggered when a lump_sum_service updated event occurs.
+      operationId: webhook_lump_sum_service_updated
+      requestBody:
+        description: The webhook payload for the lump_sum_service.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_lump_sum_service_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  lump_sum_service_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: lump_sum_service.deleted'
+      description: This webhook is triggered when a lump_sum_service deleted event occurs.
+      operationId: webhook_lump_sum_service_deleted
+      requestBody:
+        description: The webhook payload for the lump_sum_service.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_lump_sum_service_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  holidays_carry_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: holidays_carry.created'
+      description: This webhook is triggered when a holidays_carry created event occurs.
+      operationId: webhook_holidays_carry_created
+      requestBody:
+        description: The webhook payload for the holidays_carry.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_holidays_carry_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  holidays_carry_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: holidays_carry.updated'
+      description: This webhook is triggered when a holidays_carry updated event occurs.
+      operationId: webhook_holidays_carry_updated
+      requestBody:
+        description: The webhook payload for the holidays_carry.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_holidays_carry_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  holidays_carry_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: holidays_carry.deleted'
+      description: This webhook is triggered when a holidays_carry deleted event occurs.
+      operationId: webhook_holidays_carry_deleted
+      requestBody:
+        description: The webhook payload for the holidays_carry.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_holidays_carry_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  holidays_quota_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: holidays_quota.created'
+      description: This webhook is triggered when a holidays_quota created event occurs.
+      operationId: webhook_holidays_quota_created
+      requestBody:
+        description: The webhook payload for the holidays_quota.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_holidays_quota_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  holidays_quota_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: holidays_quota.updated'
+      description: This webhook is triggered when a holidays_quota updated event occurs.
+      operationId: webhook_holidays_quota_updated
+      requestBody:
+        description: The webhook payload for the holidays_quota.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_holidays_quota_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  holidays_quota_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: holidays_quota.deleted'
+      description: This webhook is triggered when a holidays_quota deleted event occurs.
+      operationId: webhook_holidays_quota_deleted
+      requestBody:
+        description: The webhook payload for the holidays_quota.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_holidays_quota_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  overtime_carry_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: overtime_carry.created'
+      description: This webhook is triggered when a overtime_carry created event occurs.
+      operationId: webhook_overtime_carry_created
+      requestBody:
+        description: The webhook payload for the overtime_carry.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_overtime_carry_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  overtime_carry_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: overtime_carry.updated'
+      description: This webhook is triggered when a overtime_carry updated event occurs.
+      operationId: webhook_overtime_carry_updated
+      requestBody:
+        description: The webhook payload for the overtime_carry.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_overtime_carry_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  overtime_carry_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: overtime_carry.deleted'
+      description: This webhook is triggered when a overtime_carry deleted event occurs.
+      operationId: webhook_overtime_carry_deleted
+      requestBody:
+        description: The webhook payload for the overtime_carry.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_overtime_carry_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  nonbusiness_group_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: nonbusiness_group.created'
+      description: This webhook is triggered when a nonbusiness_group created event occurs.
+      operationId: webhook_nonbusiness_group_created
+      requestBody:
+        description: The webhook payload for the nonbusiness_group.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_nonbusiness_group_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  nonbusiness_group_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: nonbusiness_group.updated'
+      description: This webhook is triggered when a nonbusiness_group updated event occurs.
+      operationId: webhook_nonbusiness_group_updated
+      requestBody:
+        description: The webhook payload for the nonbusiness_group.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_nonbusiness_group_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  nonbusiness_group_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: nonbusiness_group.deleted'
+      description: This webhook is triggered when a nonbusiness_group deleted event occurs.
+      operationId: webhook_nonbusiness_group_deleted
+      requestBody:
+        description: The webhook payload for the nonbusiness_group.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_nonbusiness_group_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  work_time_change_request_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: work_time_change_request.created'
+      description: This webhook is triggered when a work_time_change_request created event occurs.
+      operationId: webhook_work_time_change_request_created
+      requestBody:
+        description: The webhook payload for the work_time_change_request.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_work_time_change_request_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  work_time_change_request_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: work_time_change_request.updated'
+      description: This webhook is triggered when a work_time_change_request updated event occurs.
+      operationId: webhook_work_time_change_request_updated
+      requestBody:
+        description: The webhook payload for the work_time_change_request.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_work_time_change_request_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  work_time_change_request_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: work_time_change_request.deleted'
+      description: This webhook is triggered when a work_time_change_request deleted event occurs.
+      operationId: webhook_work_time_change_request_deleted
+      requestBody:
+        description: The webhook payload for the work_time_change_request.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_work_time_change_request_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  entry_created:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: entry.created'
+      description: This webhook is triggered when a entry created event occurs.
+      operationId: webhook_entry_created
+      requestBody:
+        description: The webhook payload for the entry.created event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_entry_created'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  entry_updated:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: entry.updated'
+      description: This webhook is triggered when a entry updated event occurs.
+      operationId: webhook_entry_updated
+      requestBody:
+        description: The webhook payload for the entry.updated event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_entry_updated'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  entry_deleted:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: entry.deleted'
+      description: This webhook is triggered when a entry deleted event occurs.
+      operationId: webhook_entry_deleted
+      requestBody:
+        description: The webhook payload for the entry.deleted event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_entry_deleted'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  entry_started:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: entry.started'
+      description: This webhook is triggered when a entry started event occurs.
+      operationId: webhook_entry_started
+      requestBody:
+        description: The webhook payload for the entry.started event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_entry_started'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+  entry_stopped:
+    post:
+      tags:
+      - Webhook
+      summary: 'Webhook: entry.stopped'
+      description: This webhook is triggered when a entry stopped event occurs.
+      operationId: webhook_entry_stopped
+      requestBody:
+        description: The webhook payload for the entry.stopped event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent_entry_stopped'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully
+components:
+  schemas:
+    WebhookEvent_user_updated:
+      title: 'Webhook Event: user.updated'
+      description: Complete webhook body for event "user.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - user
+          properties:
+            user:
+              description: The user entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the user
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: user.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_work_time_change_request_created:
+      title: 'Webhook Event: work_time_change_request.created'
+      description: Complete webhook body for event "work_time_change_request.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - work_time_change_request
+          properties:
+            work_time_change_request:
+              description: The work time change request entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the work time change request
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: work_time_change_request.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_absence_created:
+      title: 'Webhook Event: absence.created'
+      description: Complete webhook body for event "absence.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - absence
+          properties:
+            absence:
+              description: The absence entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the absence
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: absence.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_holidays_carry_deleted:
+      title: 'Webhook Event: holidays_carry.deleted'
+      description: Complete webhook body for event "holidays_carry.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - holidays_carry
+          properties:
+            holidays_carry:
+              description: The holidays carry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the holidays carry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: holidays_carry.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_lump_sum_service_updated:
+      title: 'Webhook Event: lump_sum_service.updated'
+      description: Complete webhook body for event "lump_sum_service.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - lump_sum_service
+          properties:
+            lump_sum_service:
+              description: The lump sum service entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the lump sum service
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: lump_sum_service.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_holidays_quota_updated:
+      title: 'Webhook Event: holidays_quota.updated'
+      description: Complete webhook body for event "holidays_quota.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - holidays_quota
+          properties:
+            holidays_quota:
+              description: The holidays quota entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the holidays quota
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: holidays_quota.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_holidays_quota_created:
+      title: 'Webhook Event: holidays_quota.created'
+      description: Complete webhook body for event "holidays_quota.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - holidays_quota
+          properties:
+            holidays_quota:
+              description: The holidays quota entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the holidays quota
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: holidays_quota.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_holidays_carry_updated:
+      title: 'Webhook Event: holidays_carry.updated'
+      description: Complete webhook body for event "holidays_carry.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - holidays_carry
+          properties:
+            holidays_carry:
+              description: The holidays carry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the holidays carry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: holidays_carry.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_work_time_change_request_updated:
+      title: 'Webhook Event: work_time_change_request.updated'
+      description: Complete webhook body for event "work_time_change_request.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - work_time_change_request
+          properties:
+            work_time_change_request:
+              description: The work time change request entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the work time change request
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: work_time_change_request.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_subproject_created:
+      title: 'Webhook Event: subproject.created'
+      description: Complete webhook body for event "subproject.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - subproject
+          properties:
+            subproject:
+              description: The subproject entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the subproject
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: subproject.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_lump_sum_service_deleted:
+      title: 'Webhook Event: lump_sum_service.deleted'
+      description: Complete webhook body for event "lump_sum_service.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - lump_sum_service
+          properties:
+            lump_sum_service:
+              description: The lump sum service entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the lump sum service
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: lump_sum_service.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_work_time_change_request_deleted:
+      title: 'Webhook Event: work_time_change_request.deleted'
+      description: Complete webhook body for event "work_time_change_request.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - work_time_change_request
+          properties:
+            work_time_change_request:
+              description: The work time change request entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the work time change request
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: work_time_change_request.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_absence_deleted:
+      title: 'Webhook Event: absence.deleted'
+      description: Complete webhook body for event "absence.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - absence
+          properties:
+            absence:
+              description: The absence entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the absence
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: absence.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_team_deleted:
+      title: 'Webhook Event: team.deleted'
+      description: Complete webhook body for event "team.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - team
+          properties:
+            team:
+              description: The team entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the team
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: team.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_overtime_carry_created:
+      title: 'Webhook Event: overtime_carry.created'
+      description: Complete webhook body for event "overtime_carry.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - overtime_carry
+          properties:
+            overtime_carry:
+              description: The overtime carry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the overtime carry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: overtime_carry.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_nonbusiness_group_created:
+      title: 'Webhook Event: nonbusiness_group.created'
+      description: Complete webhook body for event "nonbusiness_group.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - nonbusiness_group
+          properties:
+            nonbusiness_group:
+              description: The nonbusiness group entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the nonbusiness group
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: nonbusiness_group.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_service_updated:
+      title: 'Webhook Event: service.updated'
+      description: Complete webhook body for event "service.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - service
+          properties:
+            service:
+              description: The service entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the service
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: service.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_service_created:
+      title: 'Webhook Event: service.created'
+      description: Complete webhook body for event "service.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - service
+          properties:
+            service:
+              description: The service entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the service
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: service.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_overtime_carry_updated:
+      title: 'Webhook Event: overtime_carry.updated'
+      description: Complete webhook body for event "overtime_carry.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - overtime_carry
+          properties:
+            overtime_carry:
+              description: The overtime carry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the overtime carry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: overtime_carry.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_overtime_carry_deleted:
+      title: 'Webhook Event: overtime_carry.deleted'
+      description: Complete webhook body for event "overtime_carry.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - overtime_carry
+          properties:
+            overtime_carry:
+              description: The overtime carry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the overtime carry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: overtime_carry.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_project_deleted:
+      title: 'Webhook Event: project.deleted'
+      description: Complete webhook body for event "project.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - project
+          properties:
+            project:
+              description: The project entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the project
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: project.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_holidays_quota_deleted:
+      title: 'Webhook Event: holidays_quota.deleted'
+      description: Complete webhook body for event "holidays_quota.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - holidays_quota
+          properties:
+            holidays_quota:
+              description: The holidays quota entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the holidays quota
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: holidays_quota.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_customer_updated:
+      title: 'Webhook Event: customer.updated'
+      description: Complete webhook body for event "customer.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - customer
+          properties:
+            customer:
+              description: The customer entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the customer
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: customer.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_team_created:
+      title: 'Webhook Event: team.created'
+      description: Complete webhook body for event "team.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - team
+          properties:
+            team:
+              description: The team entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the team
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: team.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_nonbusiness_group_updated:
+      title: 'Webhook Event: nonbusiness_group.updated'
+      description: Complete webhook body for event "nonbusiness_group.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - nonbusiness_group
+          properties:
+            nonbusiness_group:
+              description: The nonbusiness group entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the nonbusiness group
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: nonbusiness_group.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_project_created:
+      title: 'Webhook Event: project.created'
+      description: Complete webhook body for event "project.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - project
+          properties:
+            project:
+              description: The project entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the project
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: project.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_lump_sum_service_created:
+      title: 'Webhook Event: lump_sum_service.created'
+      description: Complete webhook body for event "lump_sum_service.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - lump_sum_service
+          properties:
+            lump_sum_service:
+              description: The lump sum service entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the lump sum service
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: lump_sum_service.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_entry_updated:
+      title: 'Webhook Event: entry.updated'
+      description: Complete webhook body for event "entry.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - entry
+          properties:
+            entry:
+              description: The entry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the entry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: entry.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_nonbusiness_group_deleted:
+      title: 'Webhook Event: nonbusiness_group.deleted'
+      description: Complete webhook body for event "nonbusiness_group.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - nonbusiness_group
+          properties:
+            nonbusiness_group:
+              description: The nonbusiness group entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the nonbusiness group
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: nonbusiness_group.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_subproject_deleted:
+      title: 'Webhook Event: subproject.deleted'
+      description: Complete webhook body for event "subproject.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - subproject
+          properties:
+            subproject:
+              description: The subproject entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the subproject
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: subproject.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_user_created:
+      title: 'Webhook Event: user.created'
+      description: Complete webhook body for event "user.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - user
+          properties:
+            user:
+              description: The user entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the user
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: user.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_subproject_updated:
+      title: 'Webhook Event: subproject.updated'
+      description: Complete webhook body for event "subproject.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - subproject
+          properties:
+            subproject:
+              description: The subproject entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the subproject
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: subproject.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_project_budget_notification:
+      title: 'Webhook Event: project.budget_notification'
+      description: Complete webhook body for event "project.budget_notification"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - id
+          - type
+          - threshold
+          properties:
+            id:
+              description: The ID of the project
+              type: integer
+              examples:
+              - 123
+            type:
+              description: The type of budget notification
+              type: string
+              examples:
+              - projectBudget
+            threshold:
+              description: The budget threshold percentage that was exceeded
+              type: integer
+              examples:
+              - 80
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: project.budget_notification
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_team_updated:
+      title: 'Webhook Event: team.updated'
+      description: Complete webhook body for event "team.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - team
+          properties:
+            team:
+              description: The team entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the team
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: team.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_holidays_carry_created:
+      title: 'Webhook Event: holidays_carry.created'
+      description: Complete webhook body for event "holidays_carry.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - holidays_carry
+          properties:
+            holidays_carry:
+              description: The holidays carry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the holidays carry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: holidays_carry.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_absence_approved:
+      title: 'Webhook Event: absence.approved'
+      description: Complete webhook body for event "absence.approved"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - absence
+          properties:
+            absence:
+              description: The absence entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the absence
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: absence.approved
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_absence_updated:
+      title: 'Webhook Event: absence.updated'
+      description: Complete webhook body for event "absence.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - absence
+          properties:
+            absence:
+              description: The absence entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the absence
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: absence.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_entry_deleted:
+      title: 'Webhook Event: entry.deleted'
+      description: Complete webhook body for event "entry.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - entry
+          properties:
+            entry:
+              description: The entry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the entry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: entry.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_customer_created:
+      title: 'Webhook Event: customer.created'
+      description: Complete webhook body for event "customer.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - customer
+          properties:
+            customer:
+              description: The customer entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the customer
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: customer.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_user_deleted:
+      title: 'Webhook Event: user.deleted'
+      description: Complete webhook body for event "user.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - user
+          properties:
+            user:
+              description: The user entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the user
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: user.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_project_updated:
+      title: 'Webhook Event: project.updated'
+      description: Complete webhook body for event "project.updated"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - project
+          properties:
+            project:
+              description: The project entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the project
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: project.updated
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_project_completed:
+      title: 'Webhook Event: project.completed'
+      description: Complete webhook body for event "project.completed"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - project
+          properties:
+            project:
+              description: The project entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the project
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: project.completed
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_entry_stopped:
+      title: 'Webhook Event: entry.stopped'
+      description: Complete webhook body for event "entry.stopped"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - entry
+          properties:
+            entry:
+              description: The entry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the entry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: entry.stopped
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_entry_started:
+      title: 'Webhook Event: entry.started'
+      description: Complete webhook body for event "entry.started"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - entry
+          properties:
+            entry:
+              description: The entry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the entry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: entry.started
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_entry_created:
+      title: 'Webhook Event: entry.created'
+      description: Complete webhook body for event "entry.created"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - entry
+          properties:
+            entry:
+              description: The entry entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the entry
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: entry.created
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_customer_deleted:
+      title: 'Webhook Event: customer.deleted'
+      description: Complete webhook body for event "customer.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - customer
+          properties:
+            customer:
+              description: The customer entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the customer
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: customer.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+    WebhookEvent_service_deleted:
+      title: 'Webhook Event: service.deleted'
+      description: Complete webhook body for event "service.deleted"
+      required:
+      - subscription_id
+      - company_id
+      - occurred_at
+      - payload
+      - event_name
+      - token
+      properties:
+        subscription_id:
+          description: The ID of the webhook subscription
+          type: integer
+          examples:
+          - 42
+        company_id:
+          description: The ID of the company
+          type: integer
+          examples:
+          - 1337
+        occurred_at:
+          description: The timestamp when the event occurred (ISO 8601 format)
+          type: string
+          format: date-time
+          examples:
+          - '1986-05-10T17:02:00Z'
+        payload:
+          description: The event-specific payload data
+          required:
+          - service
+          properties:
+            service:
+              description: The service entity
+              required:
+              - id
+              properties:
+                id:
+                  description: The ID of the service
+                  type: integer
+                  examples:
+                  - 1
+              type: object
+          type: object
+        event_name:
+          description: The name of the webhook event
+          type: string
+          const: service.deleted
+        token:
+          description: The webhook verification token
+          type: string
+          examples:
+          - My_Sup3r_T0k3n
+      type: object
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

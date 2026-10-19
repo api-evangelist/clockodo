@@ -1,0 +1,808 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Holiday Quota API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: HolidayQuota
+  description: Manage holiday quotas
+paths:
+  /v2/holidaysQuota:
+    get:
+      tags:
+      - HolidayQuota
+      operationId: getHolidayQuotasV2
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        style: deepObject
+        explode: true
+        schema:
+          properties:
+            users_id:
+              type: integer
+              minimum: 1
+            year:
+              type: integer
+              maximum: 2037
+              minimum: 2000
+          type: object
+      - name: users_id
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+      - name: year
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 2037
+          minimum: 2000
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HolidaysQuotaV2'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get holiday quotas V2
+      x-summary-source: derived
+    post:
+      tags:
+      - HolidayQuota
+      operationId: createHolidayQuotaV2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - users_id
+              - year_since
+              - count
+              properties:
+                users_id:
+                  type: integer
+                  minimum: 1
+                year_since:
+                  description: Year from which on the vacation quota setting applies.
+                  type: integer
+                  format: YYYY
+                  maximum: 2037
+                  minimum: 2000
+                  examples:
+                  - 2023
+                year_until:
+                  description: Year until the vacation quota setting applies.
+                  type:
+                  - integer
+                  - 'null'
+                  format: YYYY
+                  maximum: 2037
+                  minimum: 2000
+                  examples:
+                  - 2023
+                count:
+                  description: Amount of vacation days.
+                  type: number
+                  format: float
+                  maximum: 365
+                  minimum: 0
+                note:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/HolidaysQuotaV2'
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiHolidaysQuotaV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Create holiday quota V2
+      x-summary-source: derived
+  /v2/holidaysQuota/{id}:
+    get:
+      tags:
+      - HolidayQuota
+      operationId: getHolidayQuotaByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/HolidaysQuotaV2'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get holiday quota by id V2
+      x-summary-source: derived
+    put:
+      tags:
+      - HolidayQuota
+      operationId: updateHolidayQuotaByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                year_since:
+                  description: Year from which on the vacation quota setting applies.
+                  type: integer
+                  format: YYYY
+                  maximum: 2037
+                  minimum: 2000
+                  examples:
+                  - 2023
+                year_until:
+                  description: Year until the vacation quota setting applies.
+                  type:
+                  - integer
+                  - 'null'
+                  format: YYYY
+                  maximum: 2037
+                  minimum: 2000
+                  examples:
+                  - 2023
+                count:
+                  description: Amount of vacation days.
+                  type: number
+                  format: float
+                  maximum: 365
+                  minimum: 0
+                note:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/HolidaysQuotaV2'
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiHolidaysQuotaV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Update holiday quota by id V2
+      x-summary-source: derived
+    delete:
+      tags:
+      - HolidayQuota
+      operationId: deleteHolidayQuotaByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - success
+                properties:
+                  success:
+                    title: Success
+                    type: boolean
+                    examples:
+                    - true
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiHolidaysQuotaV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Delete holiday quota by id V2
+      x-summary-source: derived
+components:
+  schemas:
+    IsDefaultHolidaysCountError:
+      title: Is default holidays count error
+      properties:
+        type:
+          type: string
+          enum:
+          - IsDefaultHolidaysCount
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - It is not allowed to delete a holidays quota which is user default.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    FieldsShouldBeEmptyError:
+      title: Fields should be empty error
+      properties:
+        type:
+          type: string
+          enum:
+          - FieldsShouldBeEmpty
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - 'According to your other information, the following fields should be empty: type, status.'
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Fields'
+      type: object
+      x-error-category: BadRequest
+    Fields:
+      title: Fields error details
+      description: The names of invalid input fields
+      required:
+      - fields
+      properties:
+        fields:
+          title: Fields
+          description: One or more invalid fields
+          type: array
+          items:
+            type: string
+          examples:
+          - - type
+            - status
+      type: object
+    DuplicateEntryForUserAndYearError:
+      title: Duplicate entry for user and year error
+      properties:
+        type:
+          type: string
+          enum:
+          - DuplicateEntryForUserAndYear
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - A resource has already been defined for this user and year.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ResourceNotFoundError:
+      title: Resource not found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceNotFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The requested resource could not be found.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    EndBeforeStartError:
+      title: End before start error
+      properties:
+        type:
+          type: string
+          enum:
+          - EndBeforeStart
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - An error occurred, please try again.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    OneOpenEndedQuotaError:
+      title: One open ended quota error
+      properties:
+        type:
+          type: string
+          enum:
+          - OneOpenEndedQuota
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - There must be only one open ended holidays quota.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    HolidaysQuotaV2:
+      required:
+      - id
+      - users_id
+      - year_since
+      - year_until
+      - count
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples:
+          - 10
+        users_id:
+          type: integer
+          format: int64
+          examples:
+          - 20
+        year_since:
+          type: integer
+          format: int64
+          examples:
+          - '2023'
+        year_until:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          examples:
+          - '2024'
+        count:
+          type: number
+          format: float
+          examples:
+          - 3.5
+        note:
+          type:
+          - string
+          - 'null'
+          maxLength: 1000
+          examples:
+          - Carryover from previous year
+      type: object
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    ApiHolidaysQuotaV2Errors:
+      title: Api holidays quota v2 errors
+      required:
+      - error
+      properties:
+        error:
+          title: Errors
+          type: object
+          anyOf:
+          - $ref: '#/components/schemas/FieldsShouldBeEmptyError'
+          - $ref: '#/components/schemas/IsDefaultHolidaysCountError'
+          - $ref: '#/components/schemas/DuplicateEntryForUserAndYearError'
+          - $ref: '#/components/schemas/OneOpenEndedQuotaError'
+          - $ref: '#/components/schemas/ResourceNotFoundError'
+          - $ref: '#/components/schemas/EndBeforeStartError'
+      type: object
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

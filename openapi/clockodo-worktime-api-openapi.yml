@@ -1,0 +1,966 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Work Time API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: WorkTime
+  description: Manage work times. Work times cannot be edited directly. To edit work times, edit the respective time entries or use requests for change of work time.
+paths:
+  /v2/workTimes:
+    get:
+      tags:
+      - WorkTime
+      operationId: getWorkTimesV2
+      parameters:
+      - name: date_since
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+          examples:
+          - '2023-02-28'
+      - name: date_until
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+          examples:
+          - '2023-02-28'
+      - name: users_id
+        in: query
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - paging
+                - work_time_days
+                properties:
+                  paging:
+                    required:
+                    - items_per_page
+                    - current_page
+                    - count_pages
+                    - count_items
+                    properties:
+                      items_per_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1000
+                      current_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_pages:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_items:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 4
+                    type: object
+                  work_time_days:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WorkTimeV2'
+                type: object
+      deprecated: false
+      summary: Get work times V2
+      x-summary-source: derived
+  /v2/workTimes/changeRequests:
+    get:
+      tags:
+      - WorkTime
+      operationId: getWorkTimesChangeRequestsV2
+      parameters:
+      - name: date_since
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+          examples:
+          - '2023-02-28'
+      - name: date_until
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+          examples:
+          - '2023-02-28'
+      - name: items_per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          maximum: 1000
+          minimum: 1
+          examples:
+          - 100
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          examples:
+          - 1
+      - name: scope
+        in: query
+        description: Filter by scope, to get change requests that are pending approval or declined.
+        required: false
+        schema:
+          $ref: '#/components/schemas/ChangeRequestScope'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortIdDate'
+      - name: status
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ChangeRequestStatus'
+      - name: teams_id
+        in: query
+        required: false
+        schema:
+          oneOf:
+          - type: array
+            items:
+              type:
+              - integer
+              - 'null'
+              minimum: 0
+            maxItems: 500
+          - type:
+            - integer
+            - 'null'
+            minimum: 0
+          - type: string
+            format: csv-string
+            x-csv-element-schema:
+              type:
+              - integer
+              - 'null'
+              minimum: 0
+      - name: users_id
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - paging
+                - change_requests
+                properties:
+                  paging:
+                    required:
+                    - items_per_page
+                    - current_page
+                    - count_pages
+                    - count_items
+                    properties:
+                      items_per_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1000
+                      current_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_pages:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_items:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 4
+                    type: object
+                  change_requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WorkTimesChangeRequestV2'
+                type: object
+      deprecated: false
+      summary: Get work times change requests V2
+      x-summary-source: derived
+    post:
+      tags:
+      - WorkTime
+      operationId: createWorkTimesChangeRequestV2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - date
+              - users_id
+              - changes
+              properties:
+                date:
+                  type: string
+                  format: date
+                  examples:
+                  - '2023-02-28'
+                users_id:
+                  type: integer
+                  minimum: 1
+                changes:
+                  type: array
+                  items:
+                    required:
+                    - type
+                    - time_until
+                    - time_since
+                    properties:
+                      time_since:
+                        type: string
+                        format: date-time
+                        examples:
+                        - '2023-02-28T12:00:00Z'
+                      time_until:
+                        type: string
+                        format: date-time
+                        examples:
+                        - '2023-02-28T12:00:00Z'
+                      type:
+                        $ref: '#/components/schemas/ChangeRequestIntervalType'
+                    type: object
+                  minItems: 1
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkTimesChangeRequestPostV2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Create work times change request V2
+      x-summary-source: derived
+  /v2/workTimes/changeRequests/{id}:
+    delete:
+      tags:
+      - WorkTime
+      operationId: deleteWorkTimesChangeRequestByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkTimesChangeRequestDeleteV2'
+      deprecated: false
+      summary: Delete work times change request by id V2
+      x-summary-source: derived
+  /v2/workTimes/changeRequests/{id}/decline:
+    post:
+      tags:
+      - WorkTime
+      operationId: declineWorkTimesChangeRequestByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkTimesChangeRequestsDeclineV2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '400':
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleErrorResponses'
+      deprecated: true
+      summary: Decline work times change request by id V2
+      x-summary-source: derived
+  /v3/workTimes/changeRequests/{id}/approve:
+    post:
+      tags:
+      - WorkTime
+      operationId: approveWorkTimesChangeRequestByIdV3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                approve_violations:
+                  type: boolean
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - success
+                properties:
+                  success:
+                    title: Success
+                    type: boolean
+                    examples:
+                    - true
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '400':
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleErrorResponses'
+      deprecated: false
+      summary: Approve work times change request by id V3
+      x-summary-source: derived
+components:
+  schemas:
+    WorkTimesChangeRequestsDeclineChangeV2:
+      required:
+      - type
+      - time_since
+      - time_until
+      properties:
+        type:
+          $ref: '#/components/schemas/ChangeRequestIntervalType'
+        time_since:
+          type: string
+        time_until:
+          type:
+          - string
+          - 'null'
+      type: object
+    ChangeRequestIntervalType:
+      title: Change request interval type
+      description: 'Possible values:
+
+        - `1`: Added
+
+        - `2`: Removed'
+      type: integer
+      enum:
+      - 1
+      - 2
+      x-enumNames:
+      - Added
+      - Removed
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    WorkTimesChangeRequestsDeclineV2:
+      required:
+      - id
+      - date
+      - users_id
+      - status
+      - created_at
+      - declined_at
+      - declined_by
+      - changes
+      properties:
+        id:
+          type: integer
+          format: int64
+        date:
+          type: string
+        users_id:
+          type: integer
+          format: int64
+        status:
+          $ref: '#/components/schemas/ChangeRequestStatus'
+        created_at:
+          type:
+          - string
+          - 'null'
+        declined_at:
+          type:
+          - string
+          - 'null'
+        declined_by:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkTimesChangeRequestsDeclineChangeV2'
+      type: object
+    WorkTimeV2:
+      required:
+      - date
+      - users_id
+      - offset
+      - intervals
+      properties:
+        date:
+          type: string
+          format: date
+        users_id:
+          type: integer
+          format: int64
+        offset:
+          title: Additional work time that does not result form the day's intervals
+          description: Only possible for days before 2023-01-01; can be positive or negative.
+          type: integer
+          format: int64
+        intervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkTimeIntervalV2'
+      type: object
+    ChangeRequestScope:
+      title: Change request scope
+      description: 'Possible values:
+
+        - `approve`: Approve'
+      type: string
+      enum:
+      - approve
+      x-enumNames:
+      - Approve
+    WorkTimesChangeRequestPostV2:
+      required:
+      - change_request
+      - replaced_change_request
+      - approved_immediately
+      properties:
+        change_request:
+          oneOf:
+          - $ref: '#/components/schemas/WorkTimesChangeRequestV2'
+          - type: 'null'
+        replaced_change_request:
+          oneOf:
+          - $ref: '#/components/schemas/WorkTimesChangeRequestV2'
+          - type: 'null'
+        approved_immediately:
+          type: boolean
+      type: object
+    WorkTimeIntervalV2:
+      required:
+      - time_since
+      - time_until
+      properties:
+        time_since:
+          type: string
+          format: date-time
+        time_until:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      type: object
+    WorkTimesChangeRequestDeleteV2:
+      required:
+      - change_request
+      properties:
+        change_request:
+          type: 'null'
+      type: object
+    SortIdDate:
+      title: Sort id date
+      description: 'Possible values:
+
+        - `date`: DateAsc
+
+        - `-date`: DateDesc
+
+        - `id`: IdAsc
+
+        - `-id`: IdDesc'
+      type: string
+      enum:
+      - date
+      - -date
+      - id
+      - -id
+      x-enumNames:
+      - DateAsc
+      - DateDesc
+      - IdAsc
+      - IdDesc
+    ChangeRequestStatus:
+      title: Change request status
+      description: 'Possible values:
+
+        - `1`: Requested
+
+        - `2`: Declined'
+      type: integer
+      enum:
+      - 1
+      - 2
+      x-enumNames:
+      - Requested
+      - Declined
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    SimpleErrorResponses:
+      title: Simple error response
+      properties:
+        error:
+          $ref: '#/components/schemas/SimpleErrors'
+      type: object
+    WorkTimesChangeRequestChangeV2:
+      required:
+      - type
+      - time_since
+      - time_until
+      properties:
+        type:
+          $ref: '#/components/schemas/ChangeRequestIntervalType'
+        time_since:
+          type: string
+          format: date-time
+        time_until:
+          type: string
+          format: date-time
+      type: object
+    SimpleErrors:
+      title: Simple error
+      required:
+      - code
+      - message
+      properties:
+        code:
+          description: HTTP status code
+          type: integer
+        message:
+          description: An error occurred
+          type: string
+        fields:
+          description: Affected fields
+          type: array
+          items:
+            type: string
+      type: object
+    WorkTimesChangeRequestV2:
+      required:
+      - id
+      - date
+      - users_id
+      - status
+      - created_at
+      - declined_at
+      - declined_by
+      - changes
+      properties:
+        id:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date
+        users_id:
+          type: integer
+          format: int64
+        status:
+          $ref: '#/components/schemas/ChangeRequestStatus'
+        created_at:
+          type: string
+          format: date-time
+        declined_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        declined_by:
+          title: ID of the user who declined the change request
+          type:
+          - integer
+          - 'null'
+          format: int64
+        changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkTimesChangeRequestChangeV2'
+      type: object
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

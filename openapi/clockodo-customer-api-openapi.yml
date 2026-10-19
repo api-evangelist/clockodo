@@ -1,0 +1,1333 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Customer API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: Customer
+  description: Manage customers
+paths:
+  /v3/customers:
+    get:
+      tags:
+      - Customer
+      operationId: getCustomersV3
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        style: deepObject
+        explode: true
+        schema:
+          properties:
+            active:
+              type: boolean
+            fulltext:
+              type: string
+          type: object
+      - name: items_per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          maximum: 5000
+          minimum: 1
+          examples:
+          - 100
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          examples:
+          - 1
+      - name: scope
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/CustomerProjectScope'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortIdNameActive'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - paging
+                - data
+                properties:
+                  paging:
+                    required:
+                    - items_per_page
+                    - current_page
+                    - count_pages
+                    - count_items
+                    properties:
+                      items_per_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1000
+                      current_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_pages:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_items:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 4
+                    type: object
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomerV3'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get customers V3
+      x-summary-source: derived
+    post:
+      tags:
+      - Customer
+      operationId: createCustomerV3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - name
+              properties:
+                active:
+                  type: boolean
+                bill_service_id:
+                  description: Can only be set by administrators or workers with elevated access `manage_customers_and_projects` and if a billing application with customers support is linked up
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+                billable_default:
+                  type: boolean
+                color:
+                  oneOf:
+                  - $ref: '#/components/schemas/CustomerColor'
+                    description: 'Possible values:
+
+                      - `1`: BloodOrange
+
+                      - `2`: Sunflower
+
+                      - `3`: LightGreen
+
+                      - `4`: Caribbean
+
+                      - `5`: Sky
+
+                      - `6`: BrandBlue
+
+                      - `7`: BluePurple
+
+                      - `8`: Magenta
+
+                      - `9`: ChewingGum'
+                  - type: 'null'
+                  description: 'Possible values:
+
+                    - `1`: BloodOrange
+
+                    - `2`: Sunflower
+
+                    - `3`: LightGreen
+
+                    - `4`: Caribbean
+
+                    - `5`: Sky
+
+                    - `6`: BrandBlue
+
+                    - `7`: BluePurple
+
+                    - `8`: Magenta
+
+                    - `9`: ChewingGum'
+                name:
+                  type: string
+                  maxLength: 100
+                note:
+                  description: Can only be set by administrators or workers with elevated access `manage_customers_and_projects`
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+                number:
+                  description: Freely selectable number for the customer
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+                service_assignments:
+                  description: Restrict to services assigned to this customer. Can only be set by administrators or workers with elevated access `manage_customers_and_projects`
+                  oneOf:
+                  - type: array
+                    items:
+                      type: integer
+                      minimum: 1
+                    x-requires_permission: manage_services
+                  - type: integer
+                    minimum: 1
+                  - type: string
+                    format: csv-string
+                    x-csv-element-schema:
+                      type: integer
+                      minimum: 1
+                  x-requires_permission: manage_services
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CustomerV3'
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiCustomersV3Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Create customer V3
+      x-summary-source: derived
+  /v3/customers/countProjects:
+    get:
+      tags:
+      - Customer
+      operationId: getCustomersCountProjectsV3
+      parameters:
+      - name: customers_id
+        in: query
+        required: false
+        schema:
+          oneOf:
+          - type: array
+            items:
+              type: integer
+              minimum: 0
+            maxItems: 500
+          - type: integer
+            minimum: 0
+          - type: string
+            format: csv-string
+            x-csv-element-schema:
+              type: integer
+              minimum: 0
+      - name: scope
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/CustomerProjectScope'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - paging
+                - data
+                properties:
+                  paging:
+                    required:
+                    - items_per_page
+                    - current_page
+                    - count_pages
+                    - count_items
+                    properties:
+                      items_per_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1000
+                      current_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_pages:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_items:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 4
+                    type: object
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomerCountProjectsV3'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get customers count projects V3
+      x-summary-source: derived
+  /v3/customers/{id}:
+    get:
+      tags:
+      - Customer
+      operationId: getCustomerByIdV3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CustomerV3'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get customer by id V3
+      x-summary-source: derived
+    put:
+      tags:
+      - Customer
+      operationId: updateCustomerByIdV3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                active:
+                  type: boolean
+                bill_service_id:
+                  description: Can only be set by administrators or workers with elevated access `manage_customers_and_projects` and if a billing application with customers support is linked up
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+                billable_default:
+                  type: boolean
+                color:
+                  $ref: '#/components/schemas/CustomerColor'
+                  description: 'Possible values:
+
+                    - `1`: BloodOrange
+
+                    - `2`: Sunflower
+
+                    - `3`: LightGreen
+
+                    - `4`: Caribbean
+
+                    - `5`: Sky
+
+                    - `6`: BrandBlue
+
+                    - `7`: BluePurple
+
+                    - `8`: Magenta
+
+                    - `9`: ChewingGum'
+                name:
+                  type: string
+                  maxLength: 100
+                note:
+                  description: Can only be set by administrators or workers with elevated access `manage_customers_and_projects`
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+                number:
+                  description: Freely selectable number for the customer
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+                service_assignments:
+                  description: Restrict to services assigned to this customer. Can only be set by administrators or workers with elevated access `manage_customers_and_projects`
+                  oneOf:
+                  - type: array
+                    items:
+                      type: integer
+                      minimum: 1
+                    x-requires_permission: manage_services
+                  - type: integer
+                    minimum: 1
+                  - type: string
+                    format: csv-string
+                    x-csv-element-schema:
+                      type: integer
+                      minimum: 1
+                  x-requires_permission: manage_services
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CustomerV3'
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiCustomersV3Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Update customer by id V3
+      x-summary-source: derived
+    delete:
+      tags:
+      - Customer
+      operationId: deleteCustomerByIdV3
+      parameters:
+      - name: dry_run
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: force
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - success
+                properties:
+                  success:
+                    title: Success
+                    type: boolean
+                    examples:
+                    - true
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiCustomersV3Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Delete customer by id V3
+      x-summary-source: derived
+components:
+  schemas:
+    CustomerV3:
+      title: Customer
+      required:
+      - id
+      - name
+      - number
+      - color
+      - active
+      - billable_default
+      - test_data
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples:
+          - 10
+        name:
+          type: string
+          maxLength: 100
+          examples:
+          - Hotel Bergblick
+        number:
+          description: Freely selectable number for the customer
+          type:
+          - string
+          - 'null'
+          maxLength: 50
+          examples:
+          - '10'
+        color:
+          $ref: '#/components/schemas/CustomerColor'
+        active:
+          type: boolean
+        billable_default:
+          type: boolean
+        note:
+          description: Only visible for administrators or workers with elevated access `manage_customers_and_projects`
+          type:
+          - string
+          - 'null'
+          maxLength: 1000
+          examples:
+          - This customer is important for us
+        bill_service_id:
+          description: Only visible for administrators or workers with elevated access `manage_customers_and_projects` and if a billing application with customers support is linked up
+          type:
+          - string
+          - 'null'
+          examples:
+          - '1234'
+        test_data:
+          type: boolean
+        service_assignments:
+          type: array
+          items:
+            type: integer
+            format: int64
+            examples:
+            - 10
+      type: object
+    ResourceConflictFoundError:
+      title: Resource conflict found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceConflictFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - There is already a service with this name.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    ServiceDoesNotExist:
+      title: Service does not exist error details
+      properties:
+        non_existent_ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+      type: object
+    ApiCustomersV3Errors:
+      title: Api customers v3 errors
+      required:
+      - error
+      properties:
+        error:
+          title: Errors
+          type: object
+          anyOf:
+          - $ref: '#/components/schemas/UnexpectedValueError'
+          - $ref: '#/components/schemas/RelationsPreventDeletionError'
+          - $ref: '#/components/schemas/HasToBeInactiveError'
+          - $ref: '#/components/schemas/ArchiveCompanyDefaultIsNotAllowedError'
+          - $ref: '#/components/schemas/CannotModifyDemoDataError'
+          - $ref: '#/components/schemas/ResourceConflictFoundError'
+          - $ref: '#/components/schemas/RunningEntriesPreventDeletionError'
+          - $ref: '#/components/schemas/ServiceDoesNotExistError'
+      type: object
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    SortIdNameActive:
+      title: Sort id name active
+      description: 'Possible values:
+
+        - `active`: ActiveAsc
+
+        - `-active`: ActiveDesc
+
+        - `id`: IdAsc
+
+        - `-id`: IdDesc
+
+        - `name`: NameAsc
+
+        - `-name`: NameDesc'
+      type: string
+      enum:
+      - active
+      - -active
+      - id
+      - -id
+      - name
+      - -name
+      x-enumNames:
+      - ActiveAsc
+      - ActiveDesc
+      - IdAsc
+      - IdDesc
+      - NameAsc
+      - NameDesc
+    ArchiveCompanyDefaultIsNotAllowedError:
+      title: Archive company default is not allowed error
+      properties:
+        type:
+          type: string
+          enum:
+          - ArchiveCompanyDefaultIsNotAllowed
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - It is not allowed to archive an item which is company default.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    RelationsPreventDeletionError:
+      title: Relations prevent deletion error
+      properties:
+        type:
+          type: string
+          enum:
+          - RelationsPreventDeletion
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Resource can not be deleted, there are existing relations. Please delete the related resources first.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: Forbidden
+    ResourceEnum:
+      title: Resource enum
+      description: 'Possible values:
+
+        - `absences`: Absences
+
+        - `access_groups`: AccessGroups
+
+        - `company`: Company
+
+        - `company_state`: CompanyState
+
+        - `customers`: Customers
+
+        - `entries`: Entries
+
+        - `favorite`: Favorite
+
+        - `holidays_carry`: HolidaysCarry
+
+        - `holidays_quota`: HolidaysQuota
+
+        - `lumpsum_services`: LumpSumServices
+
+        - `nonbusiness_days`: NonBusinessDays
+
+        - `nonbusiness_groups`: NonBusinessGroups
+
+        - `overtime_carrys`: OvertimeCarrys
+
+        - `project_reports`: ProjectReports
+
+        - `project_reports_meta_data`: ProjectReportsMetaData
+
+        - `projects`: Projects
+
+        - `rates`: Rates
+
+        - `reports`: Reports
+
+        - `report_templates`: ReportTemplates
+
+        - `services`: Services
+
+        - `subprojects`: Subprojects
+
+        - `surcharge_models`: SurchargeModels
+
+        - `users`: Users
+
+        - `customers_projects_access`: CustomersProjectsAccess
+
+        - `targethours`: TargetHours
+
+        - `team`: Teams
+
+        - `work_time_break_rules`: WorkTimeBreakRules
+
+        - `work_time_regulations`: WorkTimeRegulations'
+      type: string
+      enum:
+      - absences
+      - access_groups
+      - company
+      - company_state
+      - customers
+      - entries
+      - favorite
+      - holidays_carry
+      - holidays_quota
+      - lumpsum_services
+      - nonbusiness_days
+      - nonbusiness_groups
+      - overtime_carrys
+      - project_reports
+      - project_reports_meta_data
+      - projects
+      - rates
+      - reports
+      - report_templates
+      - services
+      - subprojects
+      - surcharge_models
+      - users
+      - customers_projects_access
+      - targethours
+      - team
+      - work_time_break_rules
+      - work_time_regulations
+      x-enumNames:
+      - Absences
+      - AccessGroups
+      - Company
+      - CompanyState
+      - Customers
+      - Entries
+      - Favorite
+      - HolidaysCarry
+      - HolidaysQuota
+      - LumpSumServices
+      - NonBusinessDays
+      - NonBusinessGroups
+      - OvertimeCarrys
+      - ProjectReports
+      - ProjectReportsMetaData
+      - Projects
+      - Rates
+      - Reports
+      - ReportTemplates
+      - Services
+      - Subprojects
+      - SurchargeModels
+      - Users
+      - CustomersProjectsAccess
+      - TargetHours
+      - Teams
+      - WorkTimeBreakRules
+      - WorkTimeRegulations
+    Resource:
+      required:
+      - resources
+      properties:
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceEnum'
+        count:
+          type: array
+          items:
+            type: integer
+      type: object
+    CannotModifyDemoDataError:
+      title: Cannot modify demo data error
+      properties:
+        type:
+          type: string
+          enum:
+          - CannotModifyDemoData
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You must not edit demo data.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    CustomerColor:
+      title: Customer color
+      description: 'Possible values:
+
+        - `1`: BloodOrange
+
+        - `2`: Sunflower
+
+        - `3`: LightGreen
+
+        - `4`: Caribbean
+
+        - `5`: Sky
+
+        - `6`: BrandBlue
+
+        - `7`: BluePurple
+
+        - `8`: Magenta
+
+        - `9`: ChewingGum'
+      type: integer
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      x-enumNames:
+      - BloodOrange
+      - Sunflower
+      - LightGreen
+      - Caribbean
+      - Sky
+      - BrandBlue
+      - BluePurple
+      - Magenta
+      - ChewingGum
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    UnexpectedValueError:
+      title: Unexpected value error
+      properties:
+        type:
+          type: string
+          enum:
+          - UnexpectedValue
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - 'Only these values are expected: string'
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/ExpectedValues'
+      type: object
+      x-error-category: BadRequest
+    HasToBeInactiveError:
+      title: Has to be inactive error
+      properties:
+        type:
+          type: string
+          enum:
+          - HasToBeInactive
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The resource must be inactive.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    ExpectedValues:
+      title: Expected values error details
+      description: Only certain values are allowed.
+      required:
+      - expected_values
+      properties:
+        expected_values:
+          title: Expected values
+          description: One or more expected values
+          type: array
+          items:
+            type: string
+          examples:
+          - - string
+            - integer
+      type: object
+    CustomerCountProjectsV3:
+      title: CountProjects
+      description: The number of active and inactive projects for one customer
+      required:
+      - customers_id
+      - active
+      - inactive
+      properties:
+        customers_id:
+          type: integer
+          format: int64
+          examples:
+          - 10
+        active:
+          title: Number of active projects
+          type: integer
+          format: int64
+          examples:
+          - 504
+        inactive:
+          title: Number of inactive projects
+          type: integer
+          format: int64
+          examples:
+          - 27
+      type: object
+    CustomerProjectScope:
+      title: Customer project scope
+      description: 'Possible values:
+
+        - `manageAccess`: ManageAccess'
+      type: string
+      enum:
+      - manageAccess
+      x-enumNames:
+      - ManageAccess
+    RunningEntriesPreventDeletionError:
+      title: Running entries prevent deletion error
+      properties:
+        type:
+          type: string
+          enum:
+          - RunningEntriesPreventDeletion
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Resource can not be deleted, there are running entries. Please stop and delete those entries first.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ServiceDoesNotExistError:
+      title: Service does not exist error
+      properties:
+        type:
+          type: string
+          enum:
+          - ServiceDoesNotExist
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - At least one requested service does not exist.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/ServiceDoesNotExist'
+      type: object
+      x-error-category: BadRequest
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

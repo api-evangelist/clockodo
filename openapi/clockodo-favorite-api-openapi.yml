@@ -1,0 +1,1472 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Favorite API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: Favorite
+  description: Manage favorites
+paths:
+  /v2/favorites:
+    get:
+      tags:
+      - Favorite
+      operationId: getFavoritesV2
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FavoriteV2'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get favorites V2
+      x-summary-source: derived
+    post:
+      tags:
+      - Favorite
+      operationId: createFavoriteV2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - name
+              - customers_id
+              - services_id
+              - color
+              - position
+              properties:
+                name:
+                  type: string
+                  maxLength: 50
+                customers_id:
+                  type: integer
+                  minimum: 1
+                projects_id:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                subprojects_id:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                services_id:
+                  type: integer
+                  minimum: 1
+                billable:
+                  $ref: '#/components/schemas/ApiFavoritesV2_Billable'
+                text:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+                color:
+                  $ref: '#/components/schemas/FavoriteColor'
+                position:
+                  type: integer
+                  minimum: 0
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/FavoriteV2'
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiFavoritesV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Create favorite V2
+      x-summary-source: derived
+  /v2/favorites/{id}:
+    get:
+      tags:
+      - Favorite
+      operationId: getFavoriteByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/FavoriteV2'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get favorite by id V2
+      x-summary-source: derived
+    put:
+      tags:
+      - Favorite
+      operationId: updateFavoriteByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 50
+                customers_id:
+                  type: integer
+                  minimum: 1
+                projects_id:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                subprojects_id:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 1
+                services_id:
+                  type: integer
+                  minimum: 1
+                billable:
+                  $ref: '#/components/schemas/ApiFavoritesV2_Billable'
+                text:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+                color:
+                  $ref: '#/components/schemas/FavoriteColor'
+                position:
+                  type: integer
+                  minimum: 0
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/FavoriteV2'
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiFavoritesV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Update favorite by id V2
+      x-summary-source: derived
+    delete:
+      tags:
+      - Favorite
+      operationId: deleteFavoriteByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - success
+                properties:
+                  success:
+                    title: Success
+                    type: boolean
+                    examples:
+                    - true
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiFavoritesV2Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Delete favorite by id V2
+      x-summary-source: derived
+  /v2/favorites/{id}/start:
+    post:
+      tags:
+      - Favorite
+      operationId: startFavoriteByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClockStartV2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Start favorite by id V2
+      x-summary-source: derived
+components:
+  schemas:
+    AddingEntriesNotAllowedError:
+      title: Adding entries not allowed error
+      properties:
+        type:
+          type: string
+          enum:
+          - AddingEntriesNotAllowed
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Add data access missing for the selected master data.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    EntryV2Time:
+      title: Time Entry
+      oneOf:
+      - $ref: '#/components/schemas/EntryV2TimeRunning'
+      - $ref: '#/components/schemas/EntryV2TimeStopped'
+      - $ref: '#/components/schemas/EntryV2TimeManual'
+    EntryV2TimeManual:
+      title: Manual Time Entry
+      allOf:
+      - $ref: '#/components/schemas/EntryV2TimeBase'
+      - required:
+        - billable
+        - time_until
+        - duration
+        - clocked
+        properties:
+          billable:
+            $ref: '#/components/schemas/ApiEntriesV2_Billability'
+          time_until:
+            title: End date and time
+            type: string
+            format: date-time
+            examples:
+            - '2023-02-28T00:00:00Z'
+          duration:
+            title: Duration in seconds
+            type: integer
+            format: int64
+          clocked:
+            type: boolean
+            enum:
+            - false
+        type: object
+    PositionAlreadyTakenError:
+      title: Position already taken error
+      properties:
+        type:
+          type: string
+          enum:
+          - PositionAlreadyTaken
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - There is already a favorite with this position.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ApiEntriesV2_Billability:
+      title: Billability
+      description: 'Possible values:
+
+        - `-1`: NotAvailable
+
+        - `0`: NotBillable
+
+        - `1`: Billable
+
+        - `2`: Billed'
+      type: integer
+      enum:
+      - -1
+      - 0
+      - 1
+      - 2
+      x-enumNames:
+      - NotAvailable
+      - NotBillable
+      - Billable
+      - Billed
+    ProjectDoesNotBelongToCustomerError:
+      title: Project does not belong to customer error
+      properties:
+        type:
+          type: string
+          enum:
+          - ProjectDoesNotBelongToCustomer
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The project does not belong to the given customer.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    EntryV2TimeRunning:
+      title: Running Clock Entry
+      allOf:
+      - $ref: '#/components/schemas/EntryV2TimeBase'
+      - required:
+        - billable
+        - time_until
+        - duration
+        - clocked
+        - time_clocked_since
+        properties:
+          billable:
+            $ref: '#/components/schemas/ApiEntriesV2_Billability'
+          time_until:
+            title: End date and time
+            description: null while the clock is running.
+            type: 'null'
+          duration:
+            title: Duration in seconds
+            description: null while the clock is running.
+            type: 'null'
+          time_clocked_since:
+            type: string
+            format: date-time
+            examples:
+            - '2023-02-28T00:00:00Z'
+          clocked:
+            type: boolean
+            enum:
+            - true
+        type: object
+    ProjectBookingIsProhibitedForIntervalProjectsError:
+      title: Project booking is prohibited for interval projects error
+      properties:
+        type:
+          type: string
+          enum:
+          - ProjectBookingIsProhibitedForIntervalProjects
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Project booking is prohibited for interval projects. Select a subproject.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ProjectNotSelectedError:
+      title: Project not selected error
+      properties:
+        type:
+          type: string
+          enum:
+          - ProjectNotSelected
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Tracking times for customers is not allowed. You must select a project.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ServiceIsNotAllowed:
+      required:
+      - cause
+      properties:
+        cause:
+          enum:
+          - absences
+          - access_groups
+          - company
+          - company_state
+          - customers
+          - entries
+          - favorite
+          - holidays_carry
+          - holidays_quota
+          - lumpsum_services
+          - nonbusiness_days
+          - nonbusiness_groups
+          - overtime_carrys
+          - project_reports
+          - project_reports_meta_data
+          - projects
+          - rates
+          - reports
+          - report_templates
+          - services
+          - subprojects
+          - surcharge_models
+          - users
+          - customers_projects_access
+          - targethours
+          - team
+          - work_time_break_rules
+          - work_time_regulations
+      type: object
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    EntryV2TimeStopped:
+      title: Stopped Clock Entry
+      allOf:
+      - $ref: '#/components/schemas/EntryV2TimeBase'
+      - required:
+        - billable
+        - time_until
+        - duration
+        - clocked
+        - time_clocked_since
+        properties:
+          billable:
+            $ref: '#/components/schemas/ApiEntriesV2_Billability'
+          time_until:
+            title: End date and time
+            type: string
+            format: date-time
+            examples:
+            - '2023-02-28T00:00:00Z'
+          duration:
+            title: Duration in seconds
+            type: integer
+            format: int64
+          time_clocked_since:
+            type: string
+            format: date-time
+            examples:
+            - '2023-02-28T00:00:00Z'
+          clocked:
+            type: boolean
+            enum:
+            - true
+        type: object
+    HasToBeActiveError:
+      title: Has to be active error
+      properties:
+        type:
+          type: string
+          enum:
+          - HasToBeActive
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The resource must be active.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    ResourceEnum:
+      title: Resource enum
+      description: 'Possible values:
+
+        - `absences`: Absences
+
+        - `access_groups`: AccessGroups
+
+        - `company`: Company
+
+        - `company_state`: CompanyState
+
+        - `customers`: Customers
+
+        - `entries`: Entries
+
+        - `favorite`: Favorite
+
+        - `holidays_carry`: HolidaysCarry
+
+        - `holidays_quota`: HolidaysQuota
+
+        - `lumpsum_services`: LumpSumServices
+
+        - `nonbusiness_days`: NonBusinessDays
+
+        - `nonbusiness_groups`: NonBusinessGroups
+
+        - `overtime_carrys`: OvertimeCarrys
+
+        - `project_reports`: ProjectReports
+
+        - `project_reports_meta_data`: ProjectReportsMetaData
+
+        - `projects`: Projects
+
+        - `rates`: Rates
+
+        - `reports`: Reports
+
+        - `report_templates`: ReportTemplates
+
+        - `services`: Services
+
+        - `subprojects`: Subprojects
+
+        - `surcharge_models`: SurchargeModels
+
+        - `users`: Users
+
+        - `customers_projects_access`: CustomersProjectsAccess
+
+        - `targethours`: TargetHours
+
+        - `team`: Teams
+
+        - `work_time_break_rules`: WorkTimeBreakRules
+
+        - `work_time_regulations`: WorkTimeRegulations'
+      type: string
+      enum:
+      - absences
+      - access_groups
+      - company
+      - company_state
+      - customers
+      - entries
+      - favorite
+      - holidays_carry
+      - holidays_quota
+      - lumpsum_services
+      - nonbusiness_days
+      - nonbusiness_groups
+      - overtime_carrys
+      - project_reports
+      - project_reports_meta_data
+      - projects
+      - rates
+      - reports
+      - report_templates
+      - services
+      - subprojects
+      - surcharge_models
+      - users
+      - customers_projects_access
+      - targethours
+      - team
+      - work_time_break_rules
+      - work_time_regulations
+      x-enumNames:
+      - Absences
+      - AccessGroups
+      - Company
+      - CompanyState
+      - Customers
+      - Entries
+      - Favorite
+      - HolidaysCarry
+      - HolidaysQuota
+      - LumpSumServices
+      - NonBusinessDays
+      - NonBusinessGroups
+      - OvertimeCarrys
+      - ProjectReports
+      - ProjectReportsMetaData
+      - Projects
+      - Rates
+      - Reports
+      - ReportTemplates
+      - Services
+      - Subprojects
+      - SurchargeModels
+      - Users
+      - CustomersProjectsAccess
+      - TargetHours
+      - Teams
+      - WorkTimeBreakRules
+      - WorkTimeRegulations
+    ClockStartV2:
+      required:
+      - running
+      - stopped
+      - current_time
+      - stopped_has_been_truncated
+      properties:
+        running:
+          $ref: '#/components/schemas/EntryV2TimeRunning'
+        stopped:
+          title: Classified as a manual entry when the clock was stopped at zero duration
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/EntryV2TimeStopped'
+          - $ref: '#/components/schemas/EntryV2TimeManual'
+          - type: 'null'
+        current_time:
+          type: string
+          format: date-time
+          x-precision: millisecond
+          examples:
+          - '2023-02-28T00:00:00.000Z'
+        stopped_has_been_truncated:
+          title: Stopped entry has been shortened in order to comply with maximum duration of 24h
+          type: boolean
+        additional_message:
+          title: Warning shown when the started entry deviates from the request
+          required:
+          - text
+          - type
+          properties:
+            text:
+              type: string
+            type:
+              type: string
+              examples:
+              - warn
+          type: object
+        deleted_entries_ids:
+          title: Ids of the time entries deleted while resolving overlaps, only present when "clear_overlaps" was requested
+          type: array
+          items:
+            type: integer
+            format: int64
+        truncated_entries:
+          title: Time entries shortened while resolving overlaps, only present when "clear_overlaps" was requested
+          type: array
+          items:
+            $ref: '#/components/schemas/EntryV2Time'
+      type: object
+    Resource:
+      required:
+      - resources
+      properties:
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceEnum'
+        count:
+          type: array
+          items:
+            type: integer
+      type: object
+    ResourceNotFoundError:
+      title: Resource not found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceNotFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The requested resource could not be found.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ApiEntriesV2_EntryType:
+      title: Entry type
+      description: 'Possible values:
+
+        - `1`: Time
+
+        - `2`: LumpsumValue
+
+        - `3`: LumpsumService'
+      type: integer
+      enum:
+      - 1
+      - 2
+      - 3
+      x-enumNames:
+      - Time
+      - LumpsumValue
+      - LumpsumService
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    EntryV2TimeBase:
+      title: Time Entry (shared fields)
+      required:
+      - id
+      - customers_id
+      - projects_id
+      - subprojects_id
+      - users_id
+      - texts_id
+      - text
+      - time_since
+      - time_insert
+      - time_last_change
+      - test_data
+      - type
+      - services_id
+      - time_last_change_work_time
+      - time_clocked_since
+      - clocked_offline
+      properties:
+        id:
+          title: ID
+          type: integer
+          format: int64
+          examples:
+          - 10
+        customers_id:
+          title: Customer's ID
+          type: integer
+          format: int64
+          examples:
+          - 10
+        projects_id:
+          title: Project's ID
+          type:
+          - integer
+          - 'null'
+          format: int64
+        subprojects_id:
+          title: Subproject's ID
+          type:
+          - integer
+          - 'null'
+          format: int64
+        users_id:
+          title: User's ID
+          type: integer
+          format: int64
+        texts_id:
+          title: Entry text's ID
+          type:
+          - integer
+          - 'null'
+          format: int64
+        text:
+          title: Description
+          description: Only if enhanced_list=true
+          type:
+          - string
+          - 'null'
+        time_since:
+          title: Start date and time
+          type: string
+          format: date-time
+          examples:
+          - '2023-02-28T00:00:00Z'
+        time_insert:
+          title: Insertion date and time
+          type: string
+          format: date-time
+          examples:
+          - '2023-02-28T00:00:00Z'
+        time_last_change:
+          title: Modification date and time
+          type: string
+          format: date-time
+          examples:
+          - '2023-02-28T00:00:00Z'
+        test_data:
+          title: is a test dataset?
+          type: boolean
+        customers_name:
+          title: Customer's name
+          description: Only if enhanced_list=true
+          type: string
+          examples:
+          - Hotel Bergblick
+        projects_name:
+          title: Project's name
+          description: Only if enhanced_list=true
+          type:
+          - string
+          - 'null'
+          examples:
+          - Publicity campaign
+        subprojects_name:
+          title: Subproject's name
+          description: Only if enhanced_list=true
+          type:
+          - string
+          - 'null'
+          examples:
+          - Social media ads
+        users_name:
+          title: User's name
+          description: Only if enhanced_list=true
+          type: string
+          examples:
+          - Max Mustermann
+        revenue:
+          title: Revenue
+          description: Only with necessary access rights and if enhanced_list=true
+          type: number
+          examples:
+          - 999.9
+        type:
+          title: Type
+          description: Entry type – discriminates the EntryV2 union. See EntryType.
+          allOf:
+          - $ref: '#/components/schemas/ApiEntriesV2_EntryType'
+          enum:
+          - 1
+        services_id:
+          title: Service's ID
+          type: integer
+          format: int64
+        time_last_change_work_time:
+          type: string
+          format: date-time
+          examples:
+          - '2023-02-28T00:00:00Z'
+        time_clocked_since:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          examples:
+          - '2023-02-28T00:00:00Z'
+        clocked_offline:
+          type: boolean
+        hourly_rate:
+          description: Only with necessary access rights and if enhanced_list=true
+          type: number
+          examples:
+          - 99.99
+        services_name:
+          title: Service's name
+          description: Only if enhanced_list=true
+          type: string
+          examples:
+          - SEO service
+      type: object
+    FavoriteV2:
+      required:
+      - id
+      - customers_id
+      - projects_id
+      - subprojects_id
+      - services_id
+      - billable
+      - text
+      - color
+      - position
+      - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        customers_id:
+          type: integer
+          format: int64
+        projects_id:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        subprojects_id:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        services_id:
+          type: integer
+          format: int64
+        billable:
+          $ref: '#/components/schemas/ApiFavoritesV2_Billable'
+        text:
+          type:
+          - string
+          - 'null'
+        color:
+          $ref: '#/components/schemas/FavoriteColor'
+        position:
+          type: integer
+          format: int64
+        name:
+          type: string
+      type: object
+    SubprojectDoesNotBelongToProjectError:
+      title: Subproject does not belong to project error
+      properties:
+        type:
+          type: string
+          enum:
+          - SubprojectDoesNotBelongToProject
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - A subproject must belong to the selected project.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ApiFavoritesV2_Billable:
+      title: Billable
+      description: 'Possible values:
+
+        - `0`: NotBillable
+
+        - `1`: Billable'
+      type: integer
+      enum:
+      - 0
+      - 1
+      x-enumNames:
+      - NotBillable
+      - Billable
+    ServiceIsNotAllowedError:
+      title: Service is not allowed error
+      properties:
+        type:
+          type: string
+          enum:
+          - ServiceIsNotAllowed
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The specified service is not allowed for the given customer, project or subproject.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/ServiceIsNotAllowed'
+      type: object
+      x-error-category: Forbidden
+    ApiFavoritesV2Errors:
+      title: Api favorites v2 errors
+      required:
+      - error
+      properties:
+        error:
+          title: Errors
+          type: object
+          anyOf:
+          - $ref: '#/components/schemas/ResourceNotFoundError'
+          - $ref: '#/components/schemas/HasToBeActiveError'
+          - $ref: '#/components/schemas/PositionAlreadyTakenError'
+          - $ref: '#/components/schemas/ProjectDoesNotBelongToCustomerError'
+          - $ref: '#/components/schemas/ProjectNotSelectedError'
+          - $ref: '#/components/schemas/ServiceIsNotAllowedError'
+          - $ref: '#/components/schemas/SubprojectDoesNotBelongToProjectError'
+          - $ref: '#/components/schemas/ProjectBookingIsProhibitedForIntervalProjectsError'
+          - $ref: '#/components/schemas/SubprojectNotSelectedError'
+          - $ref: '#/components/schemas/AddingEntriesNotAllowedError'
+      type: object
+    FavoriteColor:
+      title: Favorite color
+      description: 'Possible values:
+
+        - `1`: BloodOrange
+
+        - `2`: Sunflower
+
+        - `3`: LightGreen
+
+        - `4`: Caribbean
+
+        - `5`: Sky
+
+        - `6`: BrandBlue
+
+        - `7`: BluePurple
+
+        - `8`: Magenta
+
+        - `9`: ChewingGum'
+      type: integer
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      x-enumNames:
+      - BloodOrange
+      - Sunflower
+      - LightGreen
+      - Caribbean
+      - Sky
+      - BrandBlue
+      - BluePurple
+      - Magenta
+      - ChewingGum
+    SubprojectNotSelectedError:
+      title: Subproject not selected error
+      properties:
+        type:
+          type: string
+          enum:
+          - SubprojectNotSelected
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The selected project has subprojects. You must select one of them.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

@@ -1,0 +1,2307 @@
+openapi: 3.2.0
+info:
+  title: Clockodo API Documentation Project API
+  description: '# Clockodo REST API
+
+
+    Our API opens Clockodo for other systems. Billing and project management applications or custom shell scripts, for example, are useful mash-ups with Clockodo. As a REST API, the interface allows you to query and modify Clockodo data and control the clock via HTTP in JSON format. ## URL of the Clockodo API
+
+
+    You can access our API via the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]
+
+    ```
+
+
+    The resource type represents a class of your data. Once you request a specific resource, for example, query information about exactly one entity, you can use the following URL:
+
+
+    ```text
+
+    https://my.clockodo.com/api/[resource type]/[resource ID]
+
+    ```
+
+
+    In the following sections of this documentation, you will find more detailed descriptions of the available endpoints for each resource type. For example, under Entry you will find detailed information on how you can manage time entries in your Clockodo environment. ## HTTP Verbs
+
+
+    To tell the API which operations you want to perform on the resources, the so-called verbs of the HTTP protocol are used. The following operations are usually possible:
+
+
+    | HTTP Verb | Description |
+
+    |-----------------------------|-----------------------------------------------------------------|
+
+    | `GET` | Query a list of all the resources of the selected resource type |
+
+    | `GET` (with resource ID) | Query exactly one resource |
+
+    | `POST` | Create a new resource |
+
+    | `PUT` (with resource ID) | Update or edit a resource |
+
+    | `DELETE` (with resource ID) | Delete a resource |
+
+
+    ## Authentication
+
+
+    Clockodo supports two authentication approaches:
+
+
+    - **API key authentication**, using a Clockodo user''s email address and personal API key. The credentials can be sent either via HTTP Basic authentication or via Clockodo-specific HTTP headers. - **OAuth 2.0**, using delegated access with scoped bearer tokens. ### API key authentication
+
+
+    Each Clockodo user has personal API access that takes the user''s access rights into account. You can find your API key under the menu item "Personal data" in your Clockodo account. Changing your Clockodo password invalidates your existing API key. If you use the API key for an integration, you must update the integration with the new API key after changing your password. #### HTTP Basic authentication
+
+
+    To access your data via the API, authenticate using your email address and API key with the basic authentication mechanism of the HTTP protocol:
+
+
+    ```text
+
+    User: [email address]
+
+    Password: [API key]
+
+    ```
+
+
+    Basic authentication is transmitted in the `Authorization` HTTP header. Most HTTP clients generate this header automatically from the credentials above:
+
+
+    ```http
+
+    Authorization: Basic
+
+    ```
+
+
+    **Example:** For the user `admin@clockodo.com` with the API key `nl9tzwlwr4kzmd1qcbmtli60jpwd2c9g`, the header is:
+
+
+    ```http
+
+    Authorization: Basic YWRtaW5AY2xvY2tvZG8uY29tOm5sOXR6d2x3cjRrem1kMXFjYm10bGk2MGpwd2QyYzln
+
+    ```
+
+
+    #### Clockodo API headers
+
+
+    Alternatively, you can send the same credentials using Clockodo-specific HTTP headers:
+
+
+    ```http
+
+    X-ClockodoApiUser: [email address]
+
+    X-ClockodoApiKey: [API key]
+
+    ```
+
+
+    #### Client identification
+
+
+    Requests using either of the API-key authentication methods described above must also identify the calling application and provide the email address of a technical contact person. For this purpose, include the following HTTP header with every request:
+
+
+    ```http
+
+    X-Clockodo-External-Application: [name of application or company];[email address]
+
+    ```
+
+
+    **Example:**
+
+
+    ```http
+
+    X-Clockodo-External-Application: Clockodo;admin@clockodo.com
+
+    ```
+
+
+    This header is not required for requests authenticated with an OAuth bearer token. ### OAuth 2.0
+
+
+    Clockodo supports OAuth 2.0 for integrations that use delegated access with scoped bearer tokens. It is accepted across the whole API as an alternative to API key authentication. Every access token is tied to a Clockodo user and is subject to that user''s access rights, just like an API key.'
+  termsOfService: https://www.clockodo.com/en/terms-and-conditions/
+  contact:
+    name: Clockodo support
+    url: https://www.clockodo.com/en/about-us/
+    email: support@clockodo.com
+  version: '2026-10-16'
+  x-logo:
+    url: /clockodo-logo.svg
+    href: /
+    altText: Clockodo Logo
+    backgroundColor: '#3d2a5a'
+servers:
+- url: https://my.clockodo.com/api
+security:
+- BasicAuth: []
+  ExternalApp: []
+- User: []
+  Key: []
+  ExternalApp: []
+- OAuth2: []
+tags:
+- name: Project
+  description: Manage projects
+paths:
+  /v2/projects/{id}/createNextInterval:
+    post:
+      tags:
+      - Project
+      operationId: createProjectNextIntervalByIdV2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SubprojectV3'
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Create project next interval by id V2
+      x-summary-source: derived
+  /v3/projects/{id}/setBilled:
+    put:
+      tags:
+      - Project
+      operationId: updateProjectBilledByIdV3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                billed:
+                  type: boolean
+                billed_money:
+                  type:
+                  - number
+                  - 'null'
+                  format: float
+                  maximum: 99999999
+                  minimum: 0
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProjectV4'
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiProjectsSetBilledV3Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Update project billed by id V3
+      x-summary-source: derived
+  /v4/projects:
+    get:
+      tags:
+      - Project
+      operationId: getProjectsV4
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        style: deepObject
+        explode: true
+        schema:
+          properties:
+            active:
+              type: boolean
+            completed:
+              type: boolean
+            customers_id:
+              type: integer
+            fulltext:
+              type: string
+          type: object
+      - name: items_per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          maximum: 5000
+          minimum: 1
+          examples:
+          - 100
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          examples:
+          - 1
+      - name: scope
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/CustomerProjectScope'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortIdNameActive'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - paging
+                - data
+                properties:
+                  paging:
+                    required:
+                    - items_per_page
+                    - current_page
+                    - count_pages
+                    - count_items
+                    properties:
+                      items_per_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1000
+                      current_page:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_pages:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 1
+                      count_items:
+                        type: integer
+                        format: int64
+                        examples:
+                        - 4
+                    type: object
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectV4'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get projects V4
+      x-summary-source: derived
+    post:
+      tags:
+      - Project
+      operationId: createProjectV4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - name
+              - customers_id
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                customers_id:
+                  type: integer
+                active:
+                  type: boolean
+                number:
+                  description: Freely selectable number for the project
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+                billable_default:
+                  type: boolean
+                note:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+                deadline:
+                  description: Date when the project will be completed automatically
+                  type:
+                  - string
+                  - 'null'
+                  format: date
+                  examples:
+                  - '2023-02-28'
+                start_date:
+                  description: Date when the project becomes available for time tracking
+                  type:
+                  - string
+                  - 'null'
+                  format: date
+                  examples:
+                  - '2023-02-28'
+                automatic_completion:
+                  type: boolean
+                budget:
+                  description: Use `null` for projects without budget. If a budget object is provided, `budget.amount` must be included.
+                  properties:
+                    amount:
+                      description: For own project budget and interval budget, value must be greater than `0`. For `budget.from_subprojects=true`, value must be empty (`null` or `0`).
+                      type:
+                      - number
+                      - 'null'
+                      format: float
+                      maximum: 99999999
+                      minimum: 0
+                    from_subprojects:
+                      type: boolean
+                    hard:
+                      type: boolean
+                    interval:
+                      oneOf:
+                      - $ref: '#/components/schemas/BudgetInterval'
+                      - type: 'null'
+                      x-requires_module: retainer
+                    monetary:
+                      type: boolean
+                    notification_thresholds:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Thresholds'
+                      x-requires_module: budget_notifications
+                  type:
+                  - object
+                  - 'null'
+                service_assignments:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                  x-requires_permission: manage_services
+                bill_service_id:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProjectV4'
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiProjectsV4Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Create project V4
+      x-summary-source: derived
+  /v4/projects/{id}:
+    get:
+      tags:
+      - Project
+      operationId: getProjectByIdV4
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProjectV4'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Get project by id V4
+      x-summary-source: derived
+    put:
+      tags:
+      - Project
+      operationId: updateProjectByIdV4
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                customers_id:
+                  type: integer
+                active:
+                  type: boolean
+                number:
+                  description: Freely selectable number for the project
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+                billable_default:
+                  type: boolean
+                note:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+                deadline:
+                  description: Date when the project will be completed automatically
+                  type:
+                  - string
+                  - 'null'
+                  format: date
+                  examples:
+                  - '2023-02-28'
+                start_date:
+                  description: Date when the project becomes available for time tracking
+                  type:
+                  - string
+                  - 'null'
+                  format: date
+                  examples:
+                  - '2023-02-28'
+                automatic_completion:
+                  type: boolean
+                budget:
+                  description: Use `null` for projects without budget. If a budget object is provided, `budget.amount` must be included.
+                  properties:
+                    amount:
+                      description: For own project budget and interval budget, value must be greater than `0`. For `budget.from_subprojects=true`, value must be empty (`null` or `0`).
+                      type:
+                      - number
+                      - 'null'
+                      format: float
+                      maximum: 99999999
+                      minimum: 0
+                    from_subprojects:
+                      type: boolean
+                    hard:
+                      type: boolean
+                    interval:
+                      oneOf:
+                      - $ref: '#/components/schemas/BudgetInterval'
+                      - type: 'null'
+                      x-requires_module: retainer
+                    monetary:
+                      type: boolean
+                    notification_thresholds:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Thresholds'
+                      x-requires_module: budget_notifications
+                  type:
+                  - object
+                  - 'null'
+                service_assignments:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+                  x-requires_permission: manage_services
+                bill_service_id:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 50
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProjectV4'
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiProjectsV4Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Update project by id V4
+      x-summary-source: derived
+    delete:
+      tags:
+      - Project
+      operationId: deleteProjectByIdV4
+      parameters:
+      - name: dry_run
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: force
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - success
+                properties:
+                  success:
+                    title: Success
+                    type: boolean
+                    examples:
+                    - true
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiProjectsV4Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Delete project by id V4
+      x-summary-source: derived
+  /v4/projects/{id}/complete:
+    put:
+      tags:
+      - Project
+      operationId: completeProjectByIdV4
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          examples:
+          - 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - completed
+              properties:
+                completed:
+                  type: boolean
+              type: object
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProjectV4'
+                type: object
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                required:
+                - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiProjectsCompleteV4Errors'
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrors'
+      deprecated: false
+      summary: Complete project by id V4
+      x-summary-source: derived
+components:
+  schemas:
+    CannotChangeBudgetSourceBecauseOfSubprojectsError:
+      title: Cannot change budget source because of subprojects error
+      properties:
+        type:
+          type: string
+          enum:
+          - BudgetSourceIsNotChangedFromOrToIntervalWhenSubprojectsExist
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You cannot change the budget source of interval projects as long as there are subprojects.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ResourceConflictFoundError:
+      title: Resource conflict found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceConflictFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - There is already a service with this name.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    ProjectCompletionTooManyLumpSumsError:
+      title: Project completion too many lump sums error
+      properties:
+        type:
+          type: string
+          enum:
+          - ProjectCompletionTooManyLumpSums
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The project can't be set to completed. The sum of billable lump sums must not exceed the budget.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    NotBetween:
+      title: Not between error details
+      description: The value is not between min and max
+      required:
+      - min
+      - max
+      - inclusive
+      properties:
+        min:
+          title: Minimum value
+          type: number
+          examples:
+          - 0
+        max:
+          title: Maximum value
+          type: number
+          examples:
+          - 10000
+        inclusive:
+          title: Boundaries inclusive
+          description: Are the minimum and maximum values allowed
+          type: boolean
+          examples:
+          - true
+      type: object
+    ApiProjectsCompleteV4Errors:
+      title: Api projects complete v4 errors
+      required:
+      - error
+      properties:
+        error:
+          title: Errors
+          type: object
+          anyOf:
+          - $ref: '#/components/schemas/BilledMoneyCanOnlyBeSetWithHardBudgetError'
+          - $ref: '#/components/schemas/BilledCanOnlyBeSetWithHourBudgetError'
+          - $ref: '#/components/schemas/UnexpectedValueError'
+          - $ref: '#/components/schemas/FieldsShouldBeEmptyError'
+          - $ref: '#/components/schemas/BudgetTotalBelowSubprojectBudgetSumError'
+          - $ref: '#/components/schemas/EmptyError'
+          - $ref: '#/components/schemas/BudgetIsRequiredForRetainerProjectError'
+          - $ref: '#/components/schemas/CannotChangeBudgetSourceBecauseOfSubprojectsError'
+          - $ref: '#/components/schemas/CannotChangeBudgetSourceToIntervalBecauseOfEntriesError'
+          - $ref: '#/components/schemas/CannotRemoveBudgetBecauseOfSubprojectBudgetsError'
+          - $ref: '#/components/schemas/CannotChangeBudgetCommitmentBecauseOfCompletedSubprojectsError'
+          - $ref: '#/components/schemas/CannotChangeBudgetTypeBecauseOfSubprojectsError'
+          - $ref: '#/components/schemas/CannotModifyDemoDataError'
+          - $ref: '#/components/schemas/CompletionIsForbiddenBySubprojectCompletionError'
+          - $ref: '#/components/schemas/AllSubprojectsMustBeCompletedError'
+          - $ref: '#/components/schemas/ResourceNotFoundError'
+          - $ref: '#/components/schemas/IllegalChangeForCompletedProjectError'
+          - $ref: '#/components/schemas/CompletionIsForbiddenBySubprojectBudgetError'
+          - $ref: '#/components/schemas/ProjectCompletionNoBillableEntriesError'
+          - $ref: '#/components/schemas/ProjectCompletionAnyRunningEntriesError'
+          - $ref: '#/components/schemas/IntervalBudgetRequiresRetainerPlanError'
+          - $ref: '#/components/schemas/IntervalChangeIsForbiddenForIntervalProjectsWithSubprojectsError'
+          - $ref: '#/components/schemas/HasToBeInactiveError'
+          - $ref: '#/components/schemas/ProjectCompletionTooManyLumpSumsError'
+          - $ref: '#/components/schemas/ResourceConflictFoundError'
+          - $ref: '#/components/schemas/RelationsPreventDeletionError'
+          - $ref: '#/components/schemas/RunningEntriesPreventDeletionError'
+          - $ref: '#/components/schemas/ProjectDeadlineIsNotBeforeProjectStartError'
+          - $ref: '#/components/schemas/ProjectPeriodMustContainAllEntryStartsError'
+          - $ref: '#/components/schemas/ProjectPeriodCollidesWithSubprojectPeriodsError'
+      type: object
+    ServiceDoesNotExist:
+      title: Service does not exist error details
+      properties:
+        non_existent_ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+      type: object
+    ApiProjectsV4Errors:
+      title: Api projects v4 errors
+      required:
+      - error
+      properties:
+        error:
+          title: Errors
+          type: object
+          anyOf:
+          - $ref: '#/components/schemas/BilledMoneyCanOnlyBeSetWithHardBudgetError'
+          - $ref: '#/components/schemas/BilledCanOnlyBeSetWithHourBudgetError'
+          - $ref: '#/components/schemas/UnexpectedValueError'
+          - $ref: '#/components/schemas/FieldsShouldBeEmptyError'
+          - $ref: '#/components/schemas/BudgetTotalBelowSubprojectBudgetSumError'
+          - $ref: '#/components/schemas/EmptyError'
+          - $ref: '#/components/schemas/BudgetIsRequiredForRetainerProjectError'
+          - $ref: '#/components/schemas/CannotChangeBudgetSourceBecauseOfSubprojectsError'
+          - $ref: '#/components/schemas/CannotChangeBudgetSourceToIntervalBecauseOfEntriesError'
+          - $ref: '#/components/schemas/CannotRemoveBudgetBecauseOfSubprojectBudgetsError'
+          - $ref: '#/components/schemas/CannotChangeBudgetCommitmentBecauseOfCompletedSubprojectsError'
+          - $ref: '#/components/schemas/CannotChangeBudgetTypeBecauseOfSubprojectsError'
+          - $ref: '#/components/schemas/CannotModifyDemoDataError'
+          - $ref: '#/components/schemas/CompletionIsForbiddenBySubprojectCompletionError'
+          - $ref: '#/components/schemas/AllSubprojectsMustBeCompletedError'
+          - $ref: '#/components/schemas/ResourceNotFoundError'
+          - $ref: '#/components/schemas/IllegalChangeForCompletedProjectError'
+          - $ref: '#/components/schemas/CompletionIsForbiddenBySubprojectBudgetError'
+          - $ref: '#/components/schemas/ProjectCompletionNoBillableEntriesError'
+          - $ref: '#/components/schemas/ProjectCompletionAnyRunningEntriesError'
+          - $ref: '#/components/schemas/IntervalBudgetRequiresRetainerPlanError'
+          - $ref: '#/components/schemas/IntervalChangeIsForbiddenForIntervalProjectsWithSubprojectsError'
+          - $ref: '#/components/schemas/HasToBeInactiveError'
+          - $ref: '#/components/schemas/ProjectCompletionTooManyLumpSumsError'
+          - $ref: '#/components/schemas/ResourceConflictFoundError'
+          - $ref: '#/components/schemas/RelationsPreventDeletionError'
+          - $ref: '#/components/schemas/RunningEntriesPreventDeletionError'
+          - $ref: '#/components/schemas/ProjectDeadlineIsNotBeforeProjectStartError'
+          - $ref: '#/components/schemas/ProjectPeriodMustContainAllEntryStartsError'
+          - $ref: '#/components/schemas/ProjectPeriodCollidesWithSubprojectPeriodsError'
+          - $ref: '#/components/schemas/ServiceDoesNotExistError'
+      type: object
+    EmptyError:
+      title: Empty error
+      properties:
+        type:
+          type: string
+          enum:
+          - Empty
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Value is required and cannot be empty.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    CannotChangeBudgetSourceToIntervalBecauseOfEntriesError:
+      title: Cannot change budget source to interval because of entries error
+      properties:
+        type:
+          type: string
+          enum:
+          - BudgetSourceIsNotChangedToIntervalWhenEntriesExist
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You cannot change the budget source to interval as long as there are entries.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ProjectV4:
+      required:
+      - id
+      - customers_id
+      - name
+      - number
+      - active
+      - billable_default
+      - completed
+      - completed_at
+      - test_data
+      - count_subprojects
+      - service_assignments
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples:
+          - 10
+        customers_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          examples:
+          - Publicity campaign
+        number:
+          title: Freely selectable number for the project
+          type:
+          - string
+          - 'null'
+        active:
+          type: boolean
+        billable_default:
+          type: boolean
+        note:
+          description: Only with necessary access rights
+          type:
+          - string
+          - 'null'
+          examples:
+          - This project is important for us
+        billed_money:
+          title: Billed amount of money
+          description: Only with necessary access rights
+          type:
+          - number
+          - 'null'
+          format: float
+        billed_completely:
+          description: Only with necessary access rights
+          type:
+          - boolean
+          - 'null'
+        completed:
+          type: boolean
+        completed_at:
+          title: Date and time when the project was completed
+          type:
+          - string
+          - 'null'
+          format: date-time
+          examples:
+          - '2023-02-28T12:00:00Z'
+        revenue_factor:
+          title: Factor by which revenues and hourly rates must be multiplied to obtain the effective values
+          description: Only with necessary access rights.\n`null` for a project with hard budget that hasn't been completed yet.\nFor a project with hard budget which has been completed with a budget usage of 400%, the factor is `0.25`.\n`1` for projects without budget or with soft budget.
+          type:
+          - number
+          - 'null'
+          format: float
+        deadline:
+          title: Date when the project will be completed automatically if automatic_completion is enabled
+          type:
+          - string
+          - 'null'
+          format: date
+          examples:
+          - '2023-02-28'
+        start_date:
+          description: Date when the project becomes available for time tracking
+          type:
+          - string
+          - 'null'
+          format: date
+          examples:
+          - '2023-01-01'
+        automatic_completion:
+          description: Whether the project will be completed automatically when the deadline is reached
+          type: boolean
+        test_data:
+          type: boolean
+        count_subprojects:
+          description: Number of subprojects
+          type: integer
+          format: int64
+          examples:
+          - 5
+        budget:
+          oneOf:
+          - $ref: '#/components/schemas/ProjectBudgetV4'
+          - type: 'null'
+        bill_service_id:
+          type:
+          - string
+          - 'null'
+          examples:
+          - '1234'
+        service_assignments:
+          type: array
+          items:
+            type: integer
+            format: int64
+          examples:
+          - - 10
+      type: object
+    BudgetInterval:
+      title: Budget interval
+      description: 'Possible values:
+
+        - `0`: Weekly
+
+        - `1`: Monthly
+
+        - `2`: Quarterly
+
+        - `3`: Yearly'
+      type: integer
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      x-enumNames:
+      - Weekly
+      - Monthly
+      - Quarterly
+      - Yearly
+    ProjectBudgetV4:
+      required:
+      - monetary
+      - hard
+      - from_subprojects
+      - interval
+      - amount
+      - subprojects_budget_total
+      properties:
+        monetary:
+          type: boolean
+        hard:
+          type: boolean
+        from_subprojects:
+          type: boolean
+        interval:
+          oneOf:
+          - $ref: '#/components/schemas/BudgetInterval'
+          - type: 'null'
+        amount:
+          type:
+          - number
+          - 'null'
+          format: float
+        subprojects_budget_total:
+          type: number
+          format: float
+        notification_thresholds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Thresholds'
+      type: object
+    CompletionIsForbiddenBySubprojectCompletionError:
+      title: Completion is forbidden by subproject completion error
+      properties:
+        type:
+          type: string
+          enum:
+          - CompletionIsForbiddenBySubprojectCompletion
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Project-completion is forbidden as subprojects are completed partly.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    BilledCanOnlyBeSetWithHourBudgetError:
+      title: Billed can only be set with hour budget error
+      properties:
+        type:
+          type: string
+          enum:
+          - BilledCanOnlyBeSetWithHourBudget
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Field can only be set for projects with hours as budget. Otherwise it is determined automatically based on the billed amount.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ApiErrors:
+      properties:
+        type:
+          description: Unique identifier of the error
+          type: string
+          examples:
+          - General
+        message:
+          description: Textual error description
+          type: string
+          examples:
+          - The requested resource could not be found.
+        details:
+          description: Additional error details if necessary
+          type:
+          - object
+          - 'null'
+          examples:
+          - null
+        path:
+          type:
+          - string
+          - 'null'
+      type: object
+    SortIdNameActive:
+      title: Sort id name active
+      description: 'Possible values:
+
+        - `active`: ActiveAsc
+
+        - `-active`: ActiveDesc
+
+        - `id`: IdAsc
+
+        - `-id`: IdDesc
+
+        - `name`: NameAsc
+
+        - `-name`: NameDesc'
+      type: string
+      enum:
+      - active
+      - -active
+      - id
+      - -id
+      - name
+      - -name
+      x-enumNames:
+      - ActiveAsc
+      - ActiveDesc
+      - IdAsc
+      - IdDesc
+      - NameAsc
+      - NameDesc
+    ProjectCompletionAnyRunningEntriesError:
+      title: Project completion any running entries error
+      properties:
+        type:
+          type: string
+          enum:
+          - ProjectCompletionAnyRunningEntries
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The project can't be set to completed. A co-worker is currently tracking time with the clock.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    CannotChangeBudgetTypeBecauseOfSubprojectsError:
+      title: Cannot change budget type because of subprojects error
+      properties:
+        type:
+          type: string
+          enum:
+          - CannotChangeBudgetTypeBecauseOfSubprojects
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You cannot change the budget type (hard / soft and money / time) as long as there are subprojects.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    SubprojectV3:
+      required:
+      - id
+      - projects_id
+      - name
+      - number
+      - billed
+      - billed_money
+      - billed_completely
+      - billable_default
+      - completed
+      - completed_at
+      - start_date
+      - deadline
+      - active
+      - service_assignments
+      properties:
+        id:
+          type: integer
+        projects_id:
+          type: integer
+        name:
+          type: string
+        note:
+          type:
+          - string
+          - 'null'
+        number:
+          type:
+          - string
+          - 'null'
+        budget:
+          oneOf:
+          - $ref: '#/components/schemas/SubprojectBudgetV3'
+          - type: 'null'
+        billed:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        billed_money:
+          type:
+          - number
+          - 'null'
+          format: float
+        billed_completely:
+          type:
+          - boolean
+          - 'null'
+        billable_default:
+          type: boolean
+        completed:
+          type: boolean
+        completed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        revenue_factor:
+          type:
+          - number
+          - 'null'
+          format: float
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date
+        deadline:
+          type:
+          - string
+          - 'null'
+          format: date
+        active:
+          type: boolean
+        automatic_completion:
+          type: boolean
+        service_assignments:
+          type: array
+          items:
+            type: integer
+            format: int64
+        bill_service_id:
+          type:
+          - string
+          - 'null'
+      type: object
+    RelationsPreventDeletionError:
+      title: Relations prevent deletion error
+      properties:
+        type:
+          type: string
+          enum:
+          - RelationsPreventDeletion
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Resource can not be deleted, there are existing relations. Please delete the related resources first.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: Forbidden
+    ProjectDeadlineIsNotBeforeProjectStartError:
+      title: Project deadline is not before project start error
+      properties:
+        type:
+          type: string
+          enum:
+          - ProjectDeadlineIsNotBeforeProjectStart
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Deadline must be after or equal to start date.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ResourceEnum:
+      title: Resource enum
+      description: 'Possible values:
+
+        - `absences`: Absences
+
+        - `access_groups`: AccessGroups
+
+        - `company`: Company
+
+        - `company_state`: CompanyState
+
+        - `customers`: Customers
+
+        - `entries`: Entries
+
+        - `favorite`: Favorite
+
+        - `holidays_carry`: HolidaysCarry
+
+        - `holidays_quota`: HolidaysQuota
+
+        - `lumpsum_services`: LumpSumServices
+
+        - `nonbusiness_days`: NonBusinessDays
+
+        - `nonbusiness_groups`: NonBusinessGroups
+
+        - `overtime_carrys`: OvertimeCarrys
+
+        - `project_reports`: ProjectReports
+
+        - `project_reports_meta_data`: ProjectReportsMetaData
+
+        - `projects`: Projects
+
+        - `rates`: Rates
+
+        - `reports`: Reports
+
+        - `report_templates`: ReportTemplates
+
+        - `services`: Services
+
+        - `subprojects`: Subprojects
+
+        - `surcharge_models`: SurchargeModels
+
+        - `users`: Users
+
+        - `customers_projects_access`: CustomersProjectsAccess
+
+        - `targethours`: TargetHours
+
+        - `team`: Teams
+
+        - `work_time_break_rules`: WorkTimeBreakRules
+
+        - `work_time_regulations`: WorkTimeRegulations'
+      type: string
+      enum:
+      - absences
+      - access_groups
+      - company
+      - company_state
+      - customers
+      - entries
+      - favorite
+      - holidays_carry
+      - holidays_quota
+      - lumpsum_services
+      - nonbusiness_days
+      - nonbusiness_groups
+      - overtime_carrys
+      - project_reports
+      - project_reports_meta_data
+      - projects
+      - rates
+      - reports
+      - report_templates
+      - services
+      - subprojects
+      - surcharge_models
+      - users
+      - customers_projects_access
+      - targethours
+      - team
+      - work_time_break_rules
+      - work_time_regulations
+      x-enumNames:
+      - Absences
+      - AccessGroups
+      - Company
+      - CompanyState
+      - Customers
+      - Entries
+      - Favorite
+      - HolidaysCarry
+      - HolidaysQuota
+      - LumpSumServices
+      - NonBusinessDays
+      - NonBusinessGroups
+      - OvertimeCarrys
+      - ProjectReports
+      - ProjectReportsMetaData
+      - Projects
+      - Rates
+      - Reports
+      - ReportTemplates
+      - Services
+      - Subprojects
+      - SurchargeModels
+      - Users
+      - CustomersProjectsAccess
+      - TargetHours
+      - Teams
+      - WorkTimeBreakRules
+      - WorkTimeRegulations
+    AllSubprojectsMustBeCompletedError:
+      title: All subprojects must be completed error
+      properties:
+        type:
+          type: string
+          enum:
+          - AllSubprojectsMustBeCompleted
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - All subprojects must be completed before the parent project can be completed.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    CompletionIsForbiddenBySubprojectBudgetError:
+      title: Completion is forbidden by subproject budget error
+      properties:
+        type:
+          type: string
+          enum:
+          - CompletionIsForbiddenBySubprojectBudget
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Project-completion is forbidden as the subprojects's budget sum does not match the project's budget.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    Resource:
+      required:
+      - resources
+      properties:
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceEnum'
+        count:
+          type: array
+          items:
+            type: integer
+      type: object
+    CannotModifyDemoDataError:
+      title: Cannot modify demo data error
+      properties:
+        type:
+          type: string
+          enum:
+          - CannotModifyDemoData
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You must not edit demo data.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    BudgetIsRequiredForRetainerProjectError:
+      title: Budget is required for retainer project error
+      properties:
+        type:
+          type: string
+          enum:
+          - BudgetIsRequiredForRetainerProject
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Budget is required for retainer projects.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    BudgetTotalBelowSubprojectBudgetSumError:
+      title: Budget total below subproject budget sum error
+      properties:
+        type:
+          type: string
+          enum:
+          - BudgetTotalBelowSubprojectBudgetSum
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The project budget may not fall below the total budget of all subprojects.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/NotBetween'
+      type: object
+      x-error-category: BadRequest
+    Fields:
+      title: Fields error details
+      description: The names of invalid input fields
+      required:
+      - fields
+      properties:
+        fields:
+          title: Fields
+          description: One or more invalid fields
+          type: array
+          items:
+            type: string
+          examples:
+          - - type
+            - status
+      type: object
+    IntervalBudgetRequiresRetainerPlanError:
+      title: Interval budget requires retainer plan error
+      properties:
+        type:
+          type: string
+          enum:
+          - IntervalBudgetRequiresRetainerPlan
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Interval budgets feature is not available in your current plan.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ResourceNotFoundError:
+      title: Resource not found error
+      properties:
+        type:
+          type: string
+          enum:
+          - ResourceNotFound
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The requested resource could not be found.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    ProjectPeriodCollidesWithSubprojectPeriodsError:
+      title: Project period collides with subproject periods error
+      properties:
+        type:
+          type: string
+          enum:
+          - ProjectPeriodCollidesWithSubprojectPeriods
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The project period collides with one or more subproject periods.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    CannotRemoveBudgetBecauseOfSubprojectBudgetsError:
+      title: Cannot remove budget because of subproject budgets error
+      properties:
+        type:
+          type: string
+          enum:
+          - CannotRemoveBudgetBecauseOfSubprojectBudgets
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You cannot remove the budget as long as there are subprojects with budgets.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    IntervalChangeIsForbiddenForIntervalProjectsWithSubprojectsError:
+      title: Interval change is forbidden for interval projects with subprojects error
+      properties:
+        type:
+          type: string
+          enum:
+          - IntervalChangeIsForbiddenForIntervalProjectsWithSubprojects
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Changing the interval is forbidden for interval projects with existing subprojects.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    IllegalChangeForCompletedProjectError:
+      title: Illegal change for completed project error
+      properties:
+        type:
+          type: string
+          enum:
+          - IllegalChangeForCompletedProject
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The project has already been completed. The budget and deadline can't be changed.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Fields'
+      type: object
+      x-error-category: Forbidden
+    BilledMoneyCanOnlyBeSetWithHardBudgetError:
+      title: Billed money can only be set with hard budget error
+      properties:
+        type:
+          type: string
+          enum:
+          - BilledMoneyCanOnlyBeSetWithHardBudget
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The project does not have a hard budget so that the billed amount can't be set. You have to set the single entries to billed.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+    GeneralErrors:
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiErrors'
+      type: object
+    UnexpectedValueError:
+      title: Unexpected value error
+      properties:
+        type:
+          type: string
+          enum:
+          - UnexpectedValue
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - 'Only these values are expected: string'
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/ExpectedValues'
+      type: object
+      x-error-category: BadRequest
+    Thresholds:
+      title: Thresholds
+      description: 'Possible values:
+
+        - `10`: Percent10
+
+        - `20`: Percent20
+
+        - `30`: Percent30
+
+        - `40`: Percent40
+
+        - `50`: Percent50
+
+        - `60`: Percent60
+
+        - `70`: Percent70
+
+        - `80`: Percent80
+
+        - `90`: Percent90
+
+        - `100`: Percent100
+
+        - `110`: Percent110
+
+        - `120`: Percent120
+
+        - `130`: Percent130
+
+        - `140`: Percent140
+
+        - `150`: Percent150
+
+        - `200`: Percent200
+
+        - `250`: Percent250
+
+        - `300`: Percent300'
+      type: integer
+      enum:
+      - 10
+      - 20
+      - 30
+      - 40
+      - 50
+      - 60
+      - 70
+      - 80
+      - 90
+      - 100
+      - 110
+      - 120
+      - 130
+      - 140
+      - 150
+      - 200
+      - 250
+      - 300
+      x-enumNames:
+      - Percent10
+      - Percent20
+      - Percent30
+      - Percent40
+      - Percent50
+      - Percent60
+      - Percent70
+      - Percent80
+      - Percent90
+      - Percent100
+      - Percent110
+      - Percent120
+      - Percent130
+      - Percent140
+      - Percent150
+      - Percent200
+      - Percent250
+      - Percent300
+    ProjectCompletionNoBillableEntriesError:
+      title: Project completion no billable entries error
+      properties:
+        type:
+          type: string
+          enum:
+          - ProjectCompletionNoBillableEntries
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The project can't be set to completed. At least one billable entry is required.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ApiProjectsSetBilledV3Errors:
+      title: Api projects set billed v3 errors
+      required:
+      - error
+      properties:
+        error:
+          title: Errors
+          type: object
+          anyOf:
+          - $ref: '#/components/schemas/BilledMoneyCanOnlyBeSetWithHardBudgetError'
+          - $ref: '#/components/schemas/BilledCanOnlyBeSetWithHourBudgetError'
+          - $ref: '#/components/schemas/UnexpectedValueError'
+          - $ref: '#/components/schemas/FieldsShouldBeEmptyError'
+          - $ref: '#/components/schemas/BudgetTotalBelowSubprojectBudgetSumError'
+          - $ref: '#/components/schemas/EmptyError'
+          - $ref: '#/components/schemas/BudgetIsRequiredForRetainerProjectError'
+          - $ref: '#/components/schemas/CannotChangeBudgetSourceBecauseOfSubprojectsError'
+          - $ref: '#/components/schemas/CannotChangeBudgetSourceToIntervalBecauseOfEntriesError'
+          - $ref: '#/components/schemas/CannotRemoveBudgetBecauseOfSubprojectBudgetsError'
+          - $ref: '#/components/schemas/CannotChangeBudgetCommitmentBecauseOfCompletedSubprojectsError'
+          - $ref: '#/components/schemas/CannotChangeBudgetTypeBecauseOfSubprojectsError'
+          - $ref: '#/components/schemas/CannotModifyDemoDataError'
+          - $ref: '#/components/schemas/CompletionIsForbiddenBySubprojectCompletionError'
+          - $ref: '#/components/schemas/AllSubprojectsMustBeCompletedError'
+          - $ref: '#/components/schemas/ResourceNotFoundError'
+          - $ref: '#/components/schemas/IllegalChangeForCompletedProjectError'
+          - $ref: '#/components/schemas/CompletionIsForbiddenBySubprojectBudgetError'
+          - $ref: '#/components/schemas/ProjectCompletionNoBillableEntriesError'
+          - $ref: '#/components/schemas/ProjectCompletionAnyRunningEntriesError'
+          - $ref: '#/components/schemas/IntervalBudgetRequiresRetainerPlanError'
+          - $ref: '#/components/schemas/IntervalChangeIsForbiddenForIntervalProjectsWithSubprojectsError'
+          - $ref: '#/components/schemas/HasToBeInactiveError'
+          - $ref: '#/components/schemas/ProjectCompletionTooManyLumpSumsError'
+          - $ref: '#/components/schemas/ResourceConflictFoundError'
+          - $ref: '#/components/schemas/RelationsPreventDeletionError'
+          - $ref: '#/components/schemas/RunningEntriesPreventDeletionError'
+          - $ref: '#/components/schemas/ProjectDeadlineIsNotBeforeProjectStartError'
+          - $ref: '#/components/schemas/ProjectPeriodMustContainAllEntryStartsError'
+          - $ref: '#/components/schemas/ProjectPeriodCollidesWithSubprojectPeriodsError'
+      type: object
+    HasToBeInactiveError:
+      title: Has to be inactive error
+      properties:
+        type:
+          type: string
+          enum:
+          - HasToBeInactive
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - The resource must be inactive.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Resource'
+      type: object
+      x-error-category: BadRequest
+    FieldsShouldBeEmptyError:
+      title: Fields should be empty error
+      properties:
+        type:
+          type: string
+          enum:
+          - FieldsShouldBeEmpty
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - 'According to your other information, the following fields should be empty: type, status.'
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/Fields'
+      type: object
+      x-error-category: BadRequest
+    SubprojectBudgetV3:
+      required:
+      - monetary
+      - hard
+      - amount
+      properties:
+        monetary:
+          type: boolean
+        hard:
+          type: boolean
+        amount:
+          type:
+          - number
+          - 'null'
+          format: float
+        notification_thresholds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Thresholds'
+      type: object
+    ExpectedValues:
+      title: Expected values error details
+      description: Only certain values are allowed.
+      required:
+      - expected_values
+      properties:
+        expected_values:
+          title: Expected values
+          description: One or more expected values
+          type: array
+          items:
+            type: string
+          examples:
+          - - string
+            - integer
+      type: object
+    CustomerProjectScope:
+      title: Customer project scope
+      description: 'Possible values:
+
+        - `manageAccess`: ManageAccess'
+      type: string
+      enum:
+      - manageAccess
+      x-enumNames:
+      - ManageAccess
+    CannotChangeBudgetCommitmentBecauseOfCompletedSubprojectsError:
+      title: Cannot change budget commitment because of completed subprojects error
+      properties:
+        type:
+          type: string
+          enum:
+          - CannotChangeBudgetCommitmentBecauseOfCompletedSubprojects
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - You cannot change the budget commitment as long as there are completed subprojects.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    RunningEntriesPreventDeletionError:
+      title: Running entries prevent deletion error
+      properties:
+        type:
+          type: string
+          enum:
+          - RunningEntriesPreventDeletion
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Resource can not be deleted, there are running entries. Please stop and delete those entries first.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: Forbidden
+    ServiceDoesNotExistError:
+      title: Service does not exist error
+      properties:
+        type:
+          type: string
+          enum:
+          - ServiceDoesNotExist
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - At least one requested service does not exist.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          $ref: '#/components/schemas/ServiceDoesNotExist'
+      type: object
+      x-error-category: BadRequest
+    ProjectPeriodMustContainAllEntryStartsError:
+      title: Project period must contain all entry starts error
+      properties:
+        type:
+          type: string
+          enum:
+          - ProjectPeriodMustContainAllEntryStarts
+        message:
+          type:
+          - string
+          - 'null'
+          examples:
+          - Project period must contain all entry dates.
+        path:
+          type:
+          - string
+          - 'null'
+        details:
+          type: 'null'
+      type: object
+      x-error-category: BadRequest
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: The basic authentication of the HTTP protocol. Credentials are email address and API key.<br />Every co-worker will find his API key in the menu item "Personal data" in his Clockodo account.
+      scheme: basic
+    User:
+      type: apiKey
+      description: 'Must be filled together with <code>X-ClockodoApiKey</code><br /><strong>Example: admin@clockodo.com</strong>'
+      name: X-ClockodoApiUser
+      in: header
+    Key:
+      type: apiKey
+      description: Must be filled together with <code>X-ClockodoApiUser</code>
+      name: X-ClockodoApiKey
+      in: header
+    ExternalApp:
+      type: apiKey
+      description: 'Every request to our API must provide identification of the calling application, including the email address of a technical contact person.<br /><strong>Example: "Clockodo;admin@clockodo.com"</strong>'
+      name: X-Clockodo-External-Application
+      in: header
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 for external integrations via authorization code flow with refresh tokens. OAuth clients can be provisioned via Dynamic Client Registration (POST /oauth/register) or Client ID Metadata Documents (CIMD). Dynamically registered clients are deleted after 90 days without any token or authorization code activity; store the issued client_id and client_secret permanently, as the secret is only returned once.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /token
+          refreshUrl: /token
+          scopes:
+            full_access: Full access to all API endpoints
+            accessGroups:read: Read access group data
+            accessGroups:write: Write access group data
+            absences:read: Read absence data
+            absences:write: Write absence data
+            browserExtensionRules:read: Read browser extension rule data
+            browserExtensionRules:write: Write browser extension rule data
+            clock:read: Read clock data
+            clock:write: Write clock data
+            company:read: Read company data
+            customers:read: Read customer data
+            customers:write: Write customer data
+            entryGroups:read: Read entry group data
+            entryGroups:write: Write entry group data
+            entries:read: Read time entry data
+            entries:write: Write time entry data
+            entriesTexts:read: Read time entry text data
+            entriesTexts:write: Write time entry text data
+            holidaysCarry:read: Read holiday carryover data
+            holidaysCarry:write: Write holiday carryover data
+            holidaysQuota:read: Read holiday quota data
+            holidaysQuota:write: Write holiday quota data
+            lumpSumServices:read: Read lump sum service data
+            lumpSumServices:write: Write lump sum service data
+            nonbusinessDays:read: Read nonbusiness day data
+            nonbusinessDays:write: Write nonbusiness day data
+            nonbusinessGroups:read: Read nonbusiness group data
+            nonbusinessGroups:write: Write nonbusiness group data
+            overtimeCarry:read: Read overtime carryover data
+            overtimeCarry:write: Write overtime carryover data
+            overtimeReductions:read: Read overtime reduction data
+            overtimeReductions:write: Write overtime reduction data
+            projects:read: Read project data
+            projects:write: Write project data
+            rates:read: Read rate data
+            rates:write: Write rate data
+            services:read: Read service data
+            services:write: Write service data
+            subprojects:read: Read subproject data
+            subprojects:write: Write subproject data
+            subscription:read: Read subscription data
+            targetHours:read: Read planned hours data
+            targetHours:write: Write planned hours data
+            teams:read: Read team data
+            teams:write: Write team data
+            userReports:read: Read co-worker report data
+            users:read: Read co-worker data
+            users:write: Write co-worker data
+            usersNonbusinessDays:read: Read co-worker nonbusiness day data
+            usersNonbusinessGroups:read: Read co-worker nonbusiness group data
+            usersNonbusinessGroups:write: Write co-worker nonbusiness group data
+            workTimes:read: Read work time data
+            workTimes:write: Write work time data

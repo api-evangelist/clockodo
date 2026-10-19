@@ -4,15 +4,38 @@
     "_original/clockodo-openapi.yml"
   ],
   "outputs": [
-    "clockodo-absences-api-openapi.yml",
+    "clockodo-absence-api-openapi.yml",
+    "clockodo-accessgroup-api-openapi.yml",
+    "clockodo-accessgroupaccess-api-openapi.yml",
     "clockodo-clock-api-openapi.yml",
-    "clockodo-customers-api-openapi.yml",
-    "clockodo-entries-api-openapi.yml",
-    "clockodo-holidaysquota-api-openapi.yml",
-    "clockodo-lumpsumservices-api-openapi.yml",
-    "clockodo-projects-api-openapi.yml",
-    "clockodo-services-api-openapi.yml",
-    "clockodo-users-api-openapi.yml"
+    "clockodo-customer-api-openapi.yml",
+    "clockodo-entry-api-openapi.yml",
+    "clockodo-entrygroup-api-openapi.yml",
+    "clockodo-entrytext-api-openapi.yml",
+    "clockodo-favorite-api-openapi.yml",
+    "clockodo-holidaycarryover-api-openapi.yml",
+    "clockodo-holidayquota-api-openapi.yml",
+    "clockodo-individualuseraccess-api-openapi.yml",
+    "clockodo-lumpsumservice-api-openapi.yml",
+    "clockodo-nonbusinessday-api-openapi.yml",
+    "clockodo-nonbusinessgroup-api-openapi.yml",
+    "clockodo-overtimecarry-api-openapi.yml",
+    "clockodo-overtimereduction-api-openapi.yml",
+    "clockodo-project-api-openapi.yml",
+    "clockodo-projectreport-api-openapi.yml",
+    "clockodo-rate-api-openapi.yml",
+    "clockodo-register-api-openapi.yml",
+    "clockodo-service-api-openapi.yml",
+    "clockodo-subproject-api-openapi.yml",
+    "clockodo-subscription-api-openapi.yml",
+    "clockodo-targethour-api-openapi.yml",
+    "clockodo-team-api-openapi.yml",
+    "clockodo-user-api-openapi.yml",
+    "clockodo-usernonbusinessday-api-openapi.yml",
+    "clockodo-usernonbusinessgroup-api-openapi.yml",
+    "clockodo-userreport-api-openapi.yml",
+    "clockodo-webhook-api-openapi.yml",
+    "clockodo-worktime-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
@@ -20,17 +43,8 @@
   "notes": [
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "clockodo-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "apis.yml register: already-registered"
+    "clockodo-openapi.yml: declared missing tag: Webhook",
+    "apis.yml register: written (+31 apis, 32 total)"
   ],
-  "skipped": [
-    "clockodo-absences-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "clockodo-clock-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "clockodo-customers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "clockodo-entries-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "clockodo-holidaysquota-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "clockodo-lumpsumservices-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "clockodo-projects-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "clockodo-services-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "clockodo-users-api-openapi.yml: previously refined output, superseded by openapi/_original/"
-  ]
+  "skipped": []
 }

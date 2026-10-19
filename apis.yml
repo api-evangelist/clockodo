@@ -57,20 +57,6 @@ description: >-
   X-ClockodoApiUser/X-ClockodoApiKey header pair (or HTTP Basic), and every call must include the
   X-Clockodo-External-Application header identifying the integrating application.
 apis:
-- aid: clockodo:clockodo-absences-api
-  name: Clockodo Absences API
-  description: Absence records (vacation, sickness, etc.).
-  humanURL: https://www.clockodo.com/en/api/
-  baseURL: https://my.clockodo.com/api
-  tags:
-  - Absences
-  properties:
-  - type: OpenAPI
-    url: openapi/clockodo-absences-api-openapi.yml
-  - type: Documentation
-    url: https://www.clockodo.com/en/api/
-  - type: Authentication
-    url: https://www.clockodo.com/en/api/authentication/
 - aid: clockodo:clockodo-clock-api
   name: Clockodo Clock API
   description: Real-time stop-clock control.
@@ -85,104 +71,440 @@ apis:
     url: https://www.clockodo.com/en/api/
   - type: Authentication
     url: https://www.clockodo.com/en/api/authentication/
-- aid: clockodo:clockodo-customers-api
-  name: Clockodo Customers API
-  description: Customer records.
+- aid: clockodo:clockodo-absence-api
+  name: Clockodo Absence API
+  description: Manage absences (holidays, sick days, etc.)
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
-  - Customers
+  - Absence
   properties:
   - type: OpenAPI
-    url: openapi/clockodo-customers-api-openapi.yml
+    url: openapi/clockodo-absence-api-openapi.yml
   - type: Documentation
     url: https://www.clockodo.com/en/api/
   - type: Authentication
     url: https://www.clockodo.com/en/api/authentication/
-- aid: clockodo:clockodo-entries-api
-  name: Clockodo Entries API
-  description: Time-tracking entries.
+- aid: clockodo:clockodo-accessgroupaccess-api
+  name: Clockodo Access Group Access API
+  description: Manage access group rights
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
-  - Entries
+  - AccessGroupAccess
   properties:
   - type: OpenAPI
-    url: openapi/clockodo-entries-api-openapi.yml
+    url: openapi/clockodo-accessgroupaccess-api-openapi.yml
   - type: Documentation
     url: https://www.clockodo.com/en/api/
   - type: Authentication
     url: https://www.clockodo.com/en/api/authentication/
-- aid: clockodo:clockodo-holidaysquota-api
-  name: Clockodo HolidaysQuota API
-  description: Per-user holiday quotas.
+- aid: clockodo:clockodo-customer-api
+  name: Clockodo Customer API
+  description: Manage customers
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
-  - HolidaysQuota
+  - Customer
   properties:
   - type: OpenAPI
-    url: openapi/clockodo-holidaysquota-api-openapi.yml
+    url: openapi/clockodo-customer-api-openapi.yml
   - type: Documentation
     url: https://www.clockodo.com/en/api/
   - type: Authentication
     url: https://www.clockodo.com/en/api/authentication/
-- aid: clockodo:clockodo-lumpsumservices-api
-  name: Clockodo LumpSumServices API
-  description: Lump-sum services for fixed-price billing.
+- aid: clockodo:clockodo-entry-api
+  name: Clockodo Entry API
+  description: Manage time and lump sum entries
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
-  - LumpSumServices
+  - Entry
   properties:
   - type: OpenAPI
-    url: openapi/clockodo-lumpsumservices-api-openapi.yml
+    url: openapi/clockodo-entry-api-openapi.yml
   - type: Documentation
     url: https://www.clockodo.com/en/api/
   - type: Authentication
     url: https://www.clockodo.com/en/api/authentication/
-- aid: clockodo:clockodo-projects-api
-  name: Clockodo Projects API
-  description: Projects under customers.
+- aid: clockodo:clockodo-entrygroup-api
+  name: Clockodo Entry Group API
+  description: >-
+    Query and manage groups of time entries (particularly useful for evaluation and invoicing purposes)
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - EntryGroup
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-entrygroup-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-entrytext-api
+  name: Clockodo Entry Text API
+  description: Query descriptions of time and lump sum entries
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - EntryText
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-entrytext-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-favorite-api
+  name: Clockodo Favorite API
+  description: Manage favorites
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - Favorite
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-favorite-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-holidaycarryover-api
+  name: Clockodo Holiday Carryover API
+  description: Manage holiday carryovers
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - HolidayCarryover
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-holidaycarryover-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-holidayquota-api
+  name: Clockodo Holiday Quota API
+  description: Manage holiday quotas
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - HolidayQuota
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-holidayquota-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-individualuseraccess-api
+  name: Clockodo Individual User Access API
+  description: Manage individual user rights
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - IndividualUserAccess
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-individualuseraccess-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-lumpsumservice-api
+  name: Clockodo Lump Sum Service API
+  description: Manage lump sum services
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - LumpSumService
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-lumpsumservice-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-nonbusinessday-api
+  name: Clockodo Nonbusiness Day API
+  description: Query and manage nonbusiness days
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - NonbusinessDay
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-nonbusinessday-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-nonbusinessgroup-api
+  name: Clockodo Nonbusiness Group API
+  description: Query and manage nonbusiness groups
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - NonbusinessGroup
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-nonbusinessgroup-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-overtimecarry-api
+  name: Clockodo Overtime Carry API
+  description: Manage overtime carryovers
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - OvertimeCarry
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-overtimecarry-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-overtimereduction-api
+  name: Clockodo Overtime Reduction API
+  description: Manage overtime reductions
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - OvertimeReduction
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-overtimereduction-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-project-api
+  name: Clockodo Project API
+  description: Manage projects
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
   - Project
-  tags_raw:
-  - Projects
   properties:
   - type: OpenAPI
-    url: openapi/clockodo-projects-api-openapi.yml
+    url: openapi/clockodo-project-api-openapi.yml
   - type: Documentation
     url: https://www.clockodo.com/en/api/
   - type: Authentication
     url: https://www.clockodo.com/en/api/authentication/
-- aid: clockodo:clockodo-services-api
-  name: Clockodo Services API
-  description: Service catalog used for entries.
+- aid: clockodo:clockodo-projectreport-api
+  name: Clockodo Project Report API
+  description: Query projects
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
-  - Services
+  - ProjectReport
   properties:
   - type: OpenAPI
-    url: openapi/clockodo-services-api-openapi.yml
+    url: openapi/clockodo-projectreport-api-openapi.yml
   - type: Documentation
     url: https://www.clockodo.com/en/api/
   - type: Authentication
     url: https://www.clockodo.com/en/api/authentication/
-- aid: clockodo:clockodo-users-api
-  name: Clockodo Users API
-  description: Co-workers/users in the account.
+- aid: clockodo:clockodo-rate-api
+  name: Clockodo Rate API
+  description: Manage rates
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - Rate
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-rate-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-register-api
+  name: Clockodo Register API
+  description: Create Clockodo accounts
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - Register
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-register-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-service-api
+  name: Clockodo Service API
+  description: Manage services
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - Service
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-service-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-subproject-api
+  name: Clockodo Subproject API
+  description: Manage subprojects
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - Subproject
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-subproject-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-subscription-api
+  name: Clockodo Subscription API
+  description: Get subscription info
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - Subscription
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-subscription-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-targethour-api
+  name: Clockodo Target Hour API
+  description: Manage target hours (planned hours)
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - TargetHour
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-targethour-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-team-api
+  name: Clockodo Team API
+  description: Manage teams
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - Team
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-team-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-user-api
+  name: Clockodo User API
+  description: Manage co-workers
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
   - User
-  tags_raw:
-  - Users
   properties:
   - type: OpenAPI
-    url: openapi/clockodo-users-api-openapi.yml
+    url: openapi/clockodo-user-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-usernonbusinessday-api
+  name: Clockodo User Nonbusiness Day API
+  description: Get non-business days of user
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - UserNonbusinessDay
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-usernonbusinessday-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-usernonbusinessgroup-api
+  name: Clockodo User Nonbusiness Group API
+  description: Assign non-business day groups to users and manage time periods
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - UserNonbusinessGroup
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-usernonbusinessgroup-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-userreport-api
+  name: Clockodo User Report API
+  description: >-
+    Query user reports (e. g. work time evaluation of each day and holiday account of each co-worker)
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - UserReport
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-userreport-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-webhook-api
+  name: Clockodo Webhook API
+  description: The Webhook API from Clockodo — 0 operation(s) for webhook.
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - Webhook
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-webhook-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-worktime-api
+  name: Clockodo Work Time API
+  description: >-
+    Manage work times. Work times cannot be edited directly. To edit work times, edit the respective time
+    entries or use requests for change of work time.
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - WorkTime
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-worktime-api-openapi.yml
+  - type: Documentation
+    url: https://www.clockodo.com/en/api/
+  - type: Authentication
+    url: https://www.clockodo.com/en/api/authentication/
+- aid: clockodo:clockodo-access-group-api
+  name: Clockodo Access Group API
+  description: Manage access groups names and assigned users
+  humanURL: https://www.clockodo.com/en/api/
+  baseURL: https://my.clockodo.com/api
+  tags:
+  - Access Group
+  properties:
+  - type: OpenAPI
+    url: openapi/clockodo-access-group-api-openapi.yml
   - type: Documentation
     url: https://www.clockodo.com/en/api/
   - type: Authentication
