@@ -105,6 +105,8 @@ apis:
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
+  - Customers
+  tags_raw:
   - Customer
   properties:
   - type: OpenAPI
@@ -344,6 +346,8 @@ apis:
   humanURL: https://www.clockodo.com/en/api/
   baseURL: https://my.clockodo.com/api
   tags:
+  - Services
+  tags_raw:
   - Service
   properties:
   - type: OpenAPI
