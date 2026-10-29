@@ -1,4 +1,4 @@
-# Clockodo (clockodo)
+# Clockodo
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,68 +66,161 @@
 
 Clockodo is a German-built, cloud-based time-tracking and project- management application used by service firms, agencies, and freelancers. In addition to its web and mobile apps, Clockodo exposes a REST API at my.clockodo.com that mirrors the objects in the UI: time entries, customers, projects, services, users, absences, holiday quotas, lump-sum services, and a real-time stop-clock. Authentication uses a per-user email plus per-user API key delivered as the X-ClockodoApiUser/X-ClockodoApiKey header pair (or HTTP Basic), and every call must include the X-Clockodo-External-Application header identifying the integrating application.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/clockodo/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/clockodo/refs/heads/main/apis.yml)
+**Areas:** Absence Management · Billing · Project Management · Stopclock · Time Tracking · Timesheets
 
-## Scope
+## Clockodo on APIs.io
 
-- **Type:** Index
-- **Position:** Consumer
-- **Access:** 3rd-Party
+Everything profiled for Clockodo is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/clockodo/](https://apis.io/providers/clockodo/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (9)
 
-- Absence Management
-- Billing
-- Project Management
-- Stop Clock
-- Time Tracking
-- Timesheets
+- [Clockodo Absences API](https://apis.io/apis/clockodo/clockodo-absences-api/) — Absence records (vacation, sickness, etc.).
+- [Clockodo Clock API](https://apis.io/apis/clockodo/clockodo-clock-api/) — Real-time stop-clock control.
+- [Clockodo Customers API](https://apis.io/apis/clockodo/clockodo-customers-api/) — Customer records.
+- [Clockodo Entries API](https://apis.io/apis/clockodo/clockodo-entries-api/) — Time-tracking entries.
+- [Clockodo HolidaysQuota API](https://apis.io/apis/clockodo/clockodo-holidaysquota-api/) — Per-user holiday quotas.
+- [Clockodo LumpSumServices API](https://apis.io/apis/clockodo/clockodo-lumpsumservices-api/) — Lump-sum services for fixed-price billing.
+- [Clockodo Projects API](https://apis.io/apis/clockodo/clockodo-projects-api/) — Projects under customers.
+- [Clockodo Services API](https://apis.io/apis/clockodo/clockodo-services-api/) — Service catalog used for entries.
+- [Clockodo Users API](https://apis.io/apis/clockodo/clockodo-users-api/) — Co-workers/users in the account.
 
-## Timestamps
+### Published properties
 
-- **Created:** 2025-02-17
-- **Modified:** 2026-05-19
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### MCP servers (1)
 
-### Clockodo API
+Model Context Protocol servers that expose the API to agents.
 
-The Clockodo API is a REST interface at my.clockodo.com that lets developers automate time tracking and project management. v2 endpoints under /api/v2 cover entries, customers, projects, services, users, lump-sum services, and the stop-clock; legacy endpoints under /api cover absences and holiday quotas. Calls authenticate with X-ClockodoApiUser plus X-ClockodoApiKey (or HTTP Basic with the same credentials) and identify the calling app via X-Clockodo-External-Application; responses are JSON.
+- [clockodo](https://apis.io/servers/clockodo/clockodo/)
 
-- **Human URL:** [https://www.clockodo.com/en/api/](https://www.clockodo.com/en/api/)
-- **Base URL:** `https://my.clockodo.com/api`
+#### Agentic access (1)
 
-#### Tags
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- Absence Management
-- Billing
-- Project Management
-- Stop Clock
-- Time Tracking
+- [Clockodo Agentic Access](https://apis.io/agentic-access/clockodo/clockodo-agentic-access/)
 
-#### Properties
+#### JSON Schema (1)
 
-- [Documentation](https://www.clockodo.com/en/api/)
-- [Authentication](https://www.clockodo.com/en/api/authentication/)
-- [OpenAPI](openapi/clockodo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/clockodo.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/clockodo.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+The data models the API reads and writes.
 
-## Common Properties
+- [Clockodo Time Entry](https://apis.io/schemas/clockodo/clockodo-entry/)
 
-- [LinkedIn](https://www.linkedin.com/company/clockodo)
+#### JSON-LD (1)
+
+Linked-data contexts for the provider's vocabulary.
+
+- [Clockodo Context](https://apis.io/jsonld/clockodo/clockodo-context/)
+
+#### Collections (10)
+
+Postman and Open Collection request collections.
+
+- [Clockodo API](https://apis.io/collections/clockodo/open-clockodo/)
+- [Clockodo Absences API](https://apis.io/collections/clockodo/open-clockodo-absences-api/)
+- [Clockodo Absences Clock API](https://apis.io/collections/clockodo/open-clockodo-clock-api/)
+- [Clockodo Absences Customers API](https://apis.io/collections/clockodo/open-clockodo-customers-api/)
+- [Clockodo Absences Entries API](https://apis.io/collections/clockodo/open-clockodo-entries-api/)
+- [Clockodo Absences HolidaysQuota API](https://apis.io/collections/clockodo/open-clockodo-holidaysquota-api/)
+- [Clockodo Absences LumpSumServices API](https://apis.io/collections/clockodo/open-clockodo-lumpsumservices-api/)
+- [Clockodo Absences Projects API](https://apis.io/collections/clockodo/open-clockodo-projects-api/)
+- [Clockodo Absences Services API](https://apis.io/collections/clockodo/open-clockodo-services-api/)
+- [Clockodo Absences Users API](https://apis.io/collections/clockodo/open-clockodo-users-api/)
+
+#### Governance rules (2)
+
+Spectral rulesets for the provider's contracts.
+
+- [Clockodo — jsonschema rules](https://apis.io/rules/clockodo/clockodo-jsonschema-spectral-rules/)
+- [Clockodo API Rules](https://apis.io/rules/clockodo/clockodo-rules/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Clockodo Authentication](https://apis.io/security/clockodo/clockodo-authentication/)
+- [Clockodo Domain Security](https://apis.io/security/clockodo/clockodo-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Clockodo Plans Pricing](https://apis.io/plans/clockodo/clockodo-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Clockodo Rate Limits](https://apis.io/rate-limits/clockodo/clockodo-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Clockodo Finops](https://apis.io/finops/clockodo/clockodo-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://www.clockodo.com/en/)
 - [Documentation](https://www.clockodo.com/en/api/)
-- [Blog](https://www.clockodo.com/en/blog/)
 - [Pricing](https://www.clockodo.com/en/pricing/)
-- [Terms of Service](https://www.clockodo.com/en/terms-and-conditions/)
-- [Privacy Policy](https://www.clockodo.com/en/data-privacy/)
-- [OpenAPI](openapi/clockodo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [JSON Schema](json-schema/clockodo-entry-schema.json) — [JSON Schema](https://json-schema.org/specification)
-- [J S O N L D Context](json-ld/clockodo-context.jsonld)
-- [Spectral Rules](rules/clockodo-rules.yml) — [Spectral](https://docs.stoplight.io/docs/spectral)
+- [Blog](https://www.clockodo.com/en/blog/)
+- [Terms of service](https://www.clockodo.com/en/terms-and-conditions/)
+- [Privacy policy](https://www.clockodo.com/en/data-privacy/)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 38.1** — thin · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 68.3 |
+| Contract quality | 61.1 |
+| Contract governance | 13.6 |
+| Operational transparency | 7.9 |
+| Developer ergonomics | 23.8 |
+| Access clarity | 39.5 |
+
+**Agent readiness 58.8** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | yes |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/clockodo/](https://apis.io/providers/clockodo/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Clockodo: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/clockodo/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
